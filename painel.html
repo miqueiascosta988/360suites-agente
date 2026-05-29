@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>360 Suítes — Painel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0b; --surface: #111113; --surface2: #18181c; --border: #222228;
+      --gold: #c8a96e; --gold-light: #e8cfa0; --gold-dim: rgba(200,169,110,0.12);
+      --text: #ede9e4; --muted: #6b6760; --success: #5cb87a; --error: #c95c5c; --warn: #c9965c;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; min-height: 100vh; }
+
+    /* Layout */
+    .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar { background: var(--surface); border-right: 1px solid var(--border); padding: 32px 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+    .sidebar-logo { padding: 0 24px 32px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+    .logo-mark { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--gold); letter-spacing: 0.05em; }
+    .logo-sub { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 11px 24px; font-size: 13px; font-weight: 400; color: var(--muted); cursor: pointer; transition: all 0.15s; border-left: 2px solid transparent; }
+    .nav-item:hover { color: var(--text); background: var(--gold-dim); }
+    .nav-item.active { color: var(--gold); border-left-color: var(--gold); background: var(--gold-dim); }
+    .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+    .sidebar-footer { margin-top: auto; padding: 20px 24px 0; border-top: 1px solid var(--border); }
+    .status-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+
+    /* Main */
+    .main { padding: 40px 48px; overflow-y: auto; }
+    .page-header { margin-bottom: 36px; }
+    .page-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--text); }
+    .page-title em { font-style: italic; color: var(--gold); }
+    .page-sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+    /* Cards */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 28px; margin-bottom: 20px; }
+    .card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+
+    /* Form elements */
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.05em; }
+    .field select, .field input[type="text"], .field textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 10px 13px; color: var(--text); font-family: 'Outfit', sans-serif; font-size: 13px; outline: none; transition: border-color 0.15s; }
+    .field select:focus, .field input:focus, .field textarea:focus { border-color: var(--gold); }
+    .field select option { background: var(--surface2); }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* Dropzone */
+    .dropzone { border: 1.5px dashed var(--border); border-radius: 9px; padding: 36px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+    .dropzone:hover, .dropzone.dragover { border-color: var(--gold); background: var(--gold-dim); }
+    .dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .drop-icon { font-size: 28px; margin-bottom: 10px; }
+    .drop-label { font-size: 13px; margin-bottom: 4px; }
+    .drop-sub { font-size: 11px; color: var(--muted); }
+    .file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+    .file-item { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 8px 12px; font-size: 12px; }
+    .file-item .fn { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .file-item .fs { color: var(--muted); font-size: 10px; }
+    .file-item button { background:none; border:none; color:var(--muted); cursor:pointer; font-size:14px; padding:0 2px; }
+    .file-item button:hover { color: var(--error); }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px; border-radius: 7px; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; border: none; }
+    .btn-primary { background: var(--gold); color: #0a0a0b; width: 100%; }
+    .btn-primary:hover:not(:disabled) { background: var(--gold-light); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .btn-outline:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { opacity: 0.85; }
+    .btn-danger { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .btn-danger:hover { border-color: var(--error); color: var(--error); }
+
+    /* Spinner */
+    .spinner { width: 14px; height: 14px; border: 2px solid rgba(10,10,11,0.3); border-top-color: #0a0a0b; border-radius: 50%; animation: spin 0.6s linear infinite; flex-shrink: 0; }
+    .spinner-gold { border-color: rgba(200,169,110,0.3); border-top-color: var(--gold); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Summary stats */
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 20px; text-align: center; }
+    .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 300; line-height: 1; }
+    .stat-num.s { color: var(--success); } .stat-num.w { color: var(--warn); } .stat-num.e { color: var(--error); }
+    .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 6px; }
+
+    /* Result list */
+    .result-list { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .result-list-header { padding: 14px 18px; font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); border-bottom: 1px solid var(--border); }
+    .result-items { max-height: 340px; overflow-y: auto; }
+    .result-items::-webkit-scrollbar { width: 3px; }
+    .result-items::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+    .result-item { display: flex; align-items: center; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--border); font-size: 12px; }
+    .result-item:last-child { border-bottom: none; }
+    .rdot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .rdot.s { background: var(--success); } .rdot.w { background: var(--warn); } .rdot.e { background: var(--error); }
+    .rinfo { flex: 1; min-width: 0; }
+    .rname { font-weight: 500; }
+    .remail { color: var(--muted); font-size: 10px; margin-top: 1px; }
+    .rbadge { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+    .rbadge.s { background: rgba(92,184,122,0.12); color: var(--success); }
+    .rbadge.w { background: rgba(201,150,92,0.12); color: var(--warn); }
+    .rbadge.e { background: rgba(201,92,92,0.12); color: var(--error); }
+
+    /* Email cards */
+    .email-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+    .email-card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--gold-dim); border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--gold); flex-shrink: 0; }
+    .email-meta { flex: 1; }
+    .email-nome { font-size: 13px; font-weight: 500; }
+    .email-de { font-size: 10px; color: var(--muted); margin-top: 1px; }
+    .email-tag { font-size: 10px; background: var(--gold-dim); color: var(--gold); padding: 2px 8px; border-radius: 99px; border: 1px solid rgba(200,169,110,0.2); }
+    .email-body { padding: 16px 18px; }
+    .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+    .text-box { font-size: 12px; color: var(--muted); line-height: 1.7; background: var(--surface2); border-radius: 7px; padding: 10px 12px; white-space: pre-wrap; max-height: 120px; overflow-y: auto; margin-bottom: 14px; }
+    .resposta-area { font-size: 12px; color: var(--text); line-height: 1.7; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; width: 100%; min-height: 140px; font-family: 'Outfit', sans-serif; outline: none; resize: vertical; }
+    .resposta-area:focus { border-color: var(--gold); }
+    .email-actions { display: flex; gap: 8px; padding: 0 18px 16px; }
+
+    /* Empty state */
+    .empty { text-align: center; padding: 56px 20px; color: var(--muted); }
+    .empty-icon { font-size: 40px; margin-bottom: 14px; }
+    .empty p { font-size: 13px; }
+
+    /* Progress */
+    .progress-wrap { display: none; margin-top: 16px; }
+    .progress-wrap.visible { display: block; }
+    .progress-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+    .progress-bg { background: var(--surface2); border-radius: 99px; height: 4px; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 99px; width: 0%; transition: width 0.4s; }
+
+    /* Tab content */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">360 Suítes</div>
+      <div class="logo-sub">Painel de Gestão</div>
+    </div>
+    <nav>
+      <div class="nav-item active" onclick="trocarTab('envio')"><span class="nav-icon">📤</span> Envio de Relatórios</div>
+      <div class="nav-item" onclick="trocarTab('agente')"><span class="nav-icon">🤖</span> Agente de Respostas</div>
+      <div class="nav-item" onclick="trocarTab('bloqueios')"><span class="nav-icon">🔒</span> Bloqueios</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="status-dot"><span class="dot"></span> Servidor online</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- ENVIO -->
+    <div class="tab-content active" id="tab-envio">
+      <div class="page-header">
+        <div class="page-title">Envio de <em>Relatórios</em></div>
+        <div class="page-sub">Disparo de PDFs mensais para proprietários</div>
+      </div>
+
+      <div id="formCard">
+        <div class="card">
+          <div class="card-label">Configuração</div>
+          <div class="row2">
+            <div class="field">
+              <label>Mês de referência</label>
+              <select id="mes">
+                <option>Janeiro</option><option>Fevereiro</option><option>Março</option>
+                <option selected>Abril</option><option>Maio</option><option>Junho</option>
+                <option>Julho</option><option>Agosto</option><option>Setembro</option>
+                <option>Outubro</option><option>Novembro</option><option>Dezembro</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Ano</label>
+              <input type="text" id="ano" value="2026"/>
+            </div>
+          </div>
+          <div class="field">
+            <label>Assunto do e-mail</label>
+            <input type="text" id="emailAssunto" value="360 Suítes | Performance - {mes}/{ano}"/>
+          </div>
+          <div class="field">
+            <label>Corpo — use {nome}, {mes}, {ano}</label>
+            <textarea id="emailTemplate" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 13px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;resize:vertical;min-height:130px" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">Olá, {nome}.
+
+Segue o detalhamento de performance do apartamento referente a {mes}/{ano}.
+
+Qualquer dúvida, estamos à disposição.
+
+360 Suítes</textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">PDFs para envio</div>
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="fileInput" multiple accept=".pdf"/>
+            <div class="drop-icon">📄</div>
+            <div class="drop-label">Arraste os PDFs aqui ou clique para selecionar</div>
+            <div class="drop-sub">Múltiplos arquivos de uma vez</div>
+          </div>
+          <div style="margin-top:10px;text-align:center">
+            <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--muted);border:1px solid var(--border);border-radius:7px;padding:8px 14px;transition:all 0.15s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+              📁 Selecionar pasta
+              <input type="file" id="folderInput" webkitdirectory style="display:none"/>
+            </label>
+          </div>
+          <div class="file-list" id="fileList"></div>
+        </div>
+
+        <button class="btn btn-primary" id="sendBtn" disabled onclick="enviarLote()">Selecione os PDFs para continuar</button>
+        <div class="progress-wrap" id="progressWrap">
+          <div class="progress-info"><span id="progressText">Enviando...</span><span id="progressPct">0%</span></div>
+          <div class="progress-bg"><div class="progress-bar" id="progressBar"></div></div>
+        </div>
+      </div>
+
+      <div id="resultados" style="display:none;margin-top:20px">
+        <div class="stats">
+          <div class="stat"><div class="stat-num s" id="cSent">0</div><div class="stat-label">Enviados</div></div>
+          <div class="stat"><div class="stat-num w" id="cMissing">0</div><div class="stat-label">Sem Anexo</div></div>
+          <div class="stat"><div class="stat-num e" id="cFailed">0</div><div class="stat-label">Falhas</div></div>
+        </div>
+        <div class="result-list">
+          <div class="result-list-header">Detalhamento</div>
+          <div class="result-items" id="resultItems"></div>
+        </div>
+        <button class="btn btn-outline" onclick="resetar()" style="width:100%;margin-top:14px">← Novo envio</button>
+      </div>
+    </div>
+
+    <!-- AGENTE -->
+    <div class="tab-content" id="tab-agente">
+      <div class="page-header">
+        <div class="page-title">Agente de <em>Respostas</em></div>
+        <div class="page-sub">IA analisa e-mails e sugere respostas personalizadas</div>
+      </div>
+      <div class="card" style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+        <div>
+          <div style="font-size:13px;font-weight:500;margin-bottom:4px">Verificar e-mails de proprietários</div>
+          <div style="font-size:12px;color:var(--muted)">Lê e-mails não lidos com "Performance" no assunto e gera respostas via IA</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0">
+          <button class="btn btn-outline" id="btnTriagem" onclick="executarTriagem()">📱 Triagem WhatsApp</button>
+          <button class="btn btn-primary" id="btnVerificar" onclick="verificarEmails()" style="width:auto">🤖 Verificar Agora</button>
+        </div>
+      </div>
+      <div id="agenteResultado"></div>
+    </div>
+
+    <!-- BLOQUEIOS -->
+    <div class="tab-content" id="tab-bloqueios">
+      <div class="page-header">
+        <div class="page-title">Bloqueios de <em>Manutenção</em></div>
+        <div class="page-sub">Monitoramento e notificação de bloqueios para proprietários</div>
+      </div>
+      <div class="card" style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:13px;font-weight:500;margin-bottom:4px">Verificar bloqueios no Sheets</div>
+          <div style="font-size:12px;color:var(--muted)">Filtra bloqueios 360 FULL com mais de 3 noites e gera notificações</div>
+        </div>
+        <button class="btn btn-primary" id="btnBloqueios" onclick="verificarBloqueios()" style="width:auto;flex-shrink:0">🔒 Verificar Agora</button>
+      </div>
+      <div id="bloqueiosResultado"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // NAVEGAÇÃO
+  const navItems = document.querySelectorAll('.nav-item');
+  function trocarTab(tab) {
+    navItems.forEach((n,i) => n.classList.toggle('active', ['envio','agente','bloqueios'][i] === tab));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+    if (tab === 'bloqueios') carregarBloqueiosPendentes();
+  }
+
+  // ARQUIVOS
+  let selectedFiles = [];
+  const dropzone = document.getElementById('dropzone');
+  document.getElementById('fileInput').addEventListener('change', e => addFiles(e.target.files));
+  document.getElementById('folderInput').addEventListener('change', function() { addFiles(Array.from(this.files).filter(f => f.name.toLowerCase().endsWith('.pdf'))); });
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+  dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('dragover'); addFiles(e.dataTransfer.files); });
+
+  function addFiles(files) {
+    for (const f of files) if ((f.type==='application/pdf'||f.name.endsWith('.pdf')) && !selectedFiles.find(x=>x.name===f.name)) selectedFiles.push(f);
+    renderFiles();
+  }
+  function removeFile(name) { selectedFiles = selectedFiles.filter(f=>f.name!==name); renderFiles(); }
+  function renderFiles() {
+    const list = document.getElementById('fileList');
+    list.innerHTML = '';
+    selectedFiles.forEach(f => {
+      const size = f.size > 1048576 ? (f.size/1048576).toFixed(1)+' MB' : (f.size/1024).toFixed(0)+' KB';
+      const el = document.createElement('div'); el.className = 'file-item';
+      el.innerHTML = `<span>📄</span><span class="fn">${f.name}</span><span class="fs">${size}</span><button onclick="removeFile('${f.name.replace(/'/g,"\\'")}')">×</button>`;
+      list.appendChild(el);
+    });
+    const btn = document.getElementById('sendBtn');
+    if (selectedFiles.length) { btn.disabled=false; btn.textContent=`Enviar para Proprietários (${selectedFiles.length} PDF${selectedFiles.length>1?'s':''})`; }
+    else { btn.disabled=true; btn.textContent='Selecione os PDFs para continuar'; }
+  }
+
+  // ENVIO EM LOTE
+  async function enviarLote() {
+    const formData = new FormData();
+    formData.append('mes', document.getElementById('mes').value);
+    formData.append('ano', document.getElementById('ano').value);
+    formData.append('assunto', document.getElementById('emailAssunto').value);
+    formData.append('template', document.getElementById('emailTemplate').value);
+    selectedFiles.forEach(f => formData.append('pdfs', f));
+
+    const btn = document.getElementById('sendBtn');
+    btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Enviando...';
+    const pw = document.getElementById('progressWrap'); pw.classList.add('visible');
+    const pb = document.getElementById('progressBar'), pt = document.getElementById('progressText'), pp = document.getElementById('progressPct');
+    let pct = 0;
+    const iv = setInterval(() => { if (pct<85) { pct+=Math.random()*7; pb.style.width=Math.min(pct,85)+'%'; pp.textContent=Math.floor(Math.min(pct,85))+'%'; pt.textContent=pct<30?'Fazendo upload...':pct<60?'Processando...':'Enviando e-mails...'; } }, 600);
+
+    try {
+      const res = await fetch('/enviar-lote', { method:'POST', body:formData });
+      clearInterval(iv); pb.style.width='100%'; pp.textContent='100%'; pt.textContent='Concluído!';
+      const data = await res.json();
+      setTimeout(() => mostrarResultados(data), 500);
+    } catch { clearInterval(iv); btn.disabled=false; btn.textContent=`Enviar (${selectedFiles.length} PDFs)`; pw.classList.remove('visible'); alert('Erro ao conectar.'); }
+  }
+
+  function mostrarResultados(data) {
+    document.getElementById('formCard').style.display='none';
+    const r = document.getElementById('resultados'); r.style.display='block';
+    document.getElementById('cSent').textContent=data.enviados||0;
+    document.getElementById('cMissing').textContent=data.sem_anexos||0;
+    document.getElementById('cFailed').textContent=data.falhas||0;
+    const container = document.getElementById('resultItems'); container.innerHTML='';
+    const order={'falhou':0,'sem-anexos':1,'enviado':2};
+    [...data.relatorio].sort((a,b)=>order[a.status]-order[b.status]).forEach(item => {
+      const cls = item.status==='enviado'?'s':item.status==='sem-anexos'?'w':'e';
+      const label = item.status==='enviado'?'Enviado':item.status==='sem-anexos'?'Sem anexo':'Falhou';
+      const el = document.createElement('div'); el.className='result-item';
+      el.innerHTML=`<div class="rdot ${cls}"></div><div class="rinfo"><div class="rname">${item.nome}</div><div class="remail">${item.email}</div></div><span class="rbadge ${cls}">${label}</span>`;
+      container.appendChild(el);
+    });
+  }
+
+  function resetar() {
+    selectedFiles=[]; renderFiles();
+    document.getElementById('formCard').style.display='';
+    document.getElementById('resultados').style.display='none';
+    document.getElementById('progressWrap').classList.remove('visible');
+    document.getElementById('progressBar').style.width='0%';
+  }
+
+  // AGENTE
+  async function verificarEmails() {
+    const btn = document.getElementById('btnVerificar');
+    btn.disabled=true; btn.innerHTML='<div class="spinner"></div> Verificando...';
+    document.getElementById('agenteResultado').innerHTML='';
+    try {
+      const res = await fetch('/agente/verificar');
+      const data = await res.json();
+      btn.disabled=false; btn.innerHTML='🤖 Verificar Agora';
+      if (data.erro) { document.getElementById('agenteResultado').innerHTML=`<div class="card" style="color:var(--error)">${data.erro}</div>`; return; }
+      if (!data.emails.length) { document.getElementById('agenteResultado').innerHTML=`<div class="empty"><div class="empty-icon">📭</div><p>Nenhum e-mail de proprietário encontrado.</p></div>`; return; }
+      renderEmails(data.emails);
+    } catch { btn.disabled=false; btn.innerHTML='🤖 Verificar Agora'; document.getElementById('agenteResultado').innerHTML=`<div class="card" style="color:var(--error)">Erro ao conectar com o servidor.</div>`; }
+  }
+
+  async function executarTriagem() {
+    const btn = document.getElementById('btnTriagem');
+    btn.disabled=true; btn.innerHTML='<div class="spinner spinner-gold"></div> Enviando...';
+    try {
+      const res = await fetch('/agente/triagem');
+      const data = await res.json();
+      btn.disabled=false; btn.innerHTML='📱 Triagem WhatsApp';
+      if (data.erro) { alert('Erro: '+data.erro); return; }
+      alert(`✅ Triagem concluída!\n📧 ${data.respondidos} respondido(s)\n⏭️ ${data.ignorados} ignorado(s)`);
+    } catch { btn.disabled=false; btn.innerHTML='📱 Triagem WhatsApp'; alert('Erro ao conectar.'); }
+  }
+
+  function renderEmails(emails) {
+    const container = document.getElementById('agenteResultado');
+    container.innerHTML=`<p style="font-size:12px;color:var(--muted);margin-bottom:14px">${emails.length} e-mail(s) — revise e aprove as respostas:</p>`;
+    emails.forEach((email,i) => {
+      const card = document.createElement('div'); card.className='email-card'; card.id=`ec-${i}`;
+      card.innerHTML=`
+        <div class="email-card-header">
+          <div class="avatar">${email.nome[0].toUpperCase()}</div>
+          <div class="email-meta"><div class="email-nome">${email.nome}</div><div class="email-de">${email.de}</div></div>
+          <span class="email-tag">${Array.isArray(email.unidades)?email.unidades.join(', '):(email.unidade||'')}</span>
+        </div>
+        <div class="email-body">
+          <div class="section-label">Assunto</div>
+          <div class="text-box" style="max-height:40px">${email.assunto}</div>
+          <div class="section-label">E-mail recebido</div>
+          <div class="text-box">${email.emailRecebido}</div>
+          <div class="section-label" style="margin-bottom:7px">✨ Resposta sugerida — edite se quiser</div>
+          <textarea class="resposta-area" id="resp-${i}">${email.respostaSugerida}</textarea>
+        </div>
+        <div class="email-actions">
+          <button class="btn btn-success" onclick="aprovarResposta(${i},'${email.threadId}','${email.de}','${email.assunto.replace(/'/g,"\\'")}')">✅ Aprovar e Enviar</button>
+          <button class="btn btn-danger" onclick="document.getElementById('ec-${i}').style.display='none'">Ignorar</button>
+        </div>`;
+      container.appendChild(card);
+    });
+  }
+
+  async function aprovarResposta(i, threadId, para, assunto) {
+    const corpo = document.getElementById(`resp-${i}`).value;
+    const card = document.getElementById(`ec-${i}`);
+    try {
+      const res = await fetch('/agente/enviar', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({threadId,para,assunto,corpo}) });
+      const data = await res.json();
+      if (data.sucesso) { card.style.opacity='0.4'; card.style.pointerEvents='none'; card.querySelector('.email-actions').innerHTML='<p style="color:var(--success);font-size:12px;padding:0 18px 16px">✅ Resposta enviada!</p>'; }
+    } catch { alert('Erro ao enviar.'); }
+  }
+
+  // BLOQUEIOS
+  async function verificarBloqueios() {
+    const btn = document.getElementById('btnBloqueios');
+    btn.disabled=true; btn.innerHTML='<div class="spinner"></div> Verificando...';
+    try {
+      const res = await fetch('/bloqueios/verificar');
+      const data = await res.json();
+      btn.disabled=false; btn.innerHTML='🔒 Verificar Agora';
+      if (data.erro) { alert('Erro: '+data.erro); return; }
+      await carregarBloqueiosPendentes();
+      if (data.novos===0) document.getElementById('bloqueiosResultado').innerHTML=`<div class="empty"><div class="empty-icon">✅</div><p>Nenhum bloqueio novo para notificar.</p></div>`;
+    } catch { btn.disabled=false; btn.innerHTML='🔒 Verificar Agora'; alert('Erro ao conectar.'); }
+  }
+
+  async function carregarBloqueiosPendentes() {
+    try {
+      const res = await fetch('/bloqueios/pendentes');
+      const data = await res.json();
+      renderBloqueios(data.pendentes||[]);
+    } catch {}
+  }
+
+  function renderBloqueios(bloqueios) {
+    const container = document.getElementById('bloqueiosResultado');
+    if (!bloqueios.length) { container.innerHTML=''; return; }
+    container.innerHTML=`<p style="font-size:12px;color:var(--muted);margin:14px 0">${bloqueios.length} bloqueio(s) aguardando aprovação:</p>`;
+    bloqueios.forEach((b,i) => {
+      const card = document.createElement('div'); card.className='email-card'; card.id=`bc-${i}`;
+      card.innerHTML=`
+        <div class="email-card-header">
+          <div class="avatar">${b.nickname[0]}</div>
+          <div class="email-meta"><div class="email-nome">${b.nome}</div><div class="email-de">${b.email}</div></div>
+          <span class="email-tag">${b.nickname} · ${b.noites}n</span>
+        </div>
+        <div class="email-body">
+          <div class="section-label">Bloqueio</div>
+          <div class="text-box" style="max-height:40px">${b.motivo}${b.notas?' — '+b.notas:''} | ${b.inicio} → ${b.fim}</div>
+          <div class="section-label" style="margin-bottom:7px">✉️ Mensagem e-mail</div>
+          <textarea class="resposta-area" id="bme-${i}">${b.msgEmail}</textarea>
+        </div>
+        <div class="email-actions" style="flex-wrap:wrap;gap:8px">
+          <button class="btn btn-success" style="flex:1;min-width:120px" onclick="aprovarBloqueioEmail(${i},'${b.hash}','${b.email.replace(/'/g,"\\'")}')">✉️ Enviar E-mail</button>
+          <a href="${b.whatsappLink}" target="_blank" style="flex:1;min-width:120px;display:flex;align-items:center;justify-content:center;gap:6px;background:#25d366;color:#fff;border-radius:7px;padding:12px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;text-decoration:none" onclick="marcarBloqueioWpp(${i},'${b.hash}')">📱 WhatsApp</a>
+          <button class="btn btn-danger" onclick="ignorarBloqueio(${i},'${b.hash}')">Ignorar</button>
+        </div>`;
+      container.appendChild(card);
+    });
+  }
+
+  async function aprovarBloqueioEmail(i, hash, email) {
+    const mensagem = document.getElementById(`bme-${i}`).value;
+    try {
+      const res = await fetch('/bloqueios/aprovar', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({hash,tipo:'email',email,assunto:'360 Suítes | Atualização sobre sua unidade',mensagem}) });
+      const data = await res.json();
+      if (data.sucesso) { const c=document.getElementById(`bc-${i}`); c.style.opacity='0.4'; c.style.pointerEvents='none'; c.querySelector('.email-actions').innerHTML='<p style="color:var(--success);font-size:12px;padding:0 18px 16px">✅ E-mail enviado!</p>'; }
+    } catch { alert('Erro ao enviar.'); }
+  }
+
+  function marcarBloqueioWpp(i, hash) {
+    fetch('/bloqueios/aprovar', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({hash,tipo:'whatsapp'}) });
+    const c=document.getElementById(`bc-${i}`); if(c){c.style.opacity='0.4';c.style.pointerEvents='none';}
+  }
+
+  async function ignorarBloqueio(i, hash) {
+    await fetch('/bloqueios/ignorar', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({hash}) });
+    const c=document.getElementById(`bc-${i}`); if(c) c.style.display='none';
+  }
+</script>
+</body>
+</html>

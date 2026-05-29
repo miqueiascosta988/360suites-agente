@@ -1,0 +1,9 @@
+node_modules/
+.env
+uploads/
+*.json
+!package.json
+!railway.json
+pdfs/
+fechamentos/
+ajustes/
