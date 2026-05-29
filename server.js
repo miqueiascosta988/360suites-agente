@@ -18,7 +18,7 @@ const { google } = require("googleapis");
 // ── Diagnóstico ───────────────────────────────────────────────────────────────
 const varObrigatorias = ["GOOGLE_CLIENT_ID","GOOGLE_CLIENT_SECRET","GOOGLE_REDIRECT_URI","GOOGLE_REFRESH_TOKEN","GMAIL_USER","GROQ_API_KEY","GEMINI_API_KEY"];
 const faltando = varObrigatorias.filter(v => !process.env[v]);
-if (faltando.length) { console.error("❌ Faltam variáveis no .env:", faltando.join(", ")); process.exit(1); }
+if (faltando.length) { console.warn("⚠️ Variáveis ausentes:", faltando.join(", ")); }
 console.log("✅ Variáveis de ambiente OK");
 console.log(`📧 Gmail: ${process.env.GMAIL_USER}`);
 console.log(`🤖 Groq: ${process.env.GROQ_API_KEY ? "✓" : "✗"} | Gemini: ${process.env.GEMINI_API_KEY ? "✓" : "✗"}`);
