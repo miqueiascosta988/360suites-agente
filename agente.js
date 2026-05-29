@@ -1,5 +1,5 @@
 // agente.js — Agente de análise de performance
-require("dotenv").config();
+
 const XLSX = require("xlsx");
 const fs = require("fs");
 const path = require("path");

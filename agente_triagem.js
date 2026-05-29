@@ -1,5 +1,5 @@
 // agente_triagem.js — Triagem automática para WhatsApp
-require("dotenv").config();
+
 const { buscarMensagens, lerMensagem, enviarResposta: enviarGmail, marcarComoLido } = require("./gmail");
 const fs = require("fs");
 const path = require("path");

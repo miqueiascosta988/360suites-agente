@@ -1,5 +1,5 @@
 // agente_bloqueios.js — Monitoramento de bloqueios
-require("dotenv").config();
+
 const { google } = require("googleapis");
 const { chamarIA } = require("./ai");
 const { criarOAuth2, getAccessToken } = require("./gmail");
