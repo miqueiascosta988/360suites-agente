@@ -1,4 +1,4 @@
-// server.js — 360 Suítes v2 (Railway-ready)
+﻿// server.js â€” 360 SuÃ­tes v2 (Railway-ready)
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -13,6 +13,14 @@ app.use(express.json());
 
 // Status (Railway healthcheck)
 app.get("/status", (req, res) => res.json({ ok: true, versao: "2.0.0" }));
+
+app.get("/debug", (req, res) => res.json({
+  CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? process.env.GOOGLE_CLIENT_ID.substring(0, 20) + "..." : "AUSENTE",
+  CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? "OK" : "AUSENTE",
+  REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN ? "OK" : "AUSENTE",
+  GROQ: process.env.GROQ_API_KEY ? "OK" : "AUSENTE",
+  GEMINI: process.env.GEMINI_API_KEY ? "OK" : "AUSENTE",
+}));
 app.get("/", (req, res) => res.sendFile(path.resolve(__dirname, "painel.html")));
 
 const uploadDir = path.resolve(__dirname, "uploads");
@@ -24,7 +32,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Lazy load dos módulos (evita crash por variáveis não carregadas)
+// Lazy load dos mÃ³dulos (evita crash por variÃ¡veis nÃ£o carregadas)
 let _agente, _triagem, _bloqueios, _gmail;
 
 const getAgente = () => {
@@ -63,9 +71,9 @@ const criarTransporter = async () => {
 // Agente
 app.get("/agente/verificar", async (req, res) => {
   try {
-    console.log("🤖 Verificando e-mails...");
+    console.log("ðŸ¤– Verificando e-mails...");
     const emails = await getAgente().buscarEmails();
-    console.log(`📬 ${emails.length} e-mail(s)`);
+    console.log(`ðŸ“¬ ${emails.length} e-mail(s)`);
     res.json({ total: emails.length, emails });
   } catch (err) {
     console.error("ERRO agente:", err.message);
@@ -95,7 +103,7 @@ app.get("/agente/triagem", async (req, res) => {
 // Envio de PDFs
 app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
   try {
-    const { mes = "Maio", ano = "2026", assunto: assuntoTpl = "360 Suítes | Performance - {mes}/{ano}", template: corpoTpl = "Olá, {nome}.\n\nSegue o relatório de {mes}/{ano}.\n\nAtenciosamente,\n360 Suítes" } = req.body;
+    const { mes = "Maio", ano = "2026", assunto: assuntoTpl = "360 SuÃ­tes | Performance - {mes}/{ano}", template: corpoTpl = "OlÃ¡, {nome}.\n\nSegue o relatÃ³rio de {mes}/{ano}.\n\nAtenciosamente,\n360 SuÃ­tes" } = req.body;
     const todos = JSON.parse(fs.readFileSync(path.resolve(__dirname, "proprietarios.json"), "utf8"));
     const proprietarios = process.env.TEST_LIMIT ? todos.slice(0, Number(process.env.TEST_LIMIT)) : todos;
     const arquivos = req.files;
@@ -116,7 +124,7 @@ app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
       try {
         await transporter.sendMail({ from: process.env.GMAIL_USER, to: process.env.TEST_EMAIL || prop.email, subject: assunto, html, attachments: anexos.map(f => ({ filename: f.filename, path: f.path })) });
         relatorio.push({ status: "enviado", nome: prop.nome, email: prop.email, anexos: anexos.map(f => f.filename) });
-        console.log(`✅ ${prop.email}`);
+        console.log(`âœ… ${prop.email}`);
       } catch (err) {
         relatorio.push({ status: "falhou", nome: prop.nome, email: prop.email, erro: err.message });
       }
@@ -179,24 +187,25 @@ app.get("/auth/google/callback", async (req, res) => {
   const { criarOAuth2 } = getGmail();
   const auth = criarOAuth2();
   const { tokens } = await auth.getToken(req.query.code);
-  console.log("🔑 REFRESH TOKEN:", tokens.refresh_token);
+  console.log("ðŸ”‘ REFRESH TOKEN:", tokens.refresh_token);
   res.send(`<h2>Token gerado!</h2><pre>${tokens.refresh_token}</pre>`);
 });
 
 // Agendamento
 cron.schedule("0 9 * * *", async () => {
-  console.log(`🤖 [${new Date().toLocaleString("pt-BR")}] Agente automático...`);
+  console.log(`ðŸ¤– [${new Date().toLocaleString("pt-BR")}] Agente automÃ¡tico...`);
   try {
     const emails = await getAgente().buscarEmails();
-    console.log(`📬 ${emails.length} e-mail(s) processado(s)`);
+    console.log(`ðŸ“¬ ${emails.length} e-mail(s) processado(s)`);
   } catch (err) {
-    console.error("❌ Erro agente automático:", err.message);
+    console.error("âŒ Erro agente automÃ¡tico:", err.message);
   }
 }, { timezone: "America/Sao_Paulo" });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 360 Suítes rodando na porta ${PORT}`);
-  console.log(`📧 Gmail: ${process.env.GMAIL_USER || "não configurado"}`);
-  console.log(`🤖 Groq: ${process.env.GROQ_API_KEY ? "✓" : "✗"} | Gemini: ${process.env.GEMINI_API_KEY ? "✓" : "✗"}`);
+  console.log(`ðŸš€ 360 SuÃ­tes rodando na porta ${PORT}`);
+  console.log(`ðŸ“§ Gmail: ${process.env.GMAIL_USER || "nÃ£o configurado"}`);
+  console.log(`ðŸ¤– Groq: ${process.env.GROQ_API_KEY ? "âœ“" : "âœ—"} | Gemini: ${process.env.GEMINI_API_KEY ? "âœ“" : "âœ—"}`);
 });
+
