@@ -4,8 +4,8 @@ const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const nodemailer = require("nodemailer");
 const cron = require("node-cron");
+const { google } = require("googleapis");
 
 const app = express();
 app.use(cors());
@@ -32,7 +32,7 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => cb(null, Buffer.from(file.originalname, "latin1").toString("utf8")),
 });
-const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } }); // 50MB por arquivo
+const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
 
 // Lazy load dos módulos
 let _agente, _triagem, _bloqueios, _gmail;
@@ -41,24 +41,53 @@ const getTriagem = () => { if (!_triagem) _triagem = require("./agente_triagem")
 const getBloqueios = () => { if (!_bloqueios) _bloqueios = require("./agente_bloqueios"); return _bloqueios; };
 const getGmail = () => { if (!_gmail) _gmail = require("./gmail"); return _gmail; };
 
-const criarTransporter = async () => {
-  const { getAccessToken } = getGmail();
-  const token = await getAccessToken();
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      type: "OAuth2",
-      user: process.env.GMAIL_USER,
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-      accessToken: token,
-    },
+// Cria cliente OAuth2
+const criarOAuth2 = () => {
+  const client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
+  );
+  client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+  return client;
+};
+
+// Envia e-mail via Gmail API (sem Nodemailer)
+const enviarEmailGmailAPI = async (gmail, { para, assunto, html, anexos }) => {
+  const boundary = "boundary_" + Date.now();
+  
+  const headers = [
+    `From: ${process.env.GMAIL_USER}`,
+    `To: ${para}`,
+    `Subject: =?UTF-8?B?${Buffer.from(assunto).toString("base64")}?=`,
+    `MIME-Version: 1.0`,
+    `Content-Type: multipart/mixed; boundary="${boundary}"`,
+  ].join("\r\n");
+
+  let body = `--${boundary}\r\nContent-Type: text/html; charset=utf-8\r\nContent-Transfer-Encoding: base64\r\n\r\n${Buffer.from(html).toString("base64")}\r\n`;
+
+  for (const anexo of anexos) {
+    const conteudo = fs.readFileSync(anexo.path);
+    const nomeEncoded = `=?UTF-8?B?${Buffer.from(anexo.filename).toString("base64")}?=`;
+    body += `--${boundary}\r\nContent-Type: application/pdf\r\nContent-Transfer-Encoding: base64\r\nContent-Disposition: attachment; filename="${nomeEncoded}"\r\n\r\n${conteudo.toString("base64")}\r\n`;
+  }
+
+  body += `--${boundary}--`;
+
+  const raw = Buffer.from(`${headers}\r\n\r\n${body}`)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+
+  await gmail.users.messages.send({
+    userId: "me",
+    requestBody: { raw },
   });
 };
 
 // ── Estado do envio em lote ───────────────────────────────────────────────────
-let loteStatus = null; // null = sem envio, objeto = envio em andamento ou concluído
+let loteStatus = null;
 
 const iniciarEnvioBackground = async (params) => {
   const { mes, ano, assuntoTemplate, corpoTemplate, arquivos } = params;
@@ -77,10 +106,11 @@ const iniciarEnvioBackground = async (params) => {
     relatorio: [],
   };
 
-  console.log(`📤 Iniciando envio em background: ${proprietarios.length} proprietários, ${arquivos.length} PDFs`);
+  console.log(`📤 Iniciando envio: ${proprietarios.length} proprietários, ${arquivos.length} PDFs`);
 
   try {
-    const transporter = await criarTransporter();
+    const auth = criarOAuth2();
+    const gmail = google.gmail({ version: "v1", auth });
 
     for (const prop of proprietarios) {
       const anexos = arquivos.filter(f =>
@@ -104,14 +134,10 @@ const iniciarEnvioBackground = async (params) => {
         <div style="font-size:15px;line-height:1.7;color:#333;white-space:pre-wrap">${corpo}</div>
       </div>`;
 
+      const destino = process.env.TEST_EMAIL || prop.email;
+
       try {
-        await transporter.sendMail({
-          from: process.env.GMAIL_USER,
-          to: process.env.TEST_EMAIL || prop.email,
-          subject: assunto,
-          html,
-          attachments: anexos.map(f => ({ filename: f.filename, path: f.path })),
-        });
+        await enviarEmailGmailAPI(gmail, { para: destino, assunto, html, anexos });
         loteStatus.enviados++;
         loteStatus.relatorio.push({ status: "enviado", nome: prop.nome, email: prop.email, anexos: anexos.map(f => f.filename) });
         console.log(`✅ ${prop.email} (${loteStatus.processados + 1}/${proprietarios.length})`);
@@ -123,28 +149,24 @@ const iniciarEnvioBackground = async (params) => {
 
       loteStatus.processados++;
 
-      // Pequena pausa a cada 10 envios para não sobrecarregar o Gmail
-      if (loteStatus.processados % 10 === 0) {
-        await new Promise(r => setTimeout(r, 1000));
-      }
+      // Pausa entre envios para respeitar limites do Gmail
+      await new Promise(r => setTimeout(r, 300));
     }
   } catch (err) {
-    console.error("ERRO no envio em background:", err.message);
+    console.error("ERRO no envio:", err.message);
     loteStatus.erro = err.message;
   } finally {
-    // Remove arquivos temporários
     arquivos.forEach(f => { try { fs.unlinkSync(f.path); } catch {} });
     loteStatus.concluido = true;
     loteStatus.finalizado = new Date().toISOString();
-    console.log(`✅ Envio concluído: ${loteStatus.enviados} enviados, ${loteStatus.falhas} falhas, ${loteStatus.sem_anexos} sem anexo`);
+    console.log(`✅ Envio concluído: ${loteStatus.enviados} enviados, ${loteStatus.falhas} falhas`);
   }
 };
 
-// Inicia envio e retorna imediatamente
 app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
   try {
     if (loteStatus && !loteStatus.concluido) {
-      return res.status(409).json({ erro: "Já existe um envio em andamento. Aguarde a conclusão." });
+      return res.status(409).json({ erro: "Já existe um envio em andamento." });
     }
 
     const mes = req.body.mes || "Maio";
@@ -155,28 +177,20 @@ app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
 
     if (!arquivos?.length) return res.status(400).json({ erro: "Nenhum PDF enviado." });
 
-    // Retorna imediatamente confirmando o início
-    res.json({ sucesso: true, mensagem: `Envio iniciado para ${arquivos.length} PDF(s). Acompanhe o progresso em /enviar-lote/status` });
+    res.json({ sucesso: true, mensagem: `Envio iniciado para ${arquivos.length} PDF(s).` });
 
-    // Processa em background sem bloquear a resposta
     setImmediate(() => iniciarEnvioBackground({ mes, ano, assuntoTemplate, corpoTemplate, arquivos }));
 
   } catch (err) {
-    console.error("ERRO:", err.message);
     res.status(500).json({ erro: err.message });
   }
 });
 
-// Consulta progresso do envio
 app.get("/enviar-lote/status", (req, res) => {
-  if (!loteStatus) return res.json({ status: "idle", mensagem: "Nenhum envio em andamento." });
-  res.json({
-    status: loteStatus.concluido ? "concluido" : "em_andamento",
-    ...loteStatus,
-  });
+  if (!loteStatus) return res.json({ status: "idle" });
+  res.json({ status: loteStatus.concluido ? "concluido" : "em_andamento", ...loteStatus });
 });
 
-// Limpa status anterior
 app.post("/enviar-lote/reset", (req, res) => {
   loteStatus = null;
   res.json({ sucesso: true });
@@ -187,7 +201,6 @@ app.get("/agente/verificar", async (req, res) => {
   try {
     console.log("🤖 Verificando e-mails...");
     const emails = await getAgente().buscarEmails();
-    console.log(`📬 ${emails.length} e-mail(s)`);
     res.json({ total: emails.length, emails });
   } catch (err) {
     console.error("ERRO agente:", err.message);
@@ -199,7 +212,6 @@ app.post("/agente/enviar", async (req, res) => {
   try {
     const { threadId, para, assunto, corpo } = req.body;
     await getAgente().enviarResposta(threadId, para, assunto, corpo);
-    console.log(`✅ Resposta enviada para ${para}`);
     res.json({ sucesso: true });
   } catch (err) {
     res.status(500).json({ erro: err.message });
@@ -233,8 +245,10 @@ app.post("/bloqueios/aprovar", async (req, res) => {
   try {
     const { hash, tipo, email, assunto, mensagem } = req.body;
     if (tipo === "email") {
-      const transporter = await criarTransporter();
-      await transporter.sendMail({ from: process.env.GMAIL_USER, to: email, subject: assunto, text: mensagem });
+      const auth = criarOAuth2();
+      const gmail = google.gmail({ version: "v1", auth });
+      const html = `<div style="font-family:Arial,sans-serif">${mensagem.replace(/\n/g, "<br>")}</div>`;
+      await enviarEmailGmailAPI(gmail, { para: email, assunto, html, anexos: [] });
     }
     getBloqueios().marcarNotificado(hash, tipo);
     getBloqueios().removerPendente(hash);
@@ -258,7 +272,6 @@ app.get("/auth/google", (req, res) => {
 });
 
 app.get("/auth/google/callback", async (req, res) => {
-  const { criarOAuth2 } = getGmail();
   const auth = criarOAuth2();
   const { tokens } = await auth.getToken(req.query.code);
   console.log("🔑 REFRESH TOKEN:", tokens.refresh_token);
