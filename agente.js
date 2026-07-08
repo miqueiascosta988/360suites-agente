@@ -440,6 +440,7 @@ const buscarEmails = async (filtros = {}) => {
   const anoBusca = filtros.ano || process.env.ANO_REFERENCIA || "2026";
   const mesFiltro = filtros.mes || null;
   const unidadesFiltro = filtros.unidades || [];
+  const nomesFiltro = filtros.nomes || []; // filtro por nome do proprietário
 
   console.log(`🔍 Buscando e-mails de Performance ${anoBusca}...`);
   const res = await gmail.users.messages.list({
@@ -490,6 +491,15 @@ const buscarEmails = async (filtros = {}) => {
     if (!proprietario) {
       console.log(`⚠️ Proprietário não encontrado para ${emailRemetente}`);
       continue;
+    }
+
+    // Aplica filtro de nome do proprietário
+    if (nomesFiltro.length > 0) {
+      const nomeMatch = nomesFiltro.some(n => proprietario.nome.toLowerCase().includes(n));
+      if (!nomeMatch) {
+        console.log(`⏭️ Pulando ${proprietario.nome} — não corresponde ao filtro de nome`);
+        continue;
+      }
     }
 
     console.log(`✅ Proprietário: ${proprietario.nome} | Unidades: ${proprietario.unidades.join(", ")}`);
