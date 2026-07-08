@@ -218,6 +218,20 @@ Qualquer dúvida, estamos à disposição.
       <!-- Filtros -->
       <div class="card" style="margin-bottom:16px">
         <div class="card-title">🎯 Filtros de Consulta</div>
+
+        <!-- Modo de busca -->
+        <div class="field" style="margin-bottom:16px">
+          <label>Modo de Busca</label>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="btnModoPerformance" onclick="setModo('performance')" style="flex:1;padding:10px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;background:var(--gold);color:#0d0d0d;border:none">
+              📊 E-mails de Performance
+            </button>
+            <button id="btnModoLivre" onclick="setModo('livre')" style="flex:1;padding:10px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;background:transparent;color:var(--muted);border:1px solid var(--border)">
+              📬 Qualquer E-mail do Prop.
+            </button>
+          </div>
+          <p id="modoDescricao" style="font-size:11px;color:var(--muted);margin-top:8px">Busca e-mails não lidos com "Performance" no assunto</p>
+        </div>
         <div class="row" style="margin-bottom:16px">
           <div class="field">
             <label>Mês de Referência</label>
@@ -524,6 +538,34 @@ Qualquer dúvida, estamos à disposição.
       document.getElementById('sendBtn').innerHTML = 'Selecione os PDFs para continuar';
     }
 
+    // MODO DE BUSCA
+    let modoBusca = 'performance';
+
+    function setModo(modo) {
+      modoBusca = modo;
+      const btnPerf = document.getElementById('btnModoPerformance');
+      const btnLivre = document.getElementById('btnModoLivre');
+      const desc = document.getElementById('modoDescricao');
+
+      if (modo === 'performance') {
+        btnPerf.style.background = 'var(--gold)';
+        btnPerf.style.color = '#0d0d0d';
+        btnPerf.style.border = 'none';
+        btnLivre.style.background = 'transparent';
+        btnLivre.style.color = 'var(--muted)';
+        btnLivre.style.border = '1px solid var(--border)';
+        desc.textContent = 'Busca e-mails não lidos com "Performance" no assunto';
+      } else {
+        btnLivre.style.background = 'var(--gold)';
+        btnLivre.style.color = '#0d0d0d';
+        btnLivre.style.border = 'none';
+        btnPerf.style.background = 'transparent';
+        btnPerf.style.color = 'var(--muted)';
+        btnPerf.style.border = '1px solid var(--border)';
+        desc.textContent = 'Busca qualquer e-mail não lido do proprietário (requer filtro de nome ou unidade)';
+      }
+    }
+
     // SELETOR DE UNIDADES / PROPRIETÁRIOS
     let unidadesSelecionadas = [];
     let nomesSelecionados = [];
@@ -634,6 +676,16 @@ Qualquer dúvida, estamos à disposição.
       if (ano) params.append('ano', ano);
       if (unidades.length > 0) params.append('unidades', unidades.join(','));
       if (nomes.length > 0) params.append('nomes', nomes.join(','));
+      params.append('modo', modoBusca);
+
+      // Avisa se modo livre sem filtro
+      if (modoBusca === 'livre' && unidades.length === 0 && nomes.length === 0) {
+        if (!confirm('⚠️ Modo livre sem filtro de proprietário pode retornar muitos e-mails. Continuar?')) {
+          btn.disabled = false;
+          btn.innerHTML = '🤖 Verificar E-mails Agora';
+          return;
+        }
+      }
 
       const url = `https://360suites-agente-production.up.railway.app/agente/verificar${params.toString() ? '?' + params.toString() : ''}`;
 

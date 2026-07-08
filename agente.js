@@ -440,12 +440,28 @@ const buscarEmails = async (filtros = {}) => {
   const anoBusca = filtros.ano || process.env.ANO_REFERENCIA || "2026";
   const mesFiltro = filtros.mes || null;
   const unidadesFiltro = filtros.unidades || [];
-  const nomesFiltro = filtros.nomes || []; // filtro por nome do proprietário
+  const nomesFiltro = filtros.nomes || [];
+  const modo = filtros.modo || 'performance';
+
+  // Query de busca depende do modo
+  let query = '';
+  if (modo === 'performance') {
+    query = `is:unread subject:Performance subject:${anoBusca}`;
+  } else {
+    // Modo livre: busca por e-mail do proprietário se filtro de nome/unidade definido
+    query = `is:unread`;
+    if (nomesFiltro.length > 0) {
+      // Busca pelo primeiro nome como termo de busca adicional
+      query += ` from:(${nomesFiltro.join(' OR ')})`;
+    }
+  }
+
+  console.log(`🔍 Buscando e-mails [modo: ${modo}]: ${query}`);
 
   console.log(`🔍 Buscando e-mails de Performance ${anoBusca}...`);
   const res = await gmail.users.messages.list({
     userId: "me",
-    q: `is:unread subject:Performance subject:${anoBusca}`,
+    q: query,
     maxResults: 50,
   });
 
