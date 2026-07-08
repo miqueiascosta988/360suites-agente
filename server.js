@@ -146,11 +146,12 @@ app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
 // AGENTE
 app.get("/agente/verificar", async (req, res) => {
   try {
-    const { mes, ano, unidades } = req.query;
+    const { mes, ano, unidades, nomes } = req.query;
     const filtros = {
       mes: mes || null,
       ano: ano || null,
       unidades: unidades ? unidades.split(',').map(u => u.trim().toUpperCase()) : [],
+      nomes: nomes ? nomes.split(',').map(n => n.trim().toLowerCase()) : [],
     };
     console.log("🤖 Verificando e-mails...", filtros);
     const emails = await buscarEmails(filtros);

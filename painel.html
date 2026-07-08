@@ -241,12 +241,15 @@ Qualquer dúvida, estamos à disposição.
         </div>
 
         <div class="field" style="margin-bottom:12px">
-          <label>Unidades específicas (opcional) — digite e pressione Enter ou vírgula</label>
-          <div id="unidadesInput" style="min-height:44px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;display:flex;flex-wrap:wrap;gap:6px;cursor:text;transition:border-color 0.2s" onclick="document.getElementById('unidadeDigitar').focus()">
-            <div id="unidadesTags" style="display:flex;flex-wrap:wrap;gap:6px"></div>
-            <input id="unidadeDigitar" placeholder="Ex: DN902, FY1505..." style="border:none;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;min-width:160px;flex:1" onkeydown="handleUnidadeKey(event)" oninput="handleUnidadeInput(event)"/>
+          <label>Buscar por unidade ou nome do proprietário — pressione Enter ou vírgula para adicionar</label>
+          <div style="position:relative;margin-bottom:8px">
+            <input id="buscaFiltro" placeholder="Ex: DN902, FY1505 ou Allegro, João Silva..." 
+              style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s"
+              onkeydown="handleBuscaKey(event)" oninput="handleBuscaInput(event)"
+              onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"/>
           </div>
-          <p style="font-size:11px;color:var(--muted);margin-top:6px">Deixe vazio para processar todos os proprietários com e-mails não lidos</p>
+          <div id="unidadesTags" style="display:flex;flex-wrap:wrap;gap:6px;min-height:4px"></div>
+          <p style="font-size:11px;color:var(--muted);margin-top:6px">Digite código de unidade (DN902) ou nome do proprietário (Allegro). Deixe vazio para processar todos.</p>
         </div>
 
         <div style="display:flex;gap:8px">
@@ -521,54 +524,73 @@ Qualquer dúvida, estamos à disposição.
       document.getElementById('sendBtn').innerHTML = 'Selecione os PDFs para continuar';
     }
 
-    // SELETOR DE UNIDADES
+    // SELETOR DE UNIDADES / PROPRIETÁRIOS
     let unidadesSelecionadas = [];
+    let nomesSelecionados = [];
 
-    function handleUnidadeKey(e) {
+    function handleBuscaKey(e) {
       if (e.key === 'Enter' || e.key === ',') {
         e.preventDefault();
-        adicionarUnidade(e.target.value);
-      } else if (e.key === 'Backspace' && e.target.value === '' && unidadesSelecionadas.length > 0) {
-        removerUnidade(unidadesSelecionadas[unidadesSelecionadas.length - 1]);
+        adicionarFiltro(e.target.value);
+      } else if (e.key === 'Backspace' && e.target.value === '' && (unidadesSelecionadas.length > 0 || nomesSelecionados.length > 0)) {
+        const allTags = [...unidadesSelecionadas, ...nomesSelecionados];
+        removerFiltro(allTags[allTags.length - 1]);
       }
     }
 
-    function handleUnidadeInput(e) {
+    function handleBuscaInput(e) {
       const val = e.target.value;
-      if (val.endsWith(',')) adicionarUnidade(val.slice(0, -1));
+      if (val.endsWith(',')) adicionarFiltro(val.slice(0, -1));
     }
 
-    function adicionarUnidade(val) {
-      const codigo = val.trim().toUpperCase();
-      if (!codigo || unidadesSelecionadas.includes(codigo)) {
-        document.getElementById('unidadeDigitar').value = '';
-        return;
+    // Mantém compatibilidade com código antigo
+    function handleUnidadeKey(e) { handleBuscaKey(e); }
+    function handleUnidadeInput(e) { handleBuscaInput(e); }
+
+    function adicionarFiltro(val) {
+      const termo = val.trim();
+      if (!termo) { document.getElementById('buscaFiltro').value = ''; return; }
+
+      // Detecta se é código de unidade (letras + números, sem espaço) ou nome
+      const isUnidade = /^[A-Za-z]{1,4}\d+$/i.test(termo);
+      const codigo = isUnidade ? termo.toUpperCase() : termo;
+
+      if (isUnidade) {
+        if (!unidadesSelecionadas.includes(codigo)) unidadesSelecionadas.push(codigo);
+      } else {
+        if (!nomesSelecionados.includes(codigo)) nomesSelecionados.push(codigo);
       }
-      unidadesSelecionadas.push(codigo);
+
       renderTags();
-      document.getElementById('unidadeDigitar').value = '';
+      document.getElementById('buscaFiltro').value = '';
     }
 
-    function removerUnidade(codigo) {
-      unidadesSelecionadas = unidadesSelecionadas.filter(u => u !== codigo);
+    function removerFiltro(termo) {
+      unidadesSelecionadas = unidadesSelecionadas.filter(u => u !== termo);
+      nomesSelecionados = nomesSelecionados.filter(n => n !== termo);
       renderTags();
     }
 
     function renderTags() {
       const container = document.getElementById('unidadesTags');
       container.innerHTML = '';
-      unidadesSelecionadas.forEach(u => {
+      const todos = [
+        ...unidadesSelecionadas.map(u => ({ valor: u, tipo: 'unidade', cor: 'rgba(201,168,76,0.15)', textCor: 'var(--gold)' })),
+        ...nomesSelecionados.map(n => ({ valor: n, tipo: 'nome', cor: 'rgba(76,175,125,0.15)', textCor: 'var(--success)' })),
+      ];
+      todos.forEach(t => {
         const tag = document.createElement('span');
-        tag.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:rgba(201,168,76,0.15);color:var(--gold);border-radius:6px;padding:3px 10px;font-size:12px;font-weight:600';
-        tag.innerHTML = `${u} <span onclick="removerUnidade('${u}')" style="cursor:pointer;font-size:14px;line-height:1">×</span>`;
+        tag.style.cssText = `display:inline-flex;align-items:center;gap:4px;background:${t.cor};color:${t.textCor};border-radius:6px;padding:3px 10px;font-size:12px;font-weight:600;margin-top:4px`;
+        tag.innerHTML = `${t.tipo === 'nome' ? '👤 ' : '🏠 '}${t.valor} <span onclick="removerFiltro('${t.valor.replace(/'/g, "\\'")}')" style="cursor:pointer;font-size:14px;line-height:1">×</span>`;
         container.appendChild(tag);
       });
     }
 
     function limparFiltros() {
       unidadesSelecionadas = [];
+      nomesSelecionados = [];
       renderTags();
-      document.getElementById('unidadeDigitar').value = '';
+      document.getElementById('buscaFiltro').value = '';
       document.getElementById('agenteMes').value = '';
       document.getElementById('agenteAno').value = '2026';
     }
@@ -604,12 +626,14 @@ Qualquer dúvida, estamos à disposição.
       const mes = document.getElementById('agenteMes').value;
       const ano = document.getElementById('agenteAno').value;
       const unidades = unidadesSelecionadas;
+      const nomes = nomesSelecionados;
 
       // Monta query string com filtros
       const params = new URLSearchParams();
       if (mes) params.append('mes', mes);
       if (ano) params.append('ano', ano);
       if (unidades.length > 0) params.append('unidades', unidades.join(','));
+      if (nomes.length > 0) params.append('nomes', nomes.join(','));
 
       const url = `https://360suites-agente-production.up.railway.app/agente/verificar${params.toString() ? '?' + params.toString() : ''}`;
 
