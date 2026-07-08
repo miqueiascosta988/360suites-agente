@@ -214,6 +214,7 @@ Qualquer dúvida, estamos à disposição.
   <!-- ABA AGENTE -->
   <div class="tab-content" id="tab-agente">
     <div class="agente-wrap">
+<<<<<<< HEAD
 
       <!-- Filtros -->
       <div class="card" style="margin-bottom:16px">
@@ -263,6 +264,17 @@ Qualquer dúvida, estamos à disposição.
             📱 Resposta Automática WhatsApp
           </button>
         </div>
+=======
+      <div class="card" style="text-align:center">
+        <div class="card-title">Verificar E-mails dos Proprietários</div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:20px">O agente vai ler os e-mails não lidos, identificar proprietários e sugerir respostas sobre manutenções.</p>
+        <button class="btn" id="btnVerificar" onclick="verificarEmails()">🤖 Verificar E-mails Agora</button>
+        <div style="margin-top:12px">
+          <button onclick="executarTriagem()" id="btnTriagem" style="width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+            📱 Resposta Automática WhatsApp
+          </button>
+        </div>
+>>>>>>> 182b932c5836ca3f43d3f30bcf3c28e26ec45632
         <p style="color:var(--muted);font-size:11px;margin-top:8px">Responde automaticamente direcionando proprietários para o WhatsApp</p>
       </div>
       <div id="agenteResultado"></div>
@@ -456,6 +468,7 @@ Qualquer dúvida, estamos à disposição.
       else { sendBtn.disabled = true; sendBtn.textContent = 'Selecione os PDFs para continuar'; }
     }
 
+<<<<<<< HEAD
     async function enviarLote() {
       const mes = document.getElementById('mes').value;
       const ano = document.getElementById('ano').value;
@@ -595,11 +608,135 @@ Qualquer dúvida, estamos à disposição.
       }
     }
 
+=======
+    let pollingInterval = null;
+
+    async function enviarLote() {
+      const mes = document.getElementById('mes').value;
+      const ano = document.getElementById('ano').value;
+      const assunto = document.getElementById('emailAssunto').value;
+      const template = document.getElementById('emailTemplate').value;
+      const formData = new FormData();
+      formData.append('mes', mes);
+      formData.append('ano', ano);
+      formData.append('assunto', assunto);
+      formData.append('template', template);
+      selectedFiles.forEach(f => formData.append('pdfs', f));
+
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<div class="spinner"></div> Fazendo upload...';
+      const progressWrap = document.getElementById('progressWrap');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      const progressPct = document.getElementById('progressPct');
+      progressWrap.classList.add('visible');
+      progressBar.style.width = '5%';
+      progressText.textContent = 'Enviando PDFs para o servidor...';
+      progressPct.textContent = '5%';
+
+      try {
+        await fetch('/enviar-lote/reset', { method: 'POST' }).catch(() => {});
+
+        const res = await fetch('/enviar-lote', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.erro) throw new Error(data.erro);
+
+        progressBar.style.width = '10%';
+        progressText.textContent = 'Upload concluído! Iniciando envios...';
+        progressPct.textContent = '10%';
+        sendBtn.innerHTML = '<div class="spinner"></div> Enviando e-mails...';
+
+        pollingInterval = setInterval(async () => {
+          try {
+            const statusRes = await fetch('/enviar-lote/status');
+            const status = await statusRes.json();
+            if (status.status === 'idle') return;
+
+            const pct = status.total > 0 ? Math.round(10 + (status.processados / status.total) * 88) : 10;
+            progressBar.style.width = pct + '%';
+            progressPct.textContent = pct + '%';
+            progressText.textContent = `Enviando... ${status.processados}/${status.total} — ${status.enviados} enviados, ${status.falhas} falhas`;
+
+            if (status.concluido) {
+              clearInterval(pollingInterval);
+              pollingInterval = null;
+              progressBar.style.width = '100%';
+              progressPct.textContent = '100%';
+              progressText.textContent = 'Concluído!';
+              setTimeout(() => mostrarResultados(status), 600);
+            }
+          } catch (e) { console.error('Erro no polling:', e); }
+        }, 3000);
+
+      } catch (err) {
+        if (pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
+        sendBtn.disabled = false;
+        sendBtn.textContent = `Enviar para Proprietários (${selectedFiles.length} PDFs)`;
+        progressWrap.classList.remove('visible');
+        alert('Erro: ' + err.message);
+      }
+    }
+
+    function mostrarResultados(data) {
+      document.getElementById('formCard').style.display = 'none';
+      document.getElementById('results').classList.add('visible');
+      document.getElementById('countSent').textContent = data.enviados||0;
+      document.getElementById('countMissing').textContent = data.sem_anexos||0;
+      document.getElementById('countFailed').textContent = data.falhas||0;
+      const container = document.getElementById('resultItems');
+      container.innerHTML = '';
+      const order = {'falhou':0,'sem-anexos':1,'enviado':2};
+      [...data.relatorio].sort((a,b) => order[a.status]-order[b.status]).forEach(item => {
+        const dot = item.status==='enviado'?'dot-sent':item.status==='sem-anexos'?'dot-missing':'dot-failed';
+        const badge = item.status==='enviado'?'badge-sent':item.status==='sem-anexos'?'badge-missing':'badge-failed';
+        const label = item.status==='enviado'?'Enviado':item.status==='sem-anexos'?'Sem anexo':'Falhou';
+        const detail = item.status==='enviado'?`${item.anexos?.length||0} anexo(s)`:item.status==='falhou'?item.erro||'':'';
+        const el = document.createElement('div');
+        el.className = 'result-item';
+        el.innerHTML = `<div class="result-dot ${dot}"></div><div class="result-info"><div class="result-name">${item.nome}</div><div class="result-email">${item.email}</div>${detail?`<div class="result-detail">${detail}</div>`:''}</div><span class="result-badge ${badge}">${label}</span>`;
+        container.appendChild(el);
+      });
+    }
+
+    function resetar() {
+      selectedFiles = []; renderFiles();
+      document.getElementById('formCard').style.display = 'block';
+      document.getElementById('results').classList.remove('visible');
+      document.getElementById('progressWrap').classList.remove('visible');
+      document.getElementById('progressBar').style.width = '0%';
+      document.getElementById('fileList').innerHTML = '';
+      document.getElementById('sendBtn').innerHTML = 'Selecione os PDFs para continuar';
+    }
+
+    // AGENTE
+    async function executarTriagem() {
+      const btn = document.getElementById('btnTriagem');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner spinner-gold"></div> Enviando respostas...';
+      try {
+        const res = await fetch('https://360suites-agente-production.up.railway.app/agente/triagem');
+        const data = await res.json();
+        btn.disabled = false;
+        btn.innerHTML = '📱 Resposta Automática WhatsApp';
+        if (data.erro) {
+          alert('Erro: ' + data.erro);
+          return;
+        }
+        alert(`✅ Triagem concluída!\n📧 ${data.respondidos} respondido(s)\n⏭️ ${data.ignorados} ignorado(s)`);
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '📱 Resposta Automática WhatsApp';
+        alert('Erro ao conectar com o servidor.');
+      }
+    }
+
+>>>>>>> 182b932c5836ca3f43d3f30bcf3c28e26ec45632
     async function verificarEmails() {
       const btn = document.getElementById('btnVerificar');
       btn.disabled = true;
       btn.innerHTML = '<div class="spinner spinner-gold"></div> Verificando...';
       document.getElementById('agenteResultado').innerHTML = '';
+<<<<<<< HEAD
 
       const mes = document.getElementById('agenteMes').value;
       const ano = document.getElementById('agenteAno').value;
@@ -615,12 +752,20 @@ Qualquer dúvida, estamos à disposição.
 
       try {
         const res = await fetch(url);
+=======
+      try {
+        const res = await fetch('https://360suites-agente-production.up.railway.app/agente/verificar');
+>>>>>>> 182b932c5836ca3f43d3f30bcf3c28e26ec45632
         const data = await res.json();
         btn.disabled = false;
         btn.innerHTML = '🤖 Verificar E-mails Agora';
         if (data.erro) { document.getElementById('agenteResultado').innerHTML = `<div class="card" style="color:var(--error)">${data.erro}</div>`; return; }
         if (data.emails.length === 0) {
+<<<<<<< HEAD
           document.getElementById('agenteResultado').innerHTML = `<div class="agente-empty"><div class="icon">📭</div><p>Nenhum e-mail encontrado${unidades.length > 0 ? ' para as unidades selecionadas' : ''}.</p></div>`;
+=======
+          document.getElementById('agenteResultado').innerHTML = `<div class="agente-empty"><div class="icon">📭</div><p>Nenhum e-mail de proprietário encontrado.</p></div>`;
+>>>>>>> 182b932c5836ca3f43d3f30bcf3c28e26ec45632
           return;
         }
         renderEmails(data.emails);
