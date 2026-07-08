@@ -5,7 +5,6 @@ const pdfParse = require("pdf-parse");
 const XLSX = require("xlsx");
 const fs = require("fs");
 const path = require("path");
-const { resumirEventosParaIA, atualizarEventos } = require("./eventos");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const gemini = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
@@ -575,7 +574,7 @@ const buscarEmails = async (filtros = {}) => {
         const valorUnidade = getValorUnidade(unidade, fechamentoPath);
         console.log(`🏢 ${nomePredio} | Bruto: R$ ${valorUnidade?.bruto?.toFixed(2) || "N/A"} | Média: R$ ${mediaPredio?.mediaBruta?.toFixed(2) || "N/A"}`);
 
-        const dadosMercado = resumirEventosParaIA(sigla, mes, ano);
+      const dadosMercado = null; // eventos desativados
         const ajuste = buscarAjuste(unidade, mes, ano);
         if (ajuste) console.log(`🔄 Ajuste para ${unidade} em ${mes}: R$ ${ajuste.diferenca}`);
 

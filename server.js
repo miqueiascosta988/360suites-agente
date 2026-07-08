@@ -7,7 +7,6 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { buscarEmails, enviarResposta } = require("./agente");
-const { atualizarEventos, carregarEventos } = require("./eventos");
 const { executarTriagem } = require("./agente_triagem");
 const { verificarBloqueios, marcarNotificado, carregarPendentes, removerPendente } = require("./agente_bloqueios");
 const cron = require("node-cron");
@@ -236,28 +235,6 @@ app.post("/bloqueios/ignorar", (req, res) => {
     marcarNotificado(hash, "ignorado");
     removerPendente(hash);
     res.json({ sucesso: true });
-  } catch (err) {
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-app.get("/eventos/atualizar", async (req, res) => {
-  try {
-    const mes = req.query.mes || "Abril";
-    const ano = req.query.ano || "2026";
-    console.log(`📅 Atualizando eventos de ${mes}/${ano}...`);
-    const eventos = await atualizarEventos(mes, ano);
-    res.json({ sucesso: true, total: eventos.length, mes, ano });
-  } catch (err) {
-    console.error("ERRO ao atualizar eventos:", err.message);
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-app.get("/eventos", (req, res) => {
-  try {
-    const eventos = carregarEventos();
-    res.json({ total: eventos.length, eventos });
   } catch (err) {
     res.status(500).json({ erro: err.message });
   }
