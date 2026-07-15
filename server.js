@@ -2,11 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { google } = require("googleapis");
-const nodemailer = require("nodemailer");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { buscarEmails, enviarResposta } = require("./agente");
+const { executarTriagem } = require("./agente_triagem");
+const { verificarBloqueios, marcarNotificado, carregarPendentes, removerPendente } = require("./agente_bloqueios");
 
 const app = express();
 app.use(cors());
@@ -29,6 +30,51 @@ const oauth2Client = new google.auth.OAuth2(
 );
 oauth2Client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
 
+// Helper para enviar e-mail via Gmail API (sem SMTP, funciona no Railway)
+const enviarEmailGmailAPI = async (para, assunto, html, anexos = []) => {
+  const gmail = google.gmail({ version: "v1", auth: oauth2Client });
+  const boundary = "boundary_360suites";
+  let raw = [
+    `From: ${process.env.GMAIL_USER}`,
+    `To: ${para}`,
+    `Subject: =?UTF-8?B?${Buffer.from(assunto).toString("base64")}?=`,
+    `MIME-Version: 1.0`,
+    `Content-Type: multipart/mixed; boundary="${boundary}"`,
+    "",
+    `--${boundary}`,
+    `Content-Type: text/html; charset="UTF-8"`,
+    `Content-Transfer-Encoding: base64`,
+    "",
+    Buffer.from(html).toString("base64"),
+  ].join("\n");
+
+  for (const anexo of anexos) {
+    const fileContent = fs.readFileSync(anexo.path);
+    raw += [
+      "",
+      `--${boundary}`,
+      `Content-Type: application/pdf; name="${anexo.filename}"`,
+      `Content-Disposition: attachment; filename="${anexo.filename}"`,
+      `Content-Transfer-Encoding: base64`,
+      "",
+      fileContent.toString("base64"),
+    ].join("\n");
+  }
+
+  raw += `\n--${boundary}--`;
+
+  const encoded = Buffer.from(raw)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+
+  await gmail.users.messages.send({
+    userId: "me",
+    requestBody: { raw: encoded },
+  });
+};
+
 app.get("/", (req, res) => {
   res.sendFile(path.resolve(__dirname, "painel.html"));
 });
@@ -49,31 +95,9 @@ app.get("/auth/google/callback", async (req, res) => {
   res.send(`<h2>Token gerado!</h2><p>${tokens.refresh_token}</p>`);
 });
 
-app.post("/enviar-email", async (req, res) => {
-  try {
-    const { para, assunto, mensagem } = req.body;
-    const { token } = await oauth2Client.getAccessToken();
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        type: "OAuth2",
-        user: process.env.GMAIL_USER,
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-        accessToken: token,
-      },
-    });
-    await transporter.sendMail({ from: process.env.GMAIL_USER, to: para, subject: assunto, text: mensagem });
-    res.json({ sucesso: true });
-  } catch (err) {
-    res.status(500).json({ erro: err.message });
-  }
-});
-
 app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
   try {
-    const mes = req.body.mes || "Março";
+    const mes = req.body.mes || "Julho";
     const ano = req.body.ano || "2026";
     const assuntoTemplate = req.body.assunto || "360 Suítes | Performance - {mes}/{ano}";
     const corpoTemplate = req.body.template || `Olá, {nome}.\n\nSegue o detalhamento de performance do apartamento referente a {mes}/{ano}.\n\nQualquer dúvida, estamos à disposição.\n\n360 Suítes`;
@@ -81,34 +105,20 @@ app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
     const todosProprietarios = JSON.parse(fs.readFileSync(path.resolve(__dirname, "proprietarios.json"), "utf8"));
     const proprietarios = process.env.TEST_LIMIT ? todosProprietarios.slice(0, Number(process.env.TEST_LIMIT)) : todosProprietarios;
     const arquivos = req.files;
-    const { token } = await oauth2Client.getAccessToken();
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { type: "OAuth2", user: process.env.GMAIL_USER, clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET, refreshToken: process.env.GOOGLE_REFRESH_TOKEN, accessToken: token },
-    });
-
-    // ─── Carrega lista de já enviados (para retomar disparo interrompido) ──────
-    const enviadosPath = path.resolve(__dirname, "enviados.json");
-    const jaEnviados = fs.existsSync(enviadosPath)
-      ? new Set(JSON.parse(fs.readFileSync(enviadosPath, "utf8")))
-      : new Set();
-    if (jaEnviados.size > 0) {
-      console.log(`⏭️  ${jaEnviados.size} proprietários já enviados — serão pulados.`);
-    }
-    // ──────────────────────────────────────────────────────────────────────────
-
     const relatorio = [];
-    for (const prop of proprietarios) {
 
-      // Pula quem já recebeu
-      if (jaEnviados.has(prop.email)) {
-        console.log(`⏭️  já enviado: ${prop.email}`);
-        relatorio.push({ status: "ja-enviado", nome: prop.nome, email: prop.email });
+    for (const prop of proprietarios) {
+      const anexos = arquivos.filter((f) =>
+        prop.unidades.some((u) =>
+          f.filename.toLowerCase().startsWith(u.toLowerCase() + " -") ||
+          f.filename.toLowerCase().startsWith(u.toLowerCase() + "-")
+        )
+      );
+      if (anexos.length === 0) {
+        console.log(`sem anexos: ${prop.email}`);
+        relatorio.push({ status: "sem-anexos", nome: prop.nome, email: prop.email });
         continue;
       }
-
-      const anexos = arquivos.filter((f) => prop.unidades.some((u) => f.filename.toLowerCase().startsWith(u.toLowerCase() + " -") || f.filename.toLowerCase().startsWith(u.toLowerCase() + "-")));
-      if (anexos.length === 0) { console.log(`sem anexos: ${prop.email}`); relatorio.push({ status: "sem-anexos", nome: prop.nome, email: prop.email }); continue; }
 
       const assunto = assuntoTemplate.replace(/{mes}/g, mes).replace(/{ano}/g, ano).replace(/{nome}/g, prop.nome);
       const corpo = corpoTemplate.replace(/{mes}/g, mes).replace(/{ano}/g, ano).replace(/{nome}/g, prop.nome);
@@ -118,13 +128,7 @@ app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
       </div>`;
 
       try {
-        await transporter.sendMail({
-          from: process.env.GMAIL_USER,
-          to: process.env.TEST_EMAIL || prop.email,
-          subject: assunto,
-          html,
-          attachments: anexos.map((f) => ({ filename: f.filename, path: f.path })),
-        });
+        await enviarEmailGmailAPI(process.env.TEST_EMAIL || prop.email, assunto, html, anexos);
         console.log(`✅ enviado: ${prop.email} (${anexos.length} anexos)`);
         relatorio.push({ status: "enviado", nome: prop.nome, email: prop.email, anexos: anexos.map((f) => f.filename) });
       } catch (err) {
@@ -132,14 +136,14 @@ app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
         relatorio.push({ status: "falhou", nome: prop.nome, email: prop.email, erro: err.message });
       }
     }
+
     arquivos.forEach((f) => { try { fs.unlinkSync(f.path); } catch {} });
     res.json({
       total: proprietarios.length,
       enviados: relatorio.filter((r) => r.status === "enviado").length,
-      ja_enviados: relatorio.filter((r) => r.status === "ja-enviado").length,
       sem_anexos: relatorio.filter((r) => r.status === "sem-anexos").length,
       falhas: relatorio.filter((r) => r.status === "falhou").length,
-      relatorio
+      relatorio,
     });
   } catch (err) {
     console.error("ERRO:", err.message);
@@ -147,11 +151,18 @@ app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
   }
 });
 
-// AGENTE
 app.get("/agente/verificar", async (req, res) => {
   try {
-    console.log("🤖 Verificando e-mails...");
-    const emails = await buscarEmails();
+    const { mes, ano, unidades, nomes, modo } = req.query;
+    const filtros = {
+      mes: mes || null,
+      ano: ano || null,
+      unidades: unidades ? unidades.split(",").map((u) => u.trim().toUpperCase()) : [],
+      nomes: nomes ? nomes.split(",").map((n) => n.trim().toLowerCase()) : [],
+      modo: modo || "performance",
+    };
+    console.log("🤖 Verificando e-mails...", filtros);
+    const emails = await buscarEmails(filtros);
     console.log(`📬 ${emails.length} e-mail(s) encontrado(s)`);
     res.json({ total: emails.length, emails });
   } catch (err) {
@@ -172,18 +183,68 @@ app.post("/agente/enviar", async (req, res) => {
   }
 });
 
+app.get("/agente/triagem", async (req, res) => {
   try {
-    const mes = req.query.mes || "Abril";
-    const ano = req.query.ano || "2026";
+    console.log("🔀 Executando agente de triagem...");
+    const resultado = await executarTriagem();
+    res.json({ sucesso: true, ...resultado });
+  } catch (err) {
+    console.error("ERRO triagem:", err.message);
+    res.status(500).json({ erro: err.message });
+  }
+});
+
+app.get("/bloqueios/verificar", async (req, res) => {
+  try {
+    console.log("🔒 Verificando bloqueios...");
+    const resultado = await verificarBloqueios();
+    res.json({ sucesso: true, ...resultado });
+  } catch (err) {
+    console.error("ERRO bloqueios:", err.message);
+    res.status(500).json({ erro: err.message });
+  }
+});
+
+app.get("/bloqueios/pendentes", (req, res) => {
+  try {
+    const pendentes = carregarPendentes();
+    res.json({ total: pendentes.length, pendentes });
   } catch (err) {
     res.status(500).json({ erro: err.message });
   }
 });
 
+app.post("/bloqueios/aprovar", async (req, res) => {
   try {
+    const { hash, tipo, email, assunto, mensagem } = req.body;
+    if (tipo === "email") {
+      const html = `<div style="font-family:Arial,sans-serif">${mensagem.replace(/\n/g, "<br>")}</div>`;
+      await enviarEmailGmailAPI(email, assunto, html);
+    }
+    marcarNotificado(hash, tipo);
+    removerPendente(hash);
+    console.log(`✅ Bloqueio notificado: ${hash} via ${tipo}`);
+    res.json({ sucesso: true });
+  } catch (err) {
+    console.error("ERRO ao aprovar bloqueio:", err.message);
+    res.status(500).json({ erro: err.message });
+  }
+});
+
+app.post("/bloqueios/ignorar", (req, res) => {
+  try {
+    const { hash } = req.body;
+    marcarNotificado(hash, "ignorado");
+    removerPendente(hash);
+    res.json({ sucesso: true });
   } catch (err) {
     res.status(500).json({ erro: err.message });
   }
 });
 
-app.listen(3001, () => { console.log("Servidor rodando em http://localhost:3001"); });
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`🚀 360 Suítes rodando na porta ${PORT}`);
+  console.log(`📧 Gmail: ${process.env.GMAIL_USER}`);
+  console.log(`🤖 Groq: ${process.env.GROQ_API_KEY ? "✅" : "❌"} | Gemini: ${process.env.GEMINI_API_KEY ? "✅" : "❌"}`);
+});
