@@ -7,27 +7,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const { buscarEmails, enviarResposta } = require("./agente");
-const { executarTriagem } = require("./agente_triagem");
-const { verificarBloqueios, marcarNotificado, carregarPendentes, removerPendente } = require("./agente_bloqueios");
-const cron = require("node-cron");
-
-// Função que o agente executa automaticamente
-const executarAgente = async () => {
-  console.log(`🤖 [${new Date().toLocaleString("pt-BR")}] Agente iniciado automaticamente...`);
-  try {
-    const emails = await buscarEmails();
-    console.log(`📬 ${emails.length} e-mail(s) processado(s) pelo agente`);
-    if (emails.length > 0) {
-      console.log(`⚠️ ${emails.length} resposta(s) aguardando aprovação no painel: http://localhost:3001`);
-    }
-  } catch (err) {
-    console.error("❌ Erro no agente automático:", err.message);
-  }
-};
-
-// Roda todo dia às 09:00
-cron.schedule("0 9 * * *", executarAgente, { timezone: "America/Sao_Paulo" });
-console.log("⏰ Agente agendado para rodar todo dia às 09:00 (horário de Brasília)");
+const { atualizarEventos, carregarEventos } = require("./eventos");
 
 const app = express();
 app.use(cors());
@@ -107,12 +87,30 @@ app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
       service: "gmail",
       auth: { type: "OAuth2", user: process.env.GMAIL_USER, clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET, refreshToken: process.env.GOOGLE_REFRESH_TOKEN, accessToken: token },
     });
+
+    // ─── Carrega lista de já enviados (para retomar disparo interrompido) ──────
+    const enviadosPath = path.resolve(__dirname, "enviados.json");
+    const jaEnviados = fs.existsSync(enviadosPath)
+      ? new Set(JSON.parse(fs.readFileSync(enviadosPath, "utf8")))
+      : new Set();
+    if (jaEnviados.size > 0) {
+      console.log(`⏭️  ${jaEnviados.size} proprietários já enviados — serão pulados.`);
+    }
+    // ──────────────────────────────────────────────────────────────────────────
+
     const relatorio = [];
     for (const prop of proprietarios) {
+
+      // Pula quem já recebeu
+      if (jaEnviados.has(prop.email)) {
+        console.log(`⏭️  já enviado: ${prop.email}`);
+        relatorio.push({ status: "ja-enviado", nome: prop.nome, email: prop.email });
+        continue;
+      }
+
       const anexos = arquivos.filter((f) => prop.unidades.some((u) => f.filename.toLowerCase().startsWith(u.toLowerCase() + " -") || f.filename.toLowerCase().startsWith(u.toLowerCase() + "-")));
       if (anexos.length === 0) { console.log(`sem anexos: ${prop.email}`); relatorio.push({ status: "sem-anexos", nome: prop.nome, email: prop.email }); continue; }
 
-      // Substitui variáveis no template
       const assunto = assuntoTemplate.replace(/{mes}/g, mes).replace(/{ano}/g, ano).replace(/{nome}/g, prop.nome);
       const corpo = corpoTemplate.replace(/{mes}/g, mes).replace(/{ano}/g, ano).replace(/{nome}/g, prop.nome);
       const html = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto">
@@ -136,7 +134,14 @@ app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
       }
     }
     arquivos.forEach((f) => { try { fs.unlinkSync(f.path); } catch {} });
-    res.json({ total: proprietarios.length, enviados: relatorio.filter((r) => r.status === "enviado").length, sem_anexos: relatorio.filter((r) => r.status === "sem-anexos").length, falhas: relatorio.filter((r) => r.status === "falhou").length, relatorio });
+    res.json({
+      total: proprietarios.length,
+      enviados: relatorio.filter((r) => r.status === "enviado").length,
+      ja_enviados: relatorio.filter((r) => r.status === "ja-enviado").length,
+      sem_anexos: relatorio.filter((r) => r.status === "sem-anexos").length,
+      falhas: relatorio.filter((r) => r.status === "falhou").length,
+      relatorio
+    });
   } catch (err) {
     console.error("ERRO:", err.message);
     res.status(500).json({ erro: err.message });
@@ -146,16 +151,8 @@ app.post("/enviar-lote", upload.array("pdfs"), async (req, res) => {
 // AGENTE
 app.get("/agente/verificar", async (req, res) => {
   try {
-    const { mes, ano, unidades, nomes, modo } = req.query;
-    const filtros = {
-      mes: mes || null,
-      ano: ano || null,
-      unidades: unidades ? unidades.split(',').map(u => u.trim().toUpperCase()) : [],
-      nomes: nomes ? nomes.split(',').map(n => n.trim().toLowerCase()) : [],
-      modo: modo || 'performance',
-    };
-    console.log("🤖 Verificando e-mails...", filtros);
-    const emails = await buscarEmails(filtros);
+    console.log("🤖 Verificando e-mails...");
+    const emails = await buscarEmails();
     console.log(`📬 ${emails.length} e-mail(s) encontrado(s)`);
     res.json({ total: emails.length, emails });
   } catch (err) {
@@ -176,71 +173,26 @@ app.post("/agente/enviar", async (req, res) => {
   }
 });
 
-app.get("/agente/triagem", async (req, res) => {
+app.get("/eventos/atualizar", async (req, res) => {
   try {
-    console.log("🔀 Executando agente de triagem...");
-    const resultado = await executarTriagem();
-    res.json({ sucesso: true, ...resultado });
+    const mes = req.query.mes || "Abril";
+    const ano = req.query.ano || "2026";
+    console.log(`📅 Atualizando eventos de ${mes}/${ano}...`);
+    const eventos = await atualizarEventos(mes, ano);
+    res.json({ sucesso: true, total: eventos.length, mes, ano });
   } catch (err) {
-    console.error("ERRO triagem:", err.message);
+    console.error("ERRO ao atualizar eventos:", err.message);
     res.status(500).json({ erro: err.message });
   }
 });
 
-// BLOQUEIOS
-app.get("/bloqueios/verificar", async (req, res) => {
+app.get("/eventos", (req, res) => {
   try {
-    console.log("🔒 Verificando bloqueios...");
-    const resultado = await verificarBloqueios();
-    res.json({ sucesso: true, ...resultado });
-  } catch (err) {
-    console.error("ERRO bloqueios:", err.message);
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-app.get("/bloqueios/pendentes", (req, res) => {
-  try {
-    const pendentes = carregarPendentes();
-    res.json({ total: pendentes.length, pendentes });
+    const eventos = carregarEventos();
+    res.json({ total: eventos.length, eventos });
   } catch (err) {
     res.status(500).json({ erro: err.message });
   }
 });
 
-app.post("/bloqueios/aprovar", async (req, res) => {
-  try {
-    const { hash, tipo, email, assunto, mensagem } = req.body;
-
-    if (tipo === "email") {
-      const { token } = await oauth2Client.getAccessToken();
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: { type: "OAuth2", user: process.env.GMAIL_USER, clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET, refreshToken: process.env.GOOGLE_REFRESH_TOKEN, accessToken: token },
-      });
-      await transporter.sendMail({ from: process.env.GMAIL_USER, to: email, subject: assunto, text: mensagem });
-    }
-
-    marcarNotificado(hash, tipo);
-    removerPendente(hash);
-    console.log(`✅ Bloqueio notificado: ${hash} via ${tipo}`);
-    res.json({ sucesso: true });
-  } catch (err) {
-    console.error("ERRO ao aprovar bloqueio:", err.message);
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-app.post("/bloqueios/ignorar", (req, res) => {
-  try {
-    const { hash } = req.body;
-    marcarNotificado(hash, "ignorado");
-    removerPendente(hash);
-    res.json({ sucesso: true });
-  } catch (err) {
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => { console.log(`🚀 360 Suítes rodando na porta ${PORT}`); });
+app.listen(3001, () => { console.log("Servidor rodando em http://localhost:3001"); });
