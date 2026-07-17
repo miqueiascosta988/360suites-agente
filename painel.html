@@ -128,6 +128,7 @@
   <div class="tabs">
     <button class="tab active" onclick="trocarTab('envio')">📤 Envio de Relatórios</button>
     <button class="tab" onclick="trocarTab('agente')">🤖 Agente de Respostas</button>
+    <button class="tab" onclick="trocarTab('whatsapp')">📱 WhatsApp</button>
     <button class="tab" onclick="trocarTab('bloqueios')">🔒 Bloqueios</button>
   </div>
 
@@ -287,6 +288,17 @@ Qualquer dúvida, estamos à disposição.
   </div>
 
   <!-- ABA BLOQUEIOS -->
+  <div class="tab-content" id="tab-whatsapp">
+    <div style="width:100%;max-width:720px">
+      <div class="card">
+        <div class="card-title">Mensagens WhatsApp</div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Lê mensagens recentes dos proprietários e gera respostas via IA para aprovação.</p>
+        <button class="btn" id="btnWhatsapp" onclick="verificarWhatsapp()">📱 Verificar Mensagens Agora</button>
+      </div>
+      <div id="whatsappResultado"></div>
+    </div>
+  </div>
+
   <div class="tab-content" id="tab-bloqueios">
     <div style="width:100%;max-width:680px">
       <div class="card" style="text-align:center">
@@ -305,6 +317,7 @@ Qualquer dúvida, estamos à disposição.
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById('tab-' + tab).classList.add('active');
       if (tab === 'bloqueios') carregarBloqueiosPendentes();
+      if (tab === 'whatsapp') carregarPendentesWhatsapp();
     }
 
     // BLOQUEIOS
