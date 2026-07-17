@@ -301,7 +301,7 @@ Qualquer dúvida, estamos à disposição.
   <script>
     // TABS
     function trocarTab(tab) {
-      document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['envio','agente','bloqueios'][i] === tab));
+      document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['envio','agente','whatsapp','bloqueios'][i] === tab));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById('tab-' + tab).classList.add('active');
       if (tab === 'bloqueios') carregarBloqueiosPendentes();
@@ -770,6 +770,100 @@ Qualquer dúvida, estamos à disposição.
       const card = document.getElementById(`email-card-${i}`);
       card.style.display = 'none';
     }
-  </script>
+  
+  // WHATSAPP
+  async function verificarWhatsapp() {
+    const btn = document.getElementById('btnWhatsapp');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Verificando...';
+    document.getElementById('whatsappResultado').innerHTML = '';
+    try {
+      const res = await fetch('/whatsapp/verificar');
+      const data = await res.json();
+      btn.disabled = false;
+      btn.innerHTML = '📱 Verificar Agora';
+      if (data.erro) {
+        document.getElementById('whatsappResultado').innerHTML = `<div class="card" style="color:var(--error)">${data.erro}</div>`;
+        return;
+      }
+      await carregarPendentesWhatsapp();
+      if (data.novas === 0) {
+        document.getElementById('whatsappResultado').innerHTML = `<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma mensagem nova de proprietários.</p></div>`;
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.innerHTML = '📱 Verificar Agora';
+      document.getElementById('whatsappResultado').innerHTML = `<div class="card" style="color:var(--error)">Erro ao conectar.</div>`;
+    }
+  }
+
+  async function carregarPendentesWhatsapp() {
+    try {
+      const res = await fetch('/whatsapp/pendentes');
+      const data = await res.json();
+      renderWhatsapp(data.pendentes || []);
+    } catch {}
+  }
+
+  function renderWhatsapp(mensagens) {
+    const container = document.getElementById('whatsappResultado');
+    if (!mensagens.length) { container.innerHTML = ''; return; }
+    container.innerHTML = `<p style="font-size:12px;color:var(--muted);margin:14px 0">${mensagens.length} mensagem(ns) aguardando aprovação:</p>`;
+    mensagens.forEach((msg, i) => {
+      const card = document.createElement('div');
+      card.className = 'email-card';
+      card.id = `wc-${i}`;
+      card.innerHTML = `
+        <div class="email-card-header">
+          <div class="avatar">${msg.nome[0].toUpperCase()}</div>
+          <div class="email-meta">
+            <div class="email-nome">${msg.nome}</div>
+            <div class="email-de">${msg.telefone}</div>
+          </div>
+          <span class="email-tag">WhatsApp</span>
+        </div>
+        <div class="email-body">
+          <div class="section-label">Mensagem recebida</div>
+          <div class="text-box">${msg.mensagemRecebida}</div>
+          <div class="section-label" style="margin-bottom:7px">✨ Resposta sugerida</div>
+          <textarea class="resposta-area" id="wresp-${i}">${msg.respostaSugerida}</textarea>
+        </div>
+        <div class="email-actions">
+          <button class="btn btn-success" onclick="aprovarWhatsapp(${i},'${msg.msgId}','${msg.remoteJid}','${msg.nome.replace(/'/g,"\'")}')">✅ Enviar</button>
+          <button class="btn btn-danger" onclick="ignorarWhatsapp(${i},'${msg.msgId}','${msg.nome.replace(/'/g,"\'")}','${msg.remoteJid}')">Ignorar</button>
+        </div>`;
+      container.appendChild(card);
+    });
+  }
+
+  async function aprovarWhatsapp(i, msgId, remoteJid, nome) {
+    const texto = document.getElementById(`wresp-${i}`).value;
+    try {
+      const res = await fetch('/whatsapp/aprovar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ msgId, remoteJid, texto, nome })
+      });
+      const data = await res.json();
+      if (data.sucesso) {
+        const c = document.getElementById(`wc-${i}`);
+        c.style.opacity = '0.4';
+        c.style.pointerEvents = 'none';
+        c.querySelector('.email-actions').innerHTML = '<p style="color:var(--success);font-size:12px;padding:0 18px 16px">✅ Mensagem enviada!</p>';
+      }
+    } catch { alert('Erro ao enviar.'); }
+  }
+
+  async function ignorarWhatsapp(i, msgId, nome, remoteJid) {
+    await fetch('/whatsapp/ignorar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ msgId, nome, remoteJid })
+    });
+    const c = document.getElementById(`wc-${i}`);
+    if (c) c.style.display = 'none';
+  }
+
+</script>
 </body>
 </html>
