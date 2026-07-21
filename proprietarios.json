@@ -6,6 +6,14 @@
       "BO1216"
     ]
   },
+   {
+    "nome": "Marina Gomes de Lima Ruas",
+    "email": "marinagf_2006@hotmail.com",
+    "unidades": [
+      "RM512"
+    ]    
+},
+  
   {
     "nome": "Mauro César de Morais Filho",
     "email": "mfmorais@terra.com.br",
@@ -1988,5 +1996,14 @@
     "unidades": [
       "HZ1205"
     ]
-  }
+  },
+   {
+    "nome": "Renato Ferreira Monticelli",
+    "email": "monticelli2004@hotmail.com",
+    "unidades": [
+      "PE1302B"
+      "PE1402B"
+      "PE1502B"
+]
+},
 ]
