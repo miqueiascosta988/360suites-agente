@@ -7,7 +7,7 @@ const fs = require("fs");
 const path = require("path");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const gemini = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+const gemini = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Helper para chamar o Gemini com retry
 const chamarGemini = async (prompt, tentativa = 1) => {
