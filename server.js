@@ -242,54 +242,33 @@ app.post("/bloqueios/ignorar", (req, res) => {
   }
 });
 
+app.get("/proprietarios", (req, res) => {
+  try {
+    const props = JSON.parse(fs.readFileSync(path.resolve(__dirname, "proprietarios.json"), "utf8"));
+    res.json(props);
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+});
+
+app.post("/enviar-personalizado", async (req, res) => {
+  try {
+    const { para, nome, assunto, corpo } = req.body;
+    const html = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto">
+      <img src="https://lp.360suites.com.br/wp-content/uploads/2024/02/Ativo-2.png" width="150" style="margin-bottom:24px"/>
+      <div style="font-size:15px;line-height:1.7;color:#333;white-space:pre-wrap">${corpo.replace(/{nome}/g, nome)}</div>
+      <br/><p style="color:#666;font-size:13px"><strong>360 Suítes</strong></p>
+    </div>`;
+    await enviarEmailGmailAPI(para, assunto.replace(/{nome}/g, nome), html);
+    console.log(`✅ Personalizado enviado: ${para}`);
+    res.json({ sucesso: true });
+  } catch (err) {
+    console.error(`❌ Falhou personalizado: ${err.message}`);
+    res.status(500).json({ erro: err.message });
+  }
+});
+
 const PORT = process.env.PORT || 3001;
-
-// ── WhatsApp ──────────────────────────────────────────────────────────────────
-let _wpp;
-const getWpp = () => { if (!_wpp) _wpp = require("./agente_whatsapp"); return _wpp; };
-
-app.get("/whatsapp/verificar", async (req, res) => {
-  try {
-    console.log("📱 Verificando mensagens WhatsApp...");
-    const resultado = await getWpp().verificarMensagensWhatsApp();
-    res.json({ sucesso: true, ...resultado });
-  } catch (err) {
-    console.error("ERRO whatsapp:", err.message);
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-app.get("/whatsapp/pendentes", (req, res) => {
-  try { res.json({ pendentes: getWpp().carregarPendentes() }); }
-  catch (err) { res.status(500).json({ erro: err.message }); }
-});
-
-app.post("/whatsapp/aprovar", async (req, res) => {
-  try {
-    const { msgId, remoteJid, texto, nome } = req.body;
-    await getWpp().enviarRespostaWhatsApp(remoteJid, texto);
-    getWpp().salvarRespondido(msgId, { nome, remoteJid });
-    getWpp().removerPendente(msgId);
-    console.log(`✅ WhatsApp enviado para ${nome}`);
-    res.json({ sucesso: true });
-  } catch (err) {
-    console.error("ERRO ao enviar WhatsApp:", err.message);
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-app.post("/whatsapp/ignorar", (req, res) => {
-  try {
-    const { msgId, nome, remoteJid } = req.body;
-    getWpp().salvarRespondido(msgId, { nome, remoteJid, ignorado: true });
-    getWpp().removerPendente(msgId);
-    res.json({ sucesso: true });
-  } catch (err) {
-    res.status(500).json({ erro: err.message });
-  }
-});
-// ─────────────────────────────────────────────────────────────────────────────
-
 app.listen(PORT, () => {
   console.log(`🚀 360 Suítes rodando na porta ${PORT}`);
   console.log(`📧 Gmail: ${process.env.GMAIL_USER}`);
