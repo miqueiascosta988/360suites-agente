@@ -128,8 +128,8 @@
   <div class="tabs">
     <button class="tab active" onclick="trocarTab('envio')">📤 Envio de Relatórios</button>
     <button class="tab" onclick="trocarTab('agente')">🤖 Agente de Respostas</button>
-    <button class="tab" onclick="trocarTab('whatsapp')">📱 WhatsApp</button>
     <button class="tab" onclick="trocarTab('bloqueios')">🔒 Bloqueios</button>
+    <button class="tab" onclick="trocarTab('personalizado')">📨 Disparo Personalizado</button>
   </div>
 
   <!-- ABA ENVIO -->
@@ -288,17 +288,6 @@ Qualquer dúvida, estamos à disposição.
   </div>
 
   <!-- ABA BLOQUEIOS -->
-  <div class="tab-content" id="tab-whatsapp">
-    <div style="width:100%;max-width:720px">
-      <div class="card">
-        <div class="card-title">Mensagens WhatsApp</div>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Lê mensagens recentes dos proprietários e gera respostas via IA para aprovação.</p>
-        <button class="btn" id="btnWhatsapp" onclick="verificarWhatsapp()">📱 Verificar Mensagens Agora</button>
-      </div>
-      <div id="whatsappResultado"></div>
-    </div>
-  </div>
-
   <div class="tab-content" id="tab-bloqueios">
     <div style="width:100%;max-width:680px">
       <div class="card" style="text-align:center">
@@ -313,11 +302,10 @@ Qualquer dúvida, estamos à disposição.
   <script>
     // TABS
     function trocarTab(tab) {
-      document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['envio','agente','whatsapp','bloqueios'][i] === tab));
+      document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['envio','agente','bloqueios','personalizado'][i] === tab));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById('tab-' + tab).classList.add('active');
       if (tab === 'bloqueios') carregarBloqueiosPendentes();
-      if (tab === 'whatsapp') carregarPendentesWhatsapp();
     }
 
     // BLOQUEIOS
@@ -783,100 +771,239 @@ Qualquer dúvida, estamos à disposição.
       const card = document.getElementById(`email-card-${i}`);
       card.style.display = 'none';
     }
-  
-  // WHATSAPP
-  async function verificarWhatsapp() {
-    const btn = document.getElementById('btnWhatsapp');
-    btn.disabled = true;
-    btn.innerHTML = '<div class="spinner"></div> Verificando...';
-    document.getElementById('whatsappResultado').innerHTML = '';
-    try {
-      const res = await fetch('/whatsapp/verificar');
-      const data = await res.json();
-      btn.disabled = false;
-      btn.innerHTML = '📱 Verificar Agora';
-      if (data.erro) {
-        document.getElementById('whatsappResultado').innerHTML = `<div class="card" style="color:var(--error)">${data.erro}</div>`;
-        return;
-      }
-      await carregarPendentesWhatsapp();
-      if (data.novas === 0) {
-        document.getElementById('whatsappResultado').innerHTML = `<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma mensagem nova de proprietários.</p></div>`;
-      }
-    } catch (err) {
-      btn.disabled = false;
-      btn.innerHTML = '📱 Verificar Agora';
-      document.getElementById('whatsappResultado').innerHTML = `<div class="card" style="color:var(--error)">Erro ao conectar.</div>`;
-    }
-  }
+  </script>
+  <!-- ABA DISPARO PERSONALIZADO -->
+  <div class="tab-content" id="tab-personalizado">
+    <div style="width:100%;max-width:680px">
+      <div class="card">
+        <div class="card-title">📨 Disparo Personalizado</div>
 
-  async function carregarPendentesWhatsapp() {
-    try {
-      const res = await fetch('/whatsapp/pendentes');
-      const data = await res.json();
-      renderWhatsapp(data.pendentes || []);
-    } catch {}
-  }
-
-  function renderWhatsapp(mensagens) {
-    const container = document.getElementById('whatsappResultado');
-    if (!mensagens.length) { container.innerHTML = ''; return; }
-    container.innerHTML = `<p style="font-size:12px;color:var(--muted);margin:14px 0">${mensagens.length} mensagem(ns) aguardando aprovação:</p>`;
-    mensagens.forEach((msg, i) => {
-      const card = document.createElement('div');
-      card.className = 'email-card';
-      card.id = `wc-${i}`;
-      card.innerHTML = `
-        <div class="email-card-header">
-          <div class="avatar">${msg.nome[0].toUpperCase()}</div>
-          <div class="email-meta">
-            <div class="email-nome">${msg.nome}</div>
-            <div class="email-de">${msg.telefone}</div>
+        <!-- Destinatários -->
+        <div class="field" style="margin-bottom:16px">
+          <label>Destinatários — adicione por e-mail ou unidade + Enter</label>
+          <div style="position:relative;margin-bottom:8px">
+            <input id="destBusca" placeholder="Ex: joao@email.com ou DN902..."
+              style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s"
+              onkeydown="handleDestKey(event)" oninput="handleDestInput(event)"
+              onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"/>
           </div>
-          <span class="email-tag">WhatsApp</span>
+          <div id="destTags" style="display:flex;flex-wrap:wrap;gap:6px;min-height:4px"></div>
+          <p style="font-size:11px;color:var(--muted);margin-top:6px">Digite e-mail direto ou código de unidade para buscar o e-mail do proprietário automaticamente</p>
         </div>
-        <div class="email-body">
-          <div class="section-label">Mensagem recebida</div>
-          <div class="text-box">${msg.mensagemRecebida}</div>
-          <div class="section-label" style="margin-bottom:7px">✨ Resposta sugerida</div>
-          <textarea class="resposta-area" id="wresp-${i}">${msg.respostaSugerida}</textarea>
-        </div>
-        <div class="email-actions">
-          <button class="btn btn-success" onclick="aprovarWhatsapp(${i},'${msg.msgId}','${msg.remoteJid}','${msg.nome.replace(/'/g,"\'")}')">✅ Enviar</button>
-          <button class="btn btn-danger" onclick="ignorarWhatsapp(${i},'${msg.msgId}','${msg.nome.replace(/'/g,"\'")}','${msg.remoteJid}')">Ignorar</button>
-        </div>`;
-      container.appendChild(card);
-    });
-  }
 
-  async function aprovarWhatsapp(i, msgId, remoteJid, nome) {
-    const texto = document.getElementById(`wresp-${i}`).value;
-    try {
-      const res = await fetch('/whatsapp/aprovar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ msgId, remoteJid, texto, nome })
-      });
-      const data = await res.json();
-      if (data.sucesso) {
-        const c = document.getElementById(`wc-${i}`);
-        c.style.opacity = '0.4';
-        c.style.pointerEvents = 'none';
-        c.querySelector('.email-actions').innerHTML = '<p style="color:var(--success);font-size:12px;padding:0 18px 16px">✅ Mensagem enviada!</p>';
+        <!-- Assunto -->
+        <div class="field" style="margin-bottom:12px">
+          <label>Assunto</label>
+          <input type="text" id="persAssunto" value="360 Suítes | Informativo"
+            style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s"
+            onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"/>
+        </div>
+
+        <!-- Corpo -->
+        <div class="field" style="margin-bottom:16px">
+          <label>Corpo do e-mail — use {nome} para personalizar</label>
+          <textarea id="persCorpo" rows="8"
+            style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:vertical;transition:border-color 0.2s;line-height:1.6"
+            onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">Olá, {nome}.
+
+Gostaríamos de informar que...</textarea>
+        </div>
+
+        <!-- Preview -->
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <button onclick="persPreview()" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:10px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">👁 Preview</button>
+          <button onclick="perslimpar()" style="flex:1;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:10px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--error)';this.style.color='var(--error)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">↺ Limpar</button>
+        </div>
+        <div id="persPreviewBox" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:13px;color:var(--muted);margin-bottom:16px;white-space:pre-wrap;line-height:1.6"></div>
+
+        <button class="btn" id="btnPersEnviar" onclick="persEnviar()">
+          📨 Enviar para <span id="persCount">0</span> destinatário(s)
+        </button>
+
+        <div class="progress-wrap" id="persProgress" style="display:none;margin-top:16px">
+          <div class="progress-label"><span id="persProgText">Enviando...</span><span id="persProgPct">0%</span></div>
+          <div class="progress-bar-bg"><div class="progress-bar" id="persProgBar"></div></div>
+        </div>
+      </div>
+
+      <div id="persResultado"></div>
+    </div>
+  </div>
+
+  <script>
+    // ─── DISPARO PERSONALIZADO ───────────────────────────────────────────────
+
+    // Carrega proprietarios.json para busca por unidade
+    let proprietariosCache = null;
+    const carregarProprietarios = async () => {
+      if (proprietariosCache) return proprietariosCache;
+      try {
+        const res = await fetch('https://360suites-agente-production.up.railway.app/proprietarios');
+        if (res.ok) proprietariosCache = await res.json();
+      } catch {}
+      return proprietariosCache || [];
+    };
+
+    let destSelecionados = []; // [{email, nome, tipo}]
+
+    function handleDestKey(e) {
+      if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); adicionarDest(e.target.value); }
+      else if (e.key === 'Backspace' && e.target.value === '' && destSelecionados.length > 0) {
+        removerDest(destSelecionados[destSelecionados.length - 1].email);
       }
-    } catch { alert('Erro ao enviar.'); }
-  }
+    }
+    function handleDestInput(e) { if (e.target.value.endsWith(',')) adicionarDest(e.target.value.slice(0,-1)); }
 
-  async function ignorarWhatsapp(i, msgId, nome, remoteJid) {
-    await fetch('/whatsapp/ignorar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ msgId, nome, remoteJid })
-    });
-    const c = document.getElementById(`wc-${i}`);
-    if (c) c.style.display = 'none';
-  }
+    async function adicionarDest(val) {
+      const termo = val.trim();
+      if (!termo) { document.getElementById('destBusca').value = ''; return; }
 
-</script>
+      const isEmail = termo.includes('@');
+      const isUnidade = /^[A-Za-z]{1,4}\d+$/i.test(termo);
+
+      if (isEmail) {
+        if (!destSelecionados.find(d => d.email === termo)) {
+          destSelecionados.push({ email: termo, nome: termo, tipo: 'email' });
+        }
+      } else if (isUnidade) {
+        // Busca proprietário pela unidade
+        const props = await carregarProprietarios();
+        const prop = props.find(p => p.unidades?.includes(termo.toUpperCase()));
+        if (prop) {
+          if (!destSelecionados.find(d => d.email === prop.email)) {
+            destSelecionados.push({ email: prop.email, nome: prop.nome, tipo: 'unidade', unidade: termo.toUpperCase() });
+          }
+        } else {
+          alert(`Unidade ${termo.toUpperCase()} não encontrada no proprietarios.json`);
+        }
+      } else {
+        // Busca por nome do proprietário
+        const props = await carregarProprietarios();
+        const encontrados = props.filter(p => p.nome?.toLowerCase().includes(termo.toLowerCase()));
+        if (encontrados.length === 1) {
+          if (!destSelecionados.find(d => d.email === encontrados[0].email)) {
+            destSelecionados.push({ email: encontrados[0].email, nome: encontrados[0].nome, tipo: 'nome' });
+          }
+        } else if (encontrados.length > 1) {
+          alert(`Encontrados ${encontrados.length} proprietários com "${termo}". Seja mais específico.`);
+        } else {
+          alert(`Nenhum proprietário encontrado com "${termo}"`);
+        }
+      }
+
+      renderDestTags();
+      document.getElementById('destBusca').value = '';
+      atualizarContDest();
+    }
+
+    function removerDest(email) {
+      destSelecionados = destSelecionados.filter(d => d.email !== email);
+      renderDestTags();
+      atualizarContDest();
+    }
+
+    function renderDestTags() {
+      const container = document.getElementById('destTags');
+      container.innerHTML = '';
+      destSelecionados.forEach(d => {
+        const cor = d.tipo === 'email' ? 'rgba(76,175,125,0.15)' : d.tipo === 'unidade' ? 'rgba(201,168,76,0.15)' : 'rgba(100,150,255,0.15)';
+        const textCor = d.tipo === 'email' ? 'var(--success)' : d.tipo === 'unidade' ? 'var(--gold)' : '#6496ff';
+        const icon = d.tipo === 'email' ? '✉️' : d.tipo === 'unidade' ? `🏠 ${d.unidade} ·` : '👤';
+        const tag = document.createElement('span');
+        tag.style.cssText = `display:inline-flex;align-items:center;gap:4px;background:${cor};color:${textCor};border-radius:6px;padding:3px 10px;font-size:12px;font-weight:500;margin-top:4px`;
+        tag.innerHTML = `${icon} ${d.nome} <span onclick="removerDest('${d.email.replace(/'/g,"\\'")}')" style="cursor:pointer;font-size:14px;margin-left:2px">×</span>`;
+        container.appendChild(tag);
+      });
+    }
+
+    function atualizarContDest() {
+      document.getElementById('persCount').textContent = destSelecionados.length;
+      document.getElementById('btnPersEnviar').disabled = destSelecionados.length === 0;
+    }
+
+    function persPreview() {
+      const corpo = document.getElementById('persCorpo').value;
+      const preview = corpo.replace(/{nome}/g, 'João Silva');
+      const box = document.getElementById('persPreviewBox');
+      box.textContent = preview;
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function perslimpar() {
+      destSelecionados = [];
+      renderDestTags();
+      atualizarContDest();
+      document.getElementById('destBusca').value = '';
+      document.getElementById('persAssunto').value = '360 Suítes | Informativo';
+      document.getElementById('persCorpo').value = 'Olá, {nome}.\n\nGostaríamos de informar que...';
+      document.getElementById('persPreviewBox').style.display = 'none';
+      document.getElementById('persResultado').innerHTML = '';
+    }
+
+    async function persEnviar() {
+      if (destSelecionados.length === 0) return;
+      const assunto = document.getElementById('persAssunto').value;
+      const corpo = document.getElementById('persCorpo').value;
+      const btn = document.getElementById('btnPersEnviar');
+      const progress = document.getElementById('persProgress');
+      const progBar = document.getElementById('persProgBar');
+      const progText = document.getElementById('persProgText');
+      const progPct = document.getElementById('persProgPct');
+
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div> Enviando...';
+      progress.style.display = 'block';
+
+      const resultados = [];
+      for (let i = 0; i < destSelecionados.length; i++) {
+        const dest = destSelecionados[i];
+        const pct = Math.round(((i + 1) / destSelecionados.length) * 100);
+        progBar.style.width = pct + '%';
+        progPct.textContent = pct + '%';
+        progText.textContent = `Enviando para ${dest.nome}...`;
+
+        try {
+          const res = await fetch('https://360suites-agente-production.up.railway.app/enviar-personalizado', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ para: dest.email, nome: dest.nome, assunto, corpo })
+          });
+          const data = await res.json();
+          resultados.push({ ...dest, status: data.sucesso ? 'enviado' : 'falhou', erro: data.erro });
+        } catch (err) {
+          resultados.push({ ...dest, status: 'falhou', erro: err.message });
+        }
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = `📨 Enviar para <span id="persCount">${destSelecionados.length}</span> destinatário(s)`;
+      progress.style.display = 'none';
+
+      // Mostra resultado
+      const enviados = resultados.filter(r => r.status === 'enviado').length;
+      const falhas = resultados.filter(r => r.status === 'falhou').length;
+      document.getElementById('persResultado').innerHTML = `
+        <div class="card" style="margin-top:16px">
+          <div class="card-title">Resultado do Envio</div>
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <div style="flex:1;text-align:center;background:rgba(76,175,125,0.1);border-radius:8px;padding:16px">
+              <div style="font-size:28px;font-weight:700;color:var(--success)">${enviados}</div>
+              <div style="font-size:11px;color:var(--muted)">ENVIADOS</div>
+            </div>
+            <div style="flex:1;text-align:center;background:rgba(224,92,92,0.1);border-radius:8px;padding:16px">
+              <div style="font-size:28px;font-weight:700;color:var(--error)">${falhas}</div>
+              <div style="font-size:11px;color:var(--muted)">FALHAS</div>
+            </div>
+          </div>
+          ${resultados.map(r => `
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+              <span>${r.status === 'enviado' ? '✅' : '❌'}</span>
+              <span style="flex:1">${r.nome}</span>
+              <span style="color:var(--muted);font-size:11px">${r.email}</span>
+            </div>
+          `).join('')}
+        </div>`;
+    }
+  </script>
 </body>
 </html>
