@@ -247,7 +247,7 @@ app.post("/gerar-email-ia", async (req, res) => {
     const { instrucao } = req.body;
     const { GoogleGenerativeAI } = require("@google/generative-ai");
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const gemini = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const gemini = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `Você é um assistente da 360 Suítes, empresa de gestão de apartamentos em São Paulo.
 
