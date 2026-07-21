@@ -799,6 +799,20 @@ Qualquer dúvida, estamos à disposição.
             onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"/>
         </div>
 
+        <!-- Gerador IA -->
+        <div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:16px;margin-bottom:16px">
+          <div style="font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px">✨ Gerar com IA</div>
+          <div class="field" style="margin-bottom:10px">
+            <label>Descreva o que quer comunicar</label>
+            <textarea id="iaInstrucao" rows="3" placeholder="Ex: Informar que houve uma manutenção corretiva na unidade para troca do ar-condicionado e que o valor será descontado no próximo repasse..."
+              style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;resize:vertical;transition:border-color 0.2s;line-height:1.5"
+              onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+          </div>
+          <button onclick="gerarComIA()" id="btnGerarIA" style="width:100%;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold);border-radius:8px;padding:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s" onmouseover="this.style.background='var(--gold)';this.style.color='#0d0d0d'" onmouseout="this.style.background='rgba(201,168,76,0.15)';this.style.color='var(--gold)'">
+            ✨ Gerar E-mail com IA
+          </button>
+        </div>
+
         <!-- Corpo -->
         <div class="field" style="margin-bottom:16px">
           <label>Corpo do e-mail — use {nome} para personalizar</label>
@@ -938,6 +952,47 @@ Gostaríamos de informar que...</textarea>
       document.getElementById('persCorpo').value = 'Olá, {nome}.\n\nGostaríamos de informar que...';
       document.getElementById('persPreviewBox').style.display = 'none';
       document.getElementById('persResultado').innerHTML = '';
+    }
+
+    async function gerarComIA() {
+      const instrucao = document.getElementById('iaInstrucao').value.trim();
+      if (!instrucao) { alert('Descreva o que quer comunicar antes de gerar.'); return; }
+
+      const btn = document.getElementById('btnGerarIA');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner spinner-gold"></div> Gerando...';
+
+      try {
+        const res = await fetch('https://360suites-agente-production.up.railway.app/gerar-email-ia', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ instrucao })
+        });
+        const data = await res.json();
+
+        if (data.erro) { alert('Erro: ' + data.erro); return; }
+
+        if (data.assunto) document.getElementById('persAssunto').value = data.assunto;
+        if (data.corpo) document.getElementById('persCorpo').value = data.corpo;
+
+        // Mostra feedback
+        btn.style.background = 'rgba(76,175,125,0.15)';
+        btn.style.borderColor = 'var(--success)';
+        btn.style.color = 'var(--success)';
+        btn.innerHTML = '✅ E-mail gerado! Revise antes de enviar.';
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.style.background = 'rgba(201,168,76,0.15)';
+          btn.style.borderColor = 'var(--gold)';
+          btn.style.color = 'var(--gold)';
+          btn.innerHTML = '✨ Gerar E-mail com IA';
+        }, 3000);
+
+      } catch (err) {
+        alert('Erro ao conectar com o servidor.');
+        btn.disabled = false;
+        btn.innerHTML = '✨ Gerar E-mail com IA';
+      }
     }
 
     async function persEnviar() {
