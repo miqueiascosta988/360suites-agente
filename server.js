@@ -242,6 +242,43 @@ app.post("/bloqueios/ignorar", (req, res) => {
   }
 });
 
+app.post("/gerar-email-ia", async (req, res) => {
+  try {
+    const { instrucao } = req.body;
+    const { GoogleGenerativeAI } = require("@google/generative-ai");
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const gemini = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const prompt = `Você é um assistente da 360 Suítes, empresa de gestão de apartamentos em São Paulo.
+
+Gere um e-mail profissional e cordial para proprietários de apartamentos com base na instrução abaixo:
+
+INSTRUÇÃO: ${instrucao}
+
+REGRAS:
+- Tom profissional mas amistoso
+- Use {nome} onde deve aparecer o nome do proprietário
+- Seja objetivo e claro
+- Assine como "Equipe 360 Suítes"
+- Responda em português brasileiro
+
+Retorne APENAS um JSON válido neste formato (sem markdown, sem backticks):
+{"assunto": "assunto do email aqui", "corpo": "corpo completo do email aqui"}`;
+
+    const result = await gemini.generateContent(prompt);
+    const texto = result.response.text().trim();
+
+    // Remove possíveis backticks do Gemini
+    const clean = texto.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    res.json({ sucesso: true, assunto: parsed.assunto, corpo: parsed.corpo });
+  } catch (err) {
+    console.error("ERRO gerar-email-ia:", err.message);
+    res.status(500).json({ erro: err.message });
+  }
+});
+
 app.get("/proprietarios", (req, res) => {
   try {
     const props = JSON.parse(fs.readFileSync(path.resolve(__dirname, "proprietarios.json"), "utf8"));
