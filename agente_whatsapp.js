@@ -1,266 +1,292 @@
-// agente_whatsapp.js — Agente de leitura e resposta via WhatsApp (Evolution API)
+// agente_whatsapp.js — Triagem inteligente via WhatsApp (Evolution API)
 const fs = require("fs");
 const path = require("path");
 const { chamarIA } = require("./ai");
-const XLSX = require("xlsx");
 
 const EVOLUTION_URL = process.env.EVOLUTION_API_URL;
 const EVOLUTION_KEY = process.env.EVOLUTION_API_KEY;
 const EVOLUTION_INSTANCE = process.env.EVOLUTION_INSTANCE || "360suites";
-const PENDENTES_WPP_PATH = path.resolve(__dirname, "whatsapp_pendentes.json");
-const RESPONDIDOS_WPP_PATH = path.resolve(__dirname, "whatsapp_respondidos.json");
-const FECHAMENTOS_DIR = path.resolve(__dirname, "fechamentos");
-const AJUSTES_DIR = path.resolve(__dirname, "ajustes");
+
+const TRIAGEM_PATH = path.resolve(__dirname, "whatsapp_triagem.json");
+const PENDENTES_PATH = path.resolve(__dirname, "whatsapp_pendentes.json");
+const RESPONDIDOS_PATH = path.resolve(__dirname, "whatsapp_respondidos.json");
 
 const headers = () => ({
   "Content-Type": "application/json",
   "apikey": EVOLUTION_KEY,
 });
 
-const carregarPendentes = () => {
-  try { return fs.existsSync(PENDENTES_WPP_PATH) ? JSON.parse(fs.readFileSync(PENDENTES_WPP_PATH, "utf8")) : []; } catch { return []; }
+// ── Persistência ──────────────────────────────────────────────────────────────
+const carregarTriagem = () => {
+  try { return fs.existsSync(TRIAGEM_PATH) ? JSON.parse(fs.readFileSync(TRIAGEM_PATH, "utf8")) : {}; } catch { return {}; }
 };
+const salvarTriagem = (d) => fs.writeFileSync(TRIAGEM_PATH, JSON.stringify(d, null, 2), "utf8");
 
-const salvarPendentes = (p) => fs.writeFileSync(PENDENTES_WPP_PATH, JSON.stringify(p, null, 2), "utf8");
+const carregarPendentes = () => {
+  try { return fs.existsSync(PENDENTES_PATH) ? JSON.parse(fs.readFileSync(PENDENTES_PATH, "utf8")) : []; } catch { return []; }
+};
+const salvarPendentes = (d) => fs.writeFileSync(PENDENTES_PATH, JSON.stringify(d, null, 2), "utf8");
 
 const carregarRespondidos = () => {
-  try { return fs.existsSync(RESPONDIDOS_WPP_PATH) ? JSON.parse(fs.readFileSync(RESPONDIDOS_WPP_PATH, "utf8")) : {}; } catch { return {}; }
+  try { return fs.existsSync(RESPONDIDOS_PATH) ? JSON.parse(fs.readFileSync(RESPONDIDOS_PATH, "utf8")) : {}; } catch { return {}; }
 };
-
 const salvarRespondido = (msgId, dados) => {
   const r = carregarRespondidos();
   r[msgId] = { ...dados, dataResposta: new Date().toISOString() };
-  fs.writeFileSync(RESPONDIDOS_WPP_PATH, JSON.stringify(r, null, 2), "utf8");
+  fs.writeFileSync(RESPONDIDOS_PATH, JSON.stringify(r, null, 2), "utf8");
 };
 
 const carregarProprietarios = () => {
   try { return JSON.parse(fs.readFileSync(path.resolve(__dirname, "proprietarios.json"), "utf8")); } catch { return []; }
 };
 
-const mesParaNumero = (mes) => {
-  const meses = { janeiro:1, fevereiro:2, março:3, marco:3, abril:4, maio:5, junho:6, julho:7, agosto:8, setembro:9, outubro:10, novembro:11, dezembro:12 };
-  return meses[mes?.toString().toLowerCase()] || null;
-};
+// ── Busca proprietário ────────────────────────────────────────────────────────
+const normalizarTelefone = (jid) => (jid || "").replace("@s.whatsapp.net", "").replace("@c.us", "").replace(/\D/g, "");
 
-const encontrarAba = (wb, nomes) => {
-  for (const nome of nomes) {
-    const found = wb.SheetNames.find(s => s.toLowerCase().includes(nome.toLowerCase()));
-    if (found) return found;
+const encontrarProprietario = (telefone, email, proprietarios) => {
+  const tel = normalizarTelefone(telefone);
+
+  // Busca por telefone
+  if (tel) {
+    const porTel = proprietarios.find(p => {
+      const telProp = (p.telefone || "").replace(/\D/g, "");
+      return telProp && (tel.endsWith(telProp) || telProp.endsWith(tel) || tel.slice(-8) === telProp.slice(-8));
+    });
+    if (porTel) return porTel;
   }
+
+  // Busca por e-mail
+  if (email) {
+    return proprietarios.find(p => p.email?.toLowerCase().trim() === email.toLowerCase().trim());
+  }
+
   return null;
 };
 
-const buscarManutencoes = (unidade, fechamentoPath) => {
-  try {
-    const wb = XLSX.readFile(fechamentoPath);
-    const sheetName = encontrarAba(wb, ["lancamentos_omie", "lancamentos", "lançamentos", "omie"]);
-    if (!sheetName) return [];
-    const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
-    if (!rows.length) return [];
-    const isOmie = Object.keys(rows[0]).includes("Departamento");
-    if (isOmie) {
-      return rows
-        .filter(r => (r["Departamento"]||"").toString().trim().toLowerCase() === unidade.toLowerCase() && (r["Categoria"]||"").toString().toLowerCase().includes("manut"))
-        .map(m => ({ descricao: (m["Observação da Conta"]||"").toString().trim() || "Manutenção", valor: Math.abs(Number(m["Valor da Conta"])||0) }));
-    }
-    return rows
-      .filter(r => r.unit_name?.toString().trim().toLowerCase() === unidade.toLowerCase() && r.category?.toString().toLowerCase().includes("manutencao"))
-      .map(m => { const obs = (m.observations||"").toString(); return { descricao: obs.includes("|") ? obs.split("|").slice(1).join(" ").trim() : obs.trim(), valor: Number(m.value)||0 }; });
-  } catch { return []; }
-};
-
-const getValorUnidade = (unidade, fechamentoPath) => {
-  try {
-    const wb = XLSX.readFile(fechamentoPath);
-    const sheetName = encontrarAba(wb, ["unidades", "Unidades"]);
-    if (!sheetName) return null;
-    const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
-    const linha = rows.find(r => r.unit_name?.toString().trim().toLowerCase() === unidade.toLowerCase());
-    if (!linha) return null;
-    return {
-      bruto: Number(linha["plc_less_cleaning"])||null,
-      liquido: Number(linha["repasse_cliente_ajustado"])||null,
-      ocupacao: Number(linha["nights_occupied_month"])||null,
-    };
-  } catch { return null; }
-};
-
-const calcularMediaPredio = (sigla, fechamentoPath) => {
-  try {
-    const wb = XLSX.readFile(fechamentoPath);
-    const sheetName = encontrarAba(wb, ["unidades", "Unidades"]);
-    if (!sheetName) return null;
-    const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
-    const unidades = rows.filter(r => r.unit_name?.toString().trim().toUpperCase().startsWith(sigla.toUpperCase()));
-    if (!unidades.length) return null;
-    const brutos = unidades.map(r => Number(r["plc_less_cleaning"]||0)).filter(v => v > 0);
-    const liquidos = unidades.map(r => Number(r["repasse_cliente_ajustado"]||0)).filter(v => v > 0);
-    return {
-      mediaBruta: brutos.length ? brutos.reduce((a,b) => a+b,0)/brutos.length : null,
-      mediaLiquida: liquidos.length ? liquidos.reduce((a,b) => a+b,0)/liquidos.length : null,
-      totalUnidades: unidades.length,
-    };
-  } catch { return null; }
-};
-
-const buscarAjuste = (unidade, mes, ano) => {
-  try {
-    const num = mesParaNumero(mes);
-    if (!num) return null;
-    const caminho = path.resolve(AJUSTES_DIR, `${ano}-${String(num).padStart(2,"0")}.json`);
-    if (!fs.existsSync(caminho)) return null;
-    return JSON.parse(fs.readFileSync(caminho,"utf8"))[unidade] || null;
-  } catch { return null; }
-};
-
-// Busca mensagens recentes do WhatsApp via Evolution API
-const buscarMensagensWhatsApp = async () => {
+// ── Envio de mensagem ─────────────────────────────────────────────────────────
+const enviarMensagem = async (remoteJid, texto) => {
   const fetch = require("node-fetch");
+  const res = await fetch(`${EVOLUTION_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify({ number: remoteJid, text: texto }),
+  });
+  return res.json();
+};
+
+// ── Lógica de triagem por etapas ──────────────────────────────────────────────
+/*
+  Estados da conversa:
+  - "inicio"       → primeira mensagem, pede e-mail
+  - "aguardando_email" → aguarda e-mail para identificar
+  - "aguardando_opcao" → identificado, aguarda 1 (Júlia) ou 2 (Miquéias)
+  - "aguardando_descricao" → aguarda descrição do assunto
+  - "concluido"    → triagem finalizada, aguarda no painel
+*/
+
+const processarMensagem = async (remoteJid, texto, msgId) => {
+  const proprietarios = carregarProprietarios();
+  const triagens = carregarTriagem();
+  const conversa = triagens[remoteJid] || { estado: "inicio" };
+  const textoLimpo = texto.trim();
+
+  console.log(`📱 ${remoteJid} | Estado: ${conversa.estado} | Msg: ${textoLimpo.substring(0, 60)}`);
+
+  // ── Etapa 1: Primeira mensagem ────────────────────────────────────────────
+  if (conversa.estado === "inicio") {
+    // Tenta identificar pelo telefone primeiro
+    const proprietario = encontrarProprietario(remoteJid, null, proprietarios);
+
+    if (proprietario) {
+      // Já identificou pelo telefone
+      triagens[remoteJid] = {
+        estado: "aguardando_opcao",
+        nome: proprietario.nome,
+        email: proprietario.email,
+        telefone: remoteJid,
+        unidades: proprietario.unidades,
+      };
+      salvarTriagem(triagens);
+
+      await enviarMensagem(remoteJid,
+        `Olá, *${proprietario.nome}*! 👋\n\nSou a assistente virtual da *360 Suítes*.\n\nCom quem você gostaria de falar?\n\n*1️⃣* - Júlia _(Distratos)_\n*2️⃣* - Miquéias _(Outros assuntos)_\n\nDigite 1 ou 2:`
+      );
+    } else {
+      // Pede e-mail
+      triagens[remoteJid] = { estado: "aguardando_email" };
+      salvarTriagem(triagens);
+
+      await enviarMensagem(remoteJid,
+        `Olá! 👋 Sou a assistente virtual da *360 Suítes*.\n\nPara te identificar, por favor informe seu *e-mail cadastrado*:`
+      );
+    }
+    return;
+  }
+
+  // ── Etapa 2: Aguardando e-mail ────────────────────────────────────────────
+  if (conversa.estado === "aguardando_email") {
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+    const emailEncontrado = textoLimpo.match(emailRegex)?.[0];
+
+    if (!emailEncontrado) {
+      await enviarMensagem(remoteJid,
+        `Não consegui identificar um e-mail válido. Por favor, informe seu *e-mail cadastrado* na 360 Suítes:`
+      );
+      return;
+    }
+
+    const proprietario = encontrarProprietario(remoteJid, emailEncontrado, proprietarios);
+
+    if (!proprietario) {
+      await enviarMensagem(remoteJid,
+        `Não encontrei nenhum cadastro com o e-mail *${emailEncontrado}*.\n\nVerifique o e-mail e tente novamente, ou entre em contato diretamente pelo nosso WhatsApp: *+55 11 97632-0341*`
+      );
+      return;
+    }
+
+    triagens[remoteJid] = {
+      estado: "aguardando_opcao",
+      nome: proprietario.nome,
+      email: proprietario.email,
+      telefone: remoteJid,
+      unidades: proprietario.unidades,
+    };
+    salvarTriagem(triagens);
+
+    await enviarMensagem(remoteJid,
+      `Olá, *${proprietario.nome}*! ✅\n\nCom quem você gostaria de falar?\n\n*1️⃣* - Júlia _(Distratos)_\n*2️⃣* - Miquéias _(Outros assuntos)_\n\nDigite 1 ou 2:`
+    );
+    return;
+  }
+
+  // ── Etapa 3: Aguardando opção ─────────────────────────────────────────────
+  if (conversa.estado === "aguardando_opcao") {
+    const opcao = textoLimpo.replace(/[^12]/g, "");
+
+    if (opcao !== "1" && opcao !== "2") {
+      await enviarMensagem(remoteJid,
+        `Por favor, digite apenas *1* para Júlia ou *2* para Miquéias:`
+      );
+      return;
+    }
+
+    const responsavel = opcao === "1" ? "Júlia" : "Miquéias";
+    const assunto = opcao === "1" ? "Distratos" : "Outros assuntos";
+
+    triagens[remoteJid] = {
+      ...conversa,
+      estado: "aguardando_descricao",
+      responsavel,
+      assunto,
+    };
+    salvarTriagem(triagens);
+
+    await enviarMensagem(remoteJid,
+      `Ótimo! Você será atendido(a) por *${responsavel}* _(${assunto})_.\n\nPor favor, descreva brevemente o que você precisa:`
+    );
+    return;
+  }
+
+  // ── Etapa 4: Aguardando descrição ─────────────────────────────────────────
+  if (conversa.estado === "aguardando_descricao") {
+    // Resume o assunto com IA
+    let resumo = textoLimpo;
+    try {
+      resumo = await chamarIA(
+        `Resuma em no máximo 2 frases objetivas o seguinte assunto de um proprietário de apartamento:\n"${textoLimpo}"`
+      );
+    } catch (e) {
+      console.warn("⚠️ Erro ao resumir com IA:", e.message);
+    }
+
+    // Adiciona ao painel
+    const pendentes = carregarPendentes();
+    const novaPendente = {
+      msgId,
+      remoteJid,
+      nome: conversa.nome,
+      email: conversa.email,
+      telefone: normalizarTelefone(remoteJid),
+      unidades: conversa.unidades,
+      responsavel: conversa.responsavel,
+      assunto: conversa.assunto,
+      descricaoOriginal: textoLimpo,
+      resumo,
+      whatsappLink: `https://wa.me/${normalizarTelefone(remoteJid)}`,
+      dataTriagem: new Date().toISOString(),
+    };
+    pendentes.push(novaPendente);
+    salvarPendentes(pendentes);
+
+    // Marca conversa como concluída
+    triagens[remoteJid] = { ...conversa, estado: "concluido" };
+    salvarTriagem(triagens);
+
+    await enviarMensagem(remoteJid,
+      `✅ Mensagem recebida!\n\nEm breve *${conversa.responsavel}* entrará em contato com você.\n\nObrigado por entrar em contato com a *360 Suítes*! 🏢`
+    );
+
+    console.log(`✅ Triagem concluída: ${conversa.nome} → ${conversa.responsavel} | ${resumo}`);
+    return;
+  }
+
+  // ── Estado concluído: reinicia se mandar nova mensagem ───────────────────
+  if (conversa.estado === "concluido") {
+    triagens[remoteJid] = { estado: "inicio" };
+    salvarTriagem(triagens);
+    await processarMensagem(remoteJid, textoLimpo, msgId);
+  }
+};
+
+// ── Busca mensagens novas e processa ─────────────────────────────────────────
+const verificarMensagensWhatsApp = async () => {
+  const fetch = require("node-fetch");
+  console.log(`\n📱 [${new Date().toLocaleString("pt-BR")}] Verificando mensagens WhatsApp...`);
+
   const res = await fetch(`${EVOLUTION_URL}/chat/findMessages/${EVOLUTION_INSTANCE}`, {
     method: "POST",
     headers: headers(),
     body: JSON.stringify({
       where: {
         key: { fromMe: false },
-        messageTimestamp: { gte: Math.floor(Date.now() / 1000) - 86400 * 7 }, // últimos 7 dias
+        messageTimestamp: { gte: Math.floor(Date.now() / 1000) - 3600 }, // última hora
       },
-      limit: 100,
+      limit: 50,
     }),
   });
+
   const data = await res.json();
-  return data?.messages?.records || [];
-};
-
-// Normaliza número de telefone para buscar proprietário
-const normalizarTelefone = (jid) => {
-  return jid?.replace("@s.whatsapp.net", "").replace("@c.us", "") || "";
-};
-
-const encontrarProprietarioPorTelefone = (telefone, proprietarios) => {
-  const tel = telefone.replace(/\D/g, "");
-  return proprietarios.find(p => {
-    const telProp = (p.telefone || p.whatsapp || "").replace(/\D/g, "");
-    return telProp && (tel.endsWith(telProp) || telProp.endsWith(tel));
-  });
-};
-
-const gerarRespostaWhatsApp = async ({ nomeProprietario, mensagem, unidades, mes, ano }) => {
-  const num = mesParaNumero(mes);
-  const fechamentoPath = num
-    ? (() => { const c = path.resolve(FECHAMENTOS_DIR, `${ano}-${String(num).padStart(2,"0")}.xlsx`); return fs.existsSync(c) ? c : null; })()
-    : null;
-
-  let blocos = "";
-  if (fechamentoPath) {
-    for (const unidade of unidades) {
-      const sigla = unidade.replace(/[0-9]/g, "").trim();
-      const manutencoes = buscarManutencoes(unidade, fechamentoPath);
-      const valor = getValorUnidade(unidade, fechamentoPath);
-      const media = calcularMediaPredio(sigla, fechamentoPath);
-      const ajuste = buscarAjuste(unidade, mes, ano);
-      const totalManut = manutencoes.reduce((a,m) => a+m.valor, 0);
-
-      blocos += `\nUnidade ${unidade}:
-  Bruto: R$ ${valor?.bruto?.toFixed(2)||"N/A"} | Líquido: R$ ${valor?.liquido?.toFixed(2)||"N/A"} | Ocupação: ${valor?.ocupacao||"N/A"} noites
-  Média bruta do prédio: R$ ${media?.mediaBruta?.toFixed(2)||"N/A"} (${media?.totalUnidades||"N/A"} unidades)
-  Manutenções: ${manutencoes.length > 0 ? manutencoes.map(m => `${m.descricao} (R$ ${m.valor.toFixed(2)})`).join("; ") : "Nenhuma"}
-  Total manutenções: R$ ${totalManut.toFixed(2)}
-  Ajuste: ${ajuste ? `R$ ${ajuste.diferenca?.toFixed(2)} ${ajuste.diferenca > 0 ? "(crédito)" : "(desconto)"}` : "Sem ajuste"}`;
-    }
-  }
-
-  const prompt = `Você é assistente da 360 Suítes respondendo via WhatsApp de forma BREVE e DIRETA.
-
-Proprietário: ${nomeProprietario}
-Mensagem recebida: "${mensagem}"
-Período de referência: ${mes}/${ano}
-
-DADOS:${blocos || "\nPlanilha não disponível para o período informado."}
-
-REGRAS:
-- Resposta curta e objetiva (máximo 200 palavras)
-- Formato WhatsApp (sem markdown, use *negrito* se necessário)
-- Responda diretamente a dúvida
-- Tom cordial e profissional
-- Assine como "Equipe 360 Suítes"
-- Retorne APENAS o texto da mensagem`;
-
-  return chamarIA(prompt);
-};
-
-const verificarMensagensWhatsApp = async () => {
-  console.log(`\n📱 [${new Date().toLocaleString("pt-BR")}] Verificando mensagens WhatsApp...`);
-
-  const proprietarios = carregarProprietarios();
-  const respondidos = carregarRespondidos();
-  const mensagens = await buscarMensagensWhatsApp();
-
+  const mensagens = data?.messages?.records || [];
   console.log(`📬 ${mensagens.length} mensagem(ns) encontrada(s)`);
 
-  const ano = process.env.ANO_REFERENCIA || "2026";
-  const mes = process.env.MES_REFERENCIA || "Maio";
-
-  const novas = [];
-  const vistas = new Set();
+  const respondidos = carregarRespondidos();
+  let processadas = 0;
 
   for (const msg of mensagens) {
     const msgId = msg.key?.id;
-    if (!msgId || respondidos[msgId] || vistas.has(msgId)) continue;
+    if (!msgId || respondidos[msgId]) continue;
 
-    const telefone = normalizarTelefone(msg.key?.remoteJid);
+    const remoteJid = msg.key?.remoteJid;
     const texto = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
 
-    if (!texto || texto.length < 5) continue;
+    if (!texto || texto.length < 2 || remoteJid?.includes("@g.us")) continue; // ignora grupos
 
-    const proprietario = encontrarProprietarioPorTelefone(telefone, proprietarios);
-    if (!proprietario) {
-      console.log(`⚠️ Proprietário não encontrado para ${telefone}`);
-      continue;
+    try {
+      await processarMensagem(remoteJid, texto, msgId);
+      salvarRespondido(msgId, { remoteJid, texto });
+      processadas++;
+    } catch (err) {
+      console.error(`❌ Erro ao processar ${remoteJid}: ${err.message}`);
     }
-
-    vistas.add(msgId);
-    console.log(`👤 ${proprietario.nome} | ${texto.substring(0, 60)}...`);
-
-    const respostaSugerida = await gerarRespostaWhatsApp({
-      nomeProprietario: proprietario.nome,
-      mensagem: texto,
-      unidades: proprietario.unidades,
-      mes,
-      ano,
-    });
-
-    novas.push({
-      msgId,
-      telefone,
-      remoteJid: msg.key?.remoteJid,
-      nome: proprietario.nome,
-      mensagemRecebida: texto,
-      respostaSugerida,
-      timestamp: msg.messageTimestamp,
-      dataVerificacao: new Date().toISOString(),
-    });
   }
 
-  if (novas.length > 0) {
-    const pendentes = [...carregarPendentes(), ...novas];
-    salvarPendentes(pendentes);
-    console.log(`✅ ${novas.length} nova(s) mensagem(ns) aguardando aprovação`);
-  }
-
-  return { total: mensagens.length, novas: novas.length };
+  const pendentes = carregarPendentes();
+  console.log(`✅ ${processadas} mensagem(ns) processada(s) | ${pendentes.length} pendente(s) no painel`);
+  return { total: mensagens.length, processadas, pendentes: pendentes.length };
 };
 
 const enviarRespostaWhatsApp = async (remoteJid, texto) => {
-  const fetch = require("node-fetch");
-  const res = await fetch(`${EVOLUTION_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
-    method: "POST",
-    headers: headers(),
-    body: JSON.stringify({
-      number: remoteJid,
-      text: texto,
-    }),
-  });
-  return res.json();
+  return enviarMensagem(remoteJid, texto);
 };
 
 const removerPendente = (msgId) => {
