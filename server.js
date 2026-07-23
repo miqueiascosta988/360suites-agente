@@ -8,14 +8,6 @@ const fs = require("fs");
 const { buscarEmails, enviarResposta } = require("./agente");
 const { executarTriagem } = require("./agente_triagem");
 const { verificarBloqueios, marcarNotificado, carregarPendentes, removerPendente } = require("./agente_bloqueios");
-const {
-  verificarMensagensWhatsApp,
-  enviarRespostaWhatsApp,
-  carregarPendentes: carregarPendentesWA,
-  removerPendente: removerPendenteWA,
-  salvarRespondido,
-  processarMensagem,
-} = require("./agente_whatsapp");
 
 const app = express();
 app.use(cors());
@@ -250,135 +242,65 @@ app.post("/bloqueios/ignorar", (req, res) => {
   }
 });
 
-app.post("/gerar-email-ia", async (req, res) => {
-  try {
-    const { instrucao } = req.body;
-    const { GoogleGenerativeAI } = require("@google/generative-ai");
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const gemini = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const PORT = process.env.PORT || 3001;
 
-    const prompt = `Você é um assistente da 360 Suítes, empresa de gestão de apartamentos em São Paulo.
+// ── WhatsApp Webhook + Triagem ────────────────────────────────────────────────
+let _wpp;
+const getWpp = () => { if (!_wpp) _wpp = require("./agente_whatsapp"); return _wpp; };
 
-Gere um e-mail profissional e cordial para proprietários de apartamentos com base na instrução abaixo:
-
-INSTRUÇÃO: ${instrucao}
-
-REGRAS:
-- Tom profissional mas amistoso
-- Use {nome} onde deve aparecer o nome do proprietário
-- Seja objetivo e claro
-- Assine como "Equipe 360 Suítes"
-- Responda em português brasileiro
-
-Retorne APENAS um JSON válido neste formato (sem markdown, sem backticks):
-{"assunto": "assunto do email aqui", "corpo": "corpo completo do email aqui"}`;
-
-    const result = await gemini.generateContent(prompt);
-    const texto = result.response.text().trim();
-
-    // Remove possíveis backticks do Gemini
-    const clean = texto.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-
-    res.json({ sucesso: true, assunto: parsed.assunto, corpo: parsed.corpo });
-  } catch (err) {
-    console.error("ERRO gerar-email-ia:", err.message);
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-app.get("/proprietarios", (req, res) => {
-  try {
-    const props = JSON.parse(fs.readFileSync(path.resolve(__dirname, "proprietarios.json"), "utf8"));
-    res.json(props);
-  } catch (err) {
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-app.post("/enviar-personalizado", async (req, res) => {
-  try {
-    const { para, nome, assunto, corpo } = req.body;
-    const html = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto">
-      <img src="https://lp.360suites.com.br/wp-content/uploads/2024/02/Ativo-2.png" width="150" style="margin-bottom:24px"/>
-      <div style="font-size:15px;line-height:1.7;color:#333;white-space:pre-wrap">${corpo.replace(/{nome}/g, nome)}</div>
-      <br/><p style="color:#666;font-size:13px"><strong>360 Suítes</strong></p>
-    </div>`;
-    await enviarEmailGmailAPI(para, assunto.replace(/{nome}/g, nome), html);
-    console.log(`✅ Personalizado enviado: ${para}`);
-    res.json({ sucesso: true });
-  } catch (err) {
-    console.error(`❌ Falhou personalizado: ${err.message}`);
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-// ── WHATSAPP ──────────────────────────────────────────────────────────────────
-
-// Webhook — Evolution API envia mensagens em tempo real
+// Webhook recebe mensagens em tempo real da Evolution API
 app.post("/webhook/whatsapp", async (req, res) => {
-  res.sendStatus(200); // responde rápido para não dar timeout
+  res.status(200).json({ ok: true }); // responde imediatamente
   try {
     const body = req.body;
-    const evento = body?.event;
-
-    if (evento !== "messages.upsert") return;
-
-    const dados = body?.data;
-    const fromMe = dados?.key?.fromMe;
-    if (fromMe) return;
-
-    const remoteJid = dados?.key?.remoteJid;
-    const msgId = dados?.key?.id;
-    const texto = dados?.message?.conversation || dados?.message?.extendedTextMessage?.text || "";
-
-    if (!remoteJid || !texto || texto.length < 2) return;
-    if (remoteJid.includes("@g.us")) return;
-
-    console.log(`📱 Webhook recebido: ${remoteJid} | ${texto.substring(0, 60)}`);
-
-    const wa = require("./agente_whatsapp");
-    await wa.processarMensagem(remoteJid, texto, msgId);
-    wa.salvarRespondido(msgId, { remoteJid, texto });
+    if (body?.event !== "messages.upsert") return;
+    const msgs = body?.data?.messages || [];
+    for (const msg of msgs) {
+      if (msg?.key?.fromMe) continue; // ignora mensagens enviadas por nós
+      const remoteJid = msg?.key?.remoteJid;
+      const texto = msg?.message?.conversation || msg?.message?.extendedTextMessage?.text || "";
+      if (texto && remoteJid) {
+        console.log(`📱 Webhook recebido: ${remoteJid} — "${texto.substring(0,50)}"`);
+        await getWpp().processarWebhook(remoteJid, texto);
+      }
+    }
   } catch (err) {
     console.error("❌ Erro no webhook WhatsApp:", err.message);
   }
 });
 
-// Verificação manual (botão no painel)
-app.get("/whatsapp/verificar", async (req, res) => {
-  try {
-    const resultado = await verificarMensagensWhatsApp();
-    res.json({ sucesso: true, ...resultado });
-  } catch (err) {
-    console.error("ERRO whatsapp/verificar:", err.message);
-    res.status(500).json({ erro: err.message });
-  }
-});
-
-// Lista pendentes do painel
+// Lista triagens pendentes no painel
 app.get("/whatsapp/pendentes", (req, res) => {
+  try { res.json({ pendentes: getWpp().carregarPendentes() }); }
+  catch (err) { res.status(500).json({ erro: err.message }); }
+});
+
+// Aprova e envia resposta
+app.post("/whatsapp/aprovar", async (req, res) => {
   try {
-    const pendentes = carregarPendentesWA();
-    res.json({ total: pendentes.length, pendentes });
+    const { id, remoteJid, texto } = req.body;
+    await getWpp().enviarRespostaWhatsApp(remoteJid, texto);
+    getWpp().removerPendente(id);
+    console.log(`✅ Resposta WhatsApp enviada para ${remoteJid}`);
+    res.json({ sucesso: true });
   } catch (err) {
+    console.error("❌ Erro ao enviar WhatsApp:", err.message);
     res.status(500).json({ erro: err.message });
   }
 });
 
-// Remove pendente após encaminhar
-app.post("/whatsapp/encaminhar", (req, res) => {
+// Arquiva sem responder
+app.post("/whatsapp/arquivar", (req, res) => {
   try {
-    const { msgId } = req.body;
-    removerPendenteWA(msgId);
-    console.log(`✅ WhatsApp encaminhado: ${msgId}`);
+    const { id } = req.body;
+    getWpp().removerPendente(id);
     res.json({ sucesso: true });
   } catch (err) {
     res.status(500).json({ erro: err.message });
   }
 });
+// ─────────────────────────────────────────────────────────────────────────────
 
-const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`🚀 360 Suítes rodando na porta ${PORT}`);
   console.log(`📧 Gmail: ${process.env.GMAIL_USER}`);
