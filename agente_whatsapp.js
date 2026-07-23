@@ -295,6 +295,7 @@ const removerPendente = (msgId) => {
 };
 
 module.exports = {
+  processarMensagem,
   verificarMensagensWhatsApp,
   enviarRespostaWhatsApp,
   carregarPendentes,
