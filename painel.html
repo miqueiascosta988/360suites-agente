@@ -293,7 +293,7 @@ Qualquer dúvida, estamos à disposição.
       <div class="card">
         <div class="card-title">Triagem WhatsApp</div>
         <p style="color:var(--muted);font-size:13px;margin-bottom:20px">A IA faz a triagem automática das mensagens dos proprietários e envia o resumo aqui para você encaminhar para Júlia ou Miquéias.</p>
-        <button class="btn" id="btnWhatsapp" onclick="verificarWhatsapp()">📱 Verificar Mensagens Agora</button>
+        <button class="btn" onclick="carregarPendentesWhatsapp()">🔄 Atualizar Triagens</button>
       </div>
       <div id="whatsappResultado"></div>
     </div>
@@ -371,25 +371,13 @@ Gostaríamos de informar que...</textarea>
   </div>
 
   <script>
-    // ─── NAVEGAÇÃO ──────────────────────────────────────────────────────────────
-    const tabs = document.querySelectorAll('.tab');
-
-    function trocarTab(tab) {
-      tabs.forEach((n, i) => n.classList.toggle('active', ['envio','agente','whatsapp','personalizado'][i] === tab));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      const el = document.getElementById('tab-' + tab);
-      if (el) el.classList.add('active');
-      if (tab === 'whatsapp') carregarPendentesWhatsapp();
-    }
-    // ────────────────────────────────────────────────────────────────────────────
-
-    // ─── WHATSAPP TRIAGEM ────────────────────────────────────────────────────────
+        // ─── WHATSAPP TRIAGEM ────────────────────────────────────────────────────────
     async function carregarPendentesWhatsapp() {
       try {
         const res = await fetch('/whatsapp/pendentes');
         const data = await res.json();
         renderTriagem(data.pendentes || []);
-      } catch {}
+      } catch(e) { console.error(e); }
     }
 
     function renderTriagem(triagens) {
@@ -402,37 +390,38 @@ Gostaríamos de informar que...</textarea>
       container.innerHTML = `<p style="font-size:13px;color:var(--muted);margin-bottom:16px">${triagens.length} triagem(ns) aguardando:</p>`;
       triagens.forEach((t, i) => {
         const corResp = t.responsavel === 'Júlia' ? '#c9965c' : '#5cb87a';
+        const nome = t.identificacao || t.nome || '?';
         const card = document.createElement('div');
         card.className = 'email-card';
-        card.id = `tc-${i}`;
-        card.innerHTML = `
-          <div class="email-header">
-            <div class="email-avatar">${(t.identificacao||'?')[0].toUpperCase()}</div>
-            <div class="email-info">
-              <div class="email-nome">${t.identificacao}</div>
-              <div class="email-de">${t.telefone} · ${t.assuntoTipo}</div>
-            </div>
-            <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;background:${corResp}22;color:${corResp};border:1px solid ${corResp}44;white-space:nowrap">→ ${t.responsavel}</span>
-          </div>
-          <div class="email-body">
-            <div class="section-label">Resumo IA</div>
-            <div class="email-preview" style="margin-bottom:12px">${t.resumo}</div>
-            <div class="section-label">Descrição original do proprietário</div>
-            <div class="email-preview" style="color:var(--muted);font-size:12px;margin-bottom:12px">${t.descricaoOriginal}</div>
-            <div class="section-label">✨ Sugestão de resposta</div>
-            <textarea class="resposta-textarea" id="wresp-${i}" style="width:100%;min-height:120px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:inherit;font-size:13px;resize:vertical;outline:none">${t.sugestao}</textarea>
-          </div>
-          <div class="email-actions">
-            <button class="btn btn-success" onclick="aprovarWhatsapp(${i},'${t.id}','${t.remoteJid}')">✅ Aprovar e Enviar</button>
-            <a href="${t.whatsappLink}" target="_blank" class="btn btn-outline" style="text-decoration:none">💬 Abrir WhatsApp</a>
-            <button class="btn btn-outline" onclick="arquivarTriagem(${i},'${t.id}')">✗ Arquivar</button>
-          </div>`;
+        card.id = 'tc-' + i;
+        const id = (t.id||'').replace(/'/g,"\'");
+        const rjid = (t.remoteJid||'').replace(/'/g,"\'");
+        card.innerHTML =
+          '<div class="email-header">' +
+          '<div class="email-avatar">' + nome[0].toUpperCase() + '</div>' +
+          '<div class="email-info"><div class="email-nome">' + nome + '</div>' +
+          '<div class="email-de">' + (t.telefone||'') + ' · ' + (t.assuntoTipo||'') + '</div></div>' +
+          '<span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;background:' + corResp + '22;color:' + corResp + ';border:1px solid ' + corResp + '44;white-space:nowrap">→ ' + t.responsavel + '</span>' +
+          '</div>' +
+          '<div class="email-body">' +
+          '<div style="font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Resumo IA</div>' +
+          '<div class="email-text" style="margin-bottom:12px">' + (t.resumo||'—') + '</div>' +
+          '<div style="font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Descrição original</div>' +
+          '<div class="email-text" style="color:var(--muted);font-size:12px;margin-bottom:12px">' + (t.descricaoOriginal||'—') + '</div>' +
+          '<div style="font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">✨ Sugestão de resposta</div>' +
+          '<textarea id="wresp-' + i + '" style="width:100%;min-height:120px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:inherit;font-size:13px;resize:vertical;outline:none">' + (t.sugestao||'') + '</textarea>' +
+          '</div>' +
+          '<div class="email-actions">' +
+          '<button class="btn-aprovar" onclick="aprovarWhatsapp(' + i + ',\'' + id + '\',\'' + rjid + '\')">✅ Aprovar e Enviar</button>' +
+          '<a href="' + (t.whatsappLink||'#') + '" target="_blank" class="btn-ignorar" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">💬 Abrir</a>' +
+          '<button class="btn-ignorar" onclick="arquivarTriagem(' + i + ',\'' + id + '\')">✗ Arquivar</button>' +
+          '</div>';
         container.appendChild(card);
       });
     }
 
     async function aprovarWhatsapp(i, id, remoteJid) {
-      const texto = document.getElementById(`wresp-${i}`).value;
+      const texto = document.getElementById('wresp-' + i).value;
       try {
         const res = await fetch('/whatsapp/aprovar', {
           method: 'POST',
@@ -441,7 +430,7 @@ Gostaríamos de informar que...</textarea>
         });
         const data = await res.json();
         if (data.sucesso) {
-          const c = document.getElementById(`tc-${i}`);
+          const c = document.getElementById('tc-' + i);
           c.style.opacity = '0.4';
           c.style.pointerEvents = 'none';
           c.querySelector('.email-actions').innerHTML = '<p style="color:var(--success);font-size:12px;padding:8px 0">✅ Resposta enviada!</p>';
@@ -455,11 +444,10 @@ Gostaríamos de informar que...</textarea>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id })
       });
-      const c = document.getElementById(`tc-${i}`);
+      const c = document.getElementById('tc-' + i);
       if (c) c.style.display = 'none';
     }
     // ────────────────────────────────────────────────────────────────────────────
-
 
     // ─── DISPARO PERSONALIZADO ───────────────────────────────────────────────
 
@@ -676,81 +664,6 @@ Gostaríamos de informar que...</textarea>
         </div>`;
     }
 
-    // WHATSAPP TRIAGEM
-    async function verificarWhatsapp() {
-      const btn = document.getElementById('btnWhatsapp');
-      btn.disabled = true;
-      btn.innerHTML = '<div class="spinner"></div> Verificando...';
-      document.getElementById('whatsappResultado').innerHTML = '';
-      try {
-        const res = await fetch('/whatsapp/verificar');
-        const data = await res.json();
-        btn.disabled = false;
-        btn.innerHTML = '📱 Verificar Mensagens Agora';
-        if (data.erro) {
-          document.getElementById('whatsappResultado').innerHTML = `<div class="agente-empty"><div class="icon">❌</div><p>${data.erro}</p></div>`;
-          return;
-        }
-        await carregarPendentesWhatsapp();
-        if (!data.pendentes) {
-          document.getElementById('whatsappResultado').innerHTML = `<div class="agente-empty"><div class="icon">📭</div><p>Nenhuma mensagem nova no momento.</p></div>`;
-        }
-      } catch (err) {
-        btn.disabled = false;
-        btn.innerHTML = '📱 Verificar Mensagens Agora';
-        document.getElementById('whatsappResultado').innerHTML = `<div class="agente-empty"><div class="icon">❌</div><p>Erro ao conectar.</p></div>`;
-      }
-    }
-
-    async function carregarPendentesWhatsapp() {
-      try {
-        const res = await fetch('/whatsapp/pendentes');
-        const data = await res.json();
-        renderTriagem(data.pendentes || []);
-      } catch {}
-    }
-
-    function renderTriagem(triagens) {
-      const container = document.getElementById('whatsappResultado');
-      if (!triagens.length) { container.innerHTML = ''; return; }
-      container.innerHTML = `<p style="font-size:13px;color:var(--muted);margin-bottom:16px">${triagens.length} triagem(ns) concluída(s):</p>`;
-      triagens.forEach((t, i) => {
-        const corResp = t.responsavel === 'Júlia' ? '#c9965c' : '#5cb87a';
-        const card = document.createElement('div');
-        card.className = 'email-card';
-        card.id = `tc-${i}`;
-        card.innerHTML = `
-          <div class="email-header">
-            <div class="email-avatar">${(t.nome||'?')[0].toUpperCase()}</div>
-            <div class="email-info">
-              <div class="email-nome">${t.nome}</div>
-              <div class="email-de">${t.email || ''} · ${(t.unidades||[]).join(', ')}</div>
-            </div>
-            <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;background:${corResp}22;color:${corResp};border:1px solid ${corResp}44;white-space:nowrap">→ ${t.responsavel}</span>
-          </div>
-          <div class="email-body">
-            <div class="section-label">Assunto: ${t.assunto}</div>
-            <div class="email-preview" style="margin-bottom:8px"><strong>Resumo IA:</strong> ${t.resumo}</div>
-            <div class="email-preview" style="color:var(--muted);font-size:11px"><strong>Original:</strong> ${t.descricaoOriginal}</div>
-          </div>
-          <div class="email-actions">
-            <a href="${t.whatsappLink}" target="_blank" class="btn btn-success" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">💬 Abrir WhatsApp</a>
-            <button class="btn btn-outline" onclick="arquivarTriagem(${i},'${t.msgId}')">✓ Arquivar</button>
-          </div>`;
-        container.appendChild(card);
-      });
-    }
-
-    async function arquivarTriagem(i, msgId) {
-      await fetch('/whatsapp/ignorar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ msgId, nome: '', remoteJid: '' })
-      });
-      const c = document.getElementById(`tc-${i}`);
-      if (c) c.style.display = 'none';
-    }
-
-  </script>
+    </script>
 </body>
 </html>
