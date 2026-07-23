@@ -371,6 +371,19 @@ Gostaríamos de informar que...</textarea>
   </div>
 
   <script>
+    // ─── NAVEGAÇÃO ──────────────────────────────────────────────────────────────
+    const tabs = document.querySelectorAll('.tab');
+
+    function trocarTab(tab) {
+      tabs.forEach((n, i) => n.classList.toggle('active', ['envio','agente','whatsapp','personalizado'][i] === tab));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      const el = document.getElementById('tab-' + tab);
+      if (el) el.classList.add('active');
+      if (tab === 'whatsapp') carregarPendentesWhatsapp();
+    }
+    // ────────────────────────────────────────────────────────────────────────────
+
+
     // ─── DISPARO PERSONALIZADO ───────────────────────────────────────────────
 
     // Carrega proprietarios.json para busca por unidade
