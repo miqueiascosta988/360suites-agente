@@ -11,8 +11,8 @@ const { verificarBloqueios, marcarNotificado, carregarPendentes, removerPendente
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 const uploadDir = path.resolve(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
@@ -251,32 +251,30 @@ const getWpp = () => { if (!_wpp) _wpp = require("./agente_whatsapp"); return _w
 
 // Webhook recebe mensagens em tempo real da Evolution API
 app.post("/webhook/whatsapp", async (req, res) => {
-  res.status(200).json({ ok: true }); // responde imediatamente
+  res.status(200).json({ ok: true });
   try {
     const body = req.body;
     if (body?.event !== "messages.upsert") return;
     const msgs = body?.data?.messages || [];
     for (const msg of msgs) {
-      if (msg?.key?.fromMe) continue; // ignora mensagens enviadas por nós
+      if (msg?.key?.fromMe) continue;
       const remoteJid = msg?.key?.remoteJid;
       const texto = msg?.message?.conversation || msg?.message?.extendedTextMessage?.text || "";
       if (texto && remoteJid) {
-        console.log(`📱 Webhook recebido: ${remoteJid} — "${texto.substring(0,50)}"`);
-        await getWpp().processarWebhook(remoteJid, texto);
+        console.log(`📱 Webhook: ${remoteJid} — "${texto.substring(0,50)}"`);
+        setImmediate(() => getWpp().processarWebhook(remoteJid, texto));
       }
     }
   } catch (err) {
-    console.error("❌ Erro no webhook WhatsApp:", err.message);
+    console.error("❌ Erro no webhook:", err.message);
   }
 });
 
-// Lista triagens pendentes no painel
 app.get("/whatsapp/pendentes", (req, res) => {
   try { res.json({ pendentes: getWpp().carregarPendentes() }); }
   catch (err) { res.status(500).json({ erro: err.message }); }
 });
 
-// Aprova e envia resposta
 app.post("/whatsapp/aprovar", async (req, res) => {
   try {
     const { id, remoteJid, texto } = req.body;
@@ -285,12 +283,10 @@ app.post("/whatsapp/aprovar", async (req, res) => {
     console.log(`✅ Resposta WhatsApp enviada para ${remoteJid}`);
     res.json({ sucesso: true });
   } catch (err) {
-    console.error("❌ Erro ao enviar WhatsApp:", err.message);
     res.status(500).json({ erro: err.message });
   }
 });
 
-// Arquiva sem responder
 app.post("/whatsapp/arquivar", (req, res) => {
   try {
     const { id } = req.body;
@@ -306,4 +302,16 @@ app.listen(PORT, () => {
   console.log(`🚀 360 Suítes rodando na porta ${PORT}`);
   console.log(`📧 Gmail: ${process.env.GMAIL_USER}`);
   console.log(`🤖 Groq: ${process.env.GROQ_API_KEY ? "✅" : "❌"} | Gemini: ${process.env.GEMINI_API_KEY ? "✅" : "❌"}`);
+})
+
+  // Configura webhook da Evolution API
+  const serverUrl = process.env.SERVER_URL || "https://360suites-agente-production.up.railway.app";
+  setTimeout(async () => {
+    try {
+      const { configurarWebhook } = require("./agente_whatsapp");
+      await configurarWebhook(serverUrl);
+    } catch (err) {
+      console.error("❌ Erro ao configurar webhook:", err.message);
+    }
+  }, 5000);
 });
