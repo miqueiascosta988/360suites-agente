@@ -322,25 +322,24 @@ app.post("/webhook/whatsapp", async (req, res) => {
     const body = req.body;
     const evento = body?.event;
 
-    // Só processa mensagens recebidas (não enviadas por nós)
     if (evento !== "messages.upsert") return;
 
     const dados = body?.data;
     const fromMe = dados?.key?.fromMe;
-    if (fromMe) return; // ignora mensagens enviadas por nós
+    if (fromMe) return;
 
     const remoteJid = dados?.key?.remoteJid;
     const msgId = dados?.key?.id;
     const texto = dados?.message?.conversation || dados?.message?.extendedTextMessage?.text || "";
 
     if (!remoteJid || !texto || texto.length < 2) return;
-    if (remoteJid.includes("@g.us")) return; // ignora grupos
+    if (remoteJid.includes("@g.us")) return;
 
     console.log(`📱 Webhook recebido: ${remoteJid} | ${texto.substring(0, 60)}`);
 
-    const { salvarRespondido: _salvar, ...wa } = require("./agente_whatsapp");
-    await processarMensagem(remoteJid, texto, msgId);
-    salvarRespondido(msgId, { remoteJid, texto });
+    const wa = require("./agente_whatsapp");
+    await wa.processarMensagem(remoteJid, texto, msgId);
+    wa.salvarRespondido(msgId, { remoteJid, texto });
   } catch (err) {
     console.error("❌ Erro no webhook WhatsApp:", err.message);
   }
