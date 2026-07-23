@@ -39,7 +39,9 @@ const enviarMensagem = async (remoteJid, texto) => {
       headers: { "Content-Type": "application/json", "apikey": EVOLUTION_KEY },
       body: JSON.stringify({ number: remoteJid, text: texto }),
     });
-    return res.json();
+    const data = await res.json();
+    console.log(`📤 Resposta API:`, JSON.stringify(data).substring(0, 200));
+    return data;
   } catch (err) {
     console.error("❌ Erro ao enviar WhatsApp:", err.message);
   }
