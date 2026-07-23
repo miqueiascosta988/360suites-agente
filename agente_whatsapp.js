@@ -1,4 +1,4 @@
-// agente_whatsapp.js — Triagem automática via WhatsApp + painel de aprovação
+// agente_whatsapp.js — Triagem automática via WhatsApp (Evolution API)
 const fs = require("fs");
 const path = require("path");
 const { chamarIA } = require("./ai");
@@ -6,6 +6,7 @@ const { chamarIA } = require("./ai");
 const EVOLUTION_URL = process.env.EVOLUTION_API_URL;
 const EVOLUTION_KEY = process.env.EVOLUTION_API_KEY;
 const EVOLUTION_INSTANCE = process.env.EVOLUTION_INSTANCE || "360suites";
+const GRUPO_TRIAGEM = process.env.WHATSAPP_GRUPO_TRIAGEM;
 
 const CONVERSAS_PATH = path.resolve(__dirname, "wpp_conversas.json");
 const PENDENTES_PATH = path.resolve(__dirname, "wpp_pendentes.json");
@@ -15,14 +16,12 @@ const carregarConversas = () => {
   try { return fs.existsSync(CONVERSAS_PATH) ? JSON.parse(fs.readFileSync(CONVERSAS_PATH, "utf8")) : {}; }
   catch { return {}; }
 };
-
 const salvarConversas = (d) => fs.writeFileSync(CONVERSAS_PATH, JSON.stringify(d, null, 2), "utf8");
 
 const carregarPendentes = () => {
   try { return fs.existsSync(PENDENTES_PATH) ? JSON.parse(fs.readFileSync(PENDENTES_PATH, "utf8")) : []; }
   catch { return []; }
 };
-
 const salvarPendentes = (d) => fs.writeFileSync(PENDENTES_PATH, JSON.stringify(d, null, 2), "utf8");
 
 const removerPendente = (id) => {
@@ -45,64 +44,82 @@ const enviarMensagem = async (remoteJid, texto) => {
   }
 };
 
-// ── Fluxo de triagem ──────────────────────────────────────────────────────────
-/*
-  Estados:
-  aguardando_nome     → pede nome e e-mail
-  aguardando_direcao  → pede 1 (Júlia) ou 2 (Miquéias)
-  aguardando_assunto  → pede descrição do assunto
-  concluido           → triagem finalizada, aguarda no painel
-*/
+// ── Notificação no grupo de triagem ──────────────────────────────────────────
+const notificarGrupo = async (dados) => {
+  if (!GRUPO_TRIAGEM) {
+    console.warn("⚠️ WHATSAPP_GRUPO_TRIAGEM não configurado");
+    return;
+  }
 
+  const emoji = dados.responsavel === "Júlia" ? "🟡" : "🟢";
+  const telefone = dados.remoteJid?.replace("@s.whatsapp.net", "").replace(/\D/g, "");
+  const linkWpp = `https://wa.me/${telefone}`;
+
+  const mensagem = `${emoji} *Nova Triagem 360 Suítes*
+
+👤 *Proprietário:* ${dados.identificacao || "Não informado"}
+📋 *Assunto:* ${dados.assuntoTipo}
+➡️ *Encaminhar para:* ${dados.responsavel}
+
+📝 *Resumo:*
+${dados.resumo}
+
+💬 *Descrição original:*
+_${dados.descricaoOriginal}_
+
+✨ *Sugestão de resposta:*
+${dados.sugestao}
+
+📱 ${linkWpp}`;
+
+  await enviarMensagem(GRUPO_TRIAGEM, mensagem);
+  console.log(`✅ Notificação enviada para o grupo de triagem`);
+};
+
+// ── Fluxo de triagem ──────────────────────────────────────────────────────────
 const processarWebhook = async (remoteJid, textoRecebido) => {
   if (!remoteJid || !textoRecebido) return;
-
-  // Ignora grupos
-  if (remoteJid.includes("@g.us")) return;
+  if (remoteJid.includes("@g.us")) return; // ignora grupos
 
   const conversas = carregarConversas();
-  const conversa = conversas[remoteJid] || { estado: "aguardando_nome", historico: [] };
+  const conversa = conversas[remoteJid] || { estado: "inicio", historico: [] };
   const texto = textoRecebido.trim();
 
-  // Adiciona ao histórico
   conversa.historico = conversa.historico || [];
   conversa.historico.push({ de: "proprietario", texto, hora: new Date().toISOString() });
 
   console.log(`📱 ${remoteJid} | Estado: ${conversa.estado} | "${texto.substring(0, 50)}"`);
 
-  // ── Estado: aguardando nome/email ────────────────────────────────────────
-  if (conversa.estado === "aguardando_nome") {
-    conversas[remoteJid] = conversa;
+  // ── Início ────────────────────────────────────────────────────────────────
+  if (conversa.estado === "inicio") {
+    conversas[remoteJid] = { ...conversa, estado: "aguardando_identificacao" };
     salvarConversas(conversas);
 
     const resposta = `Olá! 👋 Sou a assistente virtual da *360 Suítes*.\n\nPara te atender melhor, por favor me informe:\n\n📝 *Seu nome completo e e-mail cadastrado*`;
     await enviarMensagem(remoteJid, resposta);
 
-    conversa.estado = "aguardando_direcao_apos_identificacao";
     conversa.historico.push({ de: "bot", texto: resposta, hora: new Date().toISOString() });
-    conversas[remoteJid] = conversa;
+    conversas[remoteJid] = { ...conversa, estado: "aguardando_identificacao" };
     salvarConversas(conversas);
     return;
   }
 
-  // ── Estado: aguardando identificação ────────────────────────────────────
-  if (conversa.estado === "aguardando_direcao_apos_identificacao") {
-    // Salva identificação informada pelo proprietário
+  // ── Aguardando identificação ─────────────────────────────────────────────
+  if (conversa.estado === "aguardando_identificacao") {
     conversa.identificacao = texto;
-    conversa.estado = "aguardando_direcao";
-    conversas[remoteJid] = conversa;
+    conversas[remoteJid] = { ...conversa, estado: "aguardando_direcao" };
     salvarConversas(conversas);
 
     const resposta = `Obrigado! 😊\n\nCom quem você gostaria de falar?\n\n*1️⃣* Júlia — _Distratos_\n*2️⃣* Miquéias — _Outros assuntos_\n\nDigite *1* ou *2*:`;
     await enviarMensagem(remoteJid, resposta);
 
     conversa.historico.push({ de: "bot", texto: resposta, hora: new Date().toISOString() });
-    conversas[remoteJid] = conversa;
+    conversas[remoteJid] = { ...conversa, estado: "aguardando_direcao" };
     salvarConversas(conversas);
     return;
   }
 
-  // ── Estado: aguardando direção ───────────────────────────────────────────
+  // ── Aguardando direção ────────────────────────────────────────────────────
   if (conversa.estado === "aguardando_direcao") {
     const opcao = texto.replace(/[^12]/g, "");
 
@@ -111,26 +128,27 @@ const processarWebhook = async (remoteJid, textoRecebido) => {
       return;
     }
 
-    conversa.responsavel = opcao === "1" ? "Júlia" : "Miquéias";
-    conversa.assuntoTipo = opcao === "1" ? "Distratos" : "Outros assuntos";
-    conversa.estado = "aguardando_assunto";
-    conversas[remoteJid] = conversa;
+    const responsavel = opcao === "1" ? "Júlia" : "Miquéias";
+    const assuntoTipo = opcao === "1" ? "Distratos" : "Outros assuntos";
+
+    conversa.responsavel = responsavel;
+    conversa.assuntoTipo = assuntoTipo;
+    conversas[remoteJid] = { ...conversa, estado: "aguardando_descricao" };
     salvarConversas(conversas);
 
-    const resposta = `Certo! Você será atendido(a) por *${conversa.responsavel}* _(${conversa.assuntoTipo})_.\n\n📋 Por favor, descreva o que você precisa com o máximo de detalhes:`;
+    const resposta = `Certo! Você será atendido(a) por *${responsavel}* _(${assuntoTipo})_.\n\n📋 Por favor, descreva o que você precisa com o máximo de detalhes:`;
     await enviarMensagem(remoteJid, resposta);
 
     conversa.historico.push({ de: "bot", texto: resposta, hora: new Date().toISOString() });
-    conversas[remoteJid] = conversa;
+    conversas[remoteJid] = { ...conversa, estado: "aguardando_descricao" };
     salvarConversas(conversas);
     return;
   }
 
-  // ── Estado: aguardando assunto ───────────────────────────────────────────
-  if (conversa.estado === "aguardando_assunto") {
+  // ── Aguardando descrição ──────────────────────────────────────────────────
+  if (conversa.estado === "aguardando_descricao") {
     conversa.descricaoOriginal = texto;
-    conversa.estado = "processando";
-    conversas[remoteJid] = conversa;
+    conversas[remoteJid] = { ...conversa, estado: "processando" };
     salvarConversas(conversas);
 
     // Confirma recebimento imediatamente
@@ -138,7 +156,7 @@ const processarWebhook = async (remoteJid, textoRecebido) => {
     await enviarMensagem(remoteJid, confirmacao);
     conversa.historico.push({ de: "bot", texto: confirmacao, hora: new Date().toISOString() });
 
-    // Processa em background com IA
+    // Processa com IA em background
     setImmediate(async () => {
       try {
         const historicoTexto = conversa.historico
@@ -164,19 +182,16 @@ SUGESTAO:
 [sugestão de resposta aqui]`;
 
         const resultado = await chamarIA(prompt);
-
         const resumoMatch = resultado.match(/RESUMO:\s*([\s\S]*?)(?=SUGESTAO:|$)/i);
         const sugestaoMatch = resultado.match(/SUGESTAO:\s*([\s\S]*?)$/i);
 
         const resumo = resumoMatch?.[1]?.trim() || texto;
         const sugestao = sugestaoMatch?.[1]?.trim() || `Olá! Recebemos sua solicitação e entraremos em contato em breve.\n\nAtenciosamente,\n${conversa.responsavel}\n360 Suítes`;
 
-        // Adiciona ao painel
-        const pendentes = carregarPendentes();
-        pendentes.push({
+        const dadosTriagem = {
           id: `${remoteJid}_${Date.now()}`,
           remoteJid,
-          telefone: remoteJid.replace("@s.whatsapp.net", ""),
+          telefone: remoteJid.replace("@s.whatsapp.net", "").replace(/\D/g, ""),
           identificacao: conversa.identificacao || "Não informada",
           responsavel: conversa.responsavel,
           assuntoTipo: conversa.assuntoTipo,
@@ -186,33 +201,36 @@ SUGESTAO:
           historico: conversa.historico,
           whatsappLink: `https://wa.me/${remoteJid.replace("@s.whatsapp.net", "").replace(/\D/g, "")}`,
           dataTriagem: new Date().toISOString(),
-        });
+        };
+
+        // Salva no arquivo de pendentes (painel)
+        const pendentes = carregarPendentes();
+        pendentes.push(dadosTriagem);
         salvarPendentes(pendentes);
 
+        // Envia notificação no grupo de triagem
+        await notificarGrupo(dadosTriagem);
+
         // Marca como concluído
-        conversa.estado = "concluido";
-        conversas[remoteJid] = conversa;
+        conversas[remoteJid] = { ...conversa, estado: "concluido" };
         salvarConversas(conversas);
 
         console.log(`✅ Triagem concluída: ${conversa.identificacao} → ${conversa.responsavel}`);
       } catch (err) {
-        console.error("❌ Erro ao processar triagem com IA:", err.message);
-        conversa.estado = "concluido";
-        conversas[remoteJid] = conversa;
+        console.error("❌ Erro ao processar triagem:", err.message);
+        conversas[remoteJid] = { ...conversa, estado: "concluido" };
         salvarConversas(conversas);
       }
     });
     return;
   }
 
-  // ── Estado: concluído — reinicia se mandar nova mensagem ────────────────
+  // ── Concluído — reinicia após 2h ─────────────────────────────────────────
   if (conversa.estado === "concluido" || conversa.estado === "processando") {
-    // Aguarda 2h antes de reiniciar (evita loop)
     const ultimaMensagem = conversa.historico?.[conversa.historico.length - 1];
-    const diff = ultimaMensagem ? (Date.now() - new Date(ultimaMensagem.hora).getTime()) / 1000 / 60 : 999;
+    const diffMin = ultimaMensagem ? (Date.now() - new Date(ultimaMensagem.hora).getTime()) / 60000 : 999;
 
-    if (diff > 120) {
-      // Reinicia conversa
+    if (diffMin > 120) {
       delete conversas[remoteJid];
       salvarConversas(conversas);
       await processarWebhook(remoteJid, textoRecebido);
@@ -222,12 +240,11 @@ SUGESTAO:
   }
 };
 
-// ── Configura webhook na Evolution API ───────────────────────────────────────
+// ── Configura webhook ─────────────────────────────────────────────────────────
 const configurarWebhook = async (serverUrl) => {
   try {
     const fetch = require("node-fetch");
     const webhookUrl = `${serverUrl}/webhook/whatsapp`;
-
     const res = await fetch(`${EVOLUTION_URL}/webhook/set/${EVOLUTION_INSTANCE}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "apikey": EVOLUTION_KEY },
@@ -238,9 +255,8 @@ const configurarWebhook = async (serverUrl) => {
         events: ["MESSAGES_UPSERT"],
       }),
     });
-
     const data = await res.json();
-    console.log(`🔗 Webhook configurado: ${webhookUrl}`, data);
+    console.log(`🔗 Webhook configurado: ${webhookUrl}`);
     return data;
   } catch (err) {
     console.error("❌ Erro ao configurar webhook:", err.message);
