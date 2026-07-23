@@ -202,13 +202,19 @@ if (body?.event !== "messages.upsert") return;
 const msgs = body?.data?.messages || (body?.data?.key ? [body.data] : []);
 for (const msg of msgs) {
   if (msg?.key?.fromMe) continue;
-  const remoteJid = msg?.key?.remoteJid;
+  let remoteJid = msg?.key?.remoteJid;
+  // Converte @lid para @s.whatsapp.net se necessário
+  if (remoteJid && remoteJid.endsWith("@lid")) {
+    const sender = body?.sender || "";
+    remoteJid = remoteJid; // mantém @lid, Evolution API aceita envio para @lid também
+  }
+  if (remoteJid?.includes("@g.us")) continue; // ignora grupos
   const texto = msg?.message?.conversation || msg?.message?.extendedTextMessage?.text || "";
-      if (texto && remoteJid) {
-        console.log(`📱 Webhook: ${remoteJid} — "${texto.substring(0, 50)}"`);
-        setImmediate(() => getWpp().processarWebhook(remoteJid, texto));
-      }
-    }
+  if (texto && remoteJid) {
+    console.log(`📱 Webhook: ${remoteJid} — "${texto.substring(0, 50)}"`);
+    setImmediate(() => getWpp().processarWebhook(remoteJid, texto));
+  }
+}
   } catch (err) { console.error("❌ Erro no webhook:", err.message); }
 });
 
