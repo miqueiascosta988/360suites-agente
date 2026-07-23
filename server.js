@@ -202,17 +202,33 @@ if (body?.event !== "messages.upsert") return;
 const msgs = body?.data?.messages || (body?.data?.key ? [body.data] : []);
 for (const msg of msgs) {
   if (msg?.key?.fromMe) continue;
-  let remoteJid = msg?.key?.remoteJid;
-  // Converte @lid para @s.whatsapp.net se necessário
-  if (remoteJid && remoteJid.endsWith("@lid")) {
-    const sender = body?.sender || "";
-    remoteJid = remoteJid; // mantém @lid, Evolution API aceita envio para @lid também
-  }
-  if (remoteJid?.includes("@g.us")) continue; // ignora grupos
+  const remoteJid = msg?.key?.remoteJid;
+  if (!remoteJid || remoteJid.includes("@g.us")) continue;
+  // Usa pushName e número do campo key para montar JID correto
+  const pushName = msg?.pushName || "";
   const texto = msg?.message?.conversation || msg?.message?.extendedTextMessage?.text || "";
+  // Busca número real via API se for @lid
   if (texto && remoteJid) {
     console.log(`📱 Webhook: ${remoteJid} — "${texto.substring(0, 50)}"`);
-    setImmediate(() => getWpp().processarWebhook(remoteJid, texto));
+    setImmediate(async () => {
+      let jid = remoteJid;
+      if (remoteJid.endsWith("@lid")) {
+        try {
+          const fetch = require("node-fetch");
+          const r = await fetch(`${process.env.EVOLUTION_API_URL}/chat/whatsappNumbers/${process.env.EVOLUTION_INSTANCE}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "apikey": process.env.EVOLUTION_API_KEY },
+            body: JSON.stringify({ numbers: [remoteJid.replace("@lid", "")] }),
+          });
+          const data = await r.json();
+          if (data?.[0]?.jid) jid = data[0].jid;
+          console.log(`🔍 JID resolvido: ${remoteJid} → ${jid}`);
+        } catch (e) {
+          console.error("Erro ao resolver JID:", e.message);
+        }
+      }
+      getWpp().processarWebhook(jid, texto);
+    });
   }
 }
   } catch (err) { console.error("❌ Erro no webhook:", err.message); }
