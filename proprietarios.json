@@ -1,210 +1,68 @@
 [
   {
-    "nome": "Denys Miyashiro",
-    "email": "denysmiyashiro@yahoo.com.br",
+    "nome": "Thiago Ribeiro Da Silva Cabral",
+    "email": "contato@ribeiroholdings.com.b",
+    "telefone": "",
     "unidades": [
-      "BO1216"
-    ]
-  },
-   {
-    "nome": "Marina Gomes de Lima Ruas",
-    "email": "marinagf_2006@hotmail.com",
-    "unidades": [
-      "RM512"
-    ]    
-},
-  
-  {
-    "nome": "Mauro César de Morais Filho",
-    "email": "mfmorais@terra.com.br",
-    "unidades": [
-      "MC304",
-      "MC303"
+      "1103"
     ]
   },
   {
-    "nome": "REGIANE MORIYA",
-    "email": "moriya@uol.com.br",
+    "nome": "YUN SUNG CHA",
+    "email": "Yunesscha1@gmail.com",
+    "telefone": "",
     "unidades": [
-      "MC532"
+      "1205",
+      "SP1205"
     ]
   },
   {
-    "nome": "JOSÉ CARLOS DEL NEGRI",
-    "email": "jdelnegri@gmail.com",
+    "nome": "maria da consolaÇÃo sales bigoni",
+    "email": "mariabigoni@hotmail.com",
+    "telefone": "11199974649",
     "unidades": [
-      "MC430"
+      "101",
+      "LP101"
     ]
   },
   {
-    "nome": "Almir Ferreira Alexandre",
-    "email": "almiralexandre@terra.com.br",
+    "nome": "Claudio Junior Lutz Pinheiro",
+    "email": "canela.claudio@yahoo.com.br",
+    "telefone": "5511945903636",
     "unidades": [
-      "MC207"
+      "303",
+      "AS303"
     ]
   },
   {
-    "nome": "RSP Com Hortifruti Ltda",
-    "email": "rofrutas@hotmail.com",
+    "nome": "Francisco Giannoccaro Filho",
+    "email": "franciscogiannoccaro@ig.com.br",
+    "telefone": "5511994306022",
     "unidades": [
-      "BS2301"
-    ]
-  },
-  {
-    "nome": "Aparecido Donizete Pereira",
-    "email": "sppereira1957@gmail.com",
-    "unidades": [
-      "BO514"
+      "PT516"
     ]
   },
   {
     "nome": "Marcelo Silva de Oliveira",
     "email": "m.oliveira10@uol.com.br",
+    "telefone": "5521999671434",
     "unidades": [
       "BO1011",
       "BO818"
     ]
   },
   {
-    "nome": "Juliana Akie Takahashi",
-    "email": "julytakahashi0809@gmail.com",
-    "unidades": [
-      "PG202"
-    ]
-  },
-  {
-    "nome": "Herbert Oliveira Peixoto",
-    "email": "hpeixoto@hotmail.com",
-    "unidades": [
-      "BO317"
-    ]
-  },
-  {
-    "nome": "SRS Holding de Investimentos Ltda.",
-    "email": "alexandresrs@gmail.com",
-    "unidades": [
-      "PG316"
-    ]
-  },
-  {
-    "nome": "Priscila Gracie dos Santos barros",
-    "email": "graciepriscila@gmail.com",
-    "unidades": [
-      "BO614"
-    ]
-  },
-  {
-    "nome": "Renato Ferreira Monticelli",
-    "email": "monticelli2004@hotmail.com",
-    "unidades": [
-      "PE1302B",
-      "PE1502B"
-    ]
-  },
-  {
-    "nome": "JSD EMPREENDIMENTOS E ASSESSORIA TECNICA LTDA",
-    "email": "j.duran@maccaferri.com",
-    "unidades": [
-      "PT309"
-    ]
-  },
-  {
-    "nome": "Mohamed M’Bodji Hanne",
-    "email": "mohamedhanne09@gmail.com",
-    "unidades": [
-      "PT1711"
-    ]
-  },
-  {
-    "nome": "NELSON MARESCA FILHO",
-    "email": "nsmaresca@uol.com.br",
-    "unidades": [
-      "MC205"
-    ]
-  },
-  {
-    "nome": "José Tadeu Dantas Leite",
-    "email": "fazenda_tadeu@hotmail.com",
-    "unidades": [
-      "ZB1134"
-    ]
-  },
-  {
-    "nome": "Fernando Fernandes Diniz Junqueira",
-    "email": "fernandojunqueira@hotmail.com",
-    "unidades": [
-      "SF307"
-    ]
-  },
-  {
-    "nome": "Francielle Mariano Mazzer Tiossi",
-    "email": "rantiossi@gmail.com",
-    "unidades": [
-      "RM1306"
-    ]
-  },
-  {
-    "nome": "Ivan Pena Rocha Junior",
-    "email": "ivanrjr@gmail.com",
-    "unidades": [
-      "RM206"
-    ]
-  },
-  {
-    "nome": "THAJ ADMINISTRADORA DE BENS - LTDA",
-    "email": "thiago@setim.com.br",
-    "unidades": [
-      "RM1006"
-    ]
-  },
-  {
-    "nome": "Bruno Francisco Antunes Genovesi",
-    "email": "nilson@genovesi.com.br",
-    "unidades": [
-      "RM302"
-    ]
-  },
-  {
-    "nome": "Luiz Claudio Themudo",
-    "email": "lthemudo@yahoo.com.br",
-    "unidades": [
-      "RM403",
-      "RM404",
-      "AP12",
-      "HZ405"
-    ]
-  },
-  {
-    "nome": "Daniele Aguiar Monticelli",
-    "email": "danieleaguiardeoliveira@gmail.com",
-    "unidades": [
-      "PE1402B"
-    ]
-  },
-  {
-    "nome": "Ivan Generoso",
-    "email": "i.generoso@hotmail.com",
-    "unidades": [
-      "PE1903B"
-    ]
-  },
-  {
-    "nome": "PAULO ALEXANDRE AYRES DE CAMARGO",
-    "email": "paulo.camargo@btgpactual.com",
-    "unidades": [
-      "PE1308B"
-    ]
-  },
-  {
     "nome": "Raul Imóveis Ltda.",
-    "email": "",
+    "email": "raul@raulimoveis.net",
+    "telefone": "",
     "unidades": [
       "NU118",
-      "NU205",
-      "NU210",
       "NU218",
-      "NU102",
+      "NU210",
+      "NU205",
+      "NU109",
       "NU101",
+      "NU102",
       "NU103",
       "NU104",
       "NU105",
@@ -212,12 +70,8 @@
       "NU106",
       "NU108",
       "NU113",
-      "NU109",
       "NU114",
       "NU110",
-      "NU217",
-      "NU216",
-      "NU206",
       "NU115",
       "NU111",
       "NU116",
@@ -226,7 +80,9 @@
       "NU201",
       "NU202",
       "NU203",
+      "NU215",
       "NU204",
+      "NU206",
       "NU207",
       "NU208",
       "NU209",
@@ -234,66 +90,61 @@
       "NU212",
       "NU213",
       "NU214",
-      "NU215"
+      "NU216",
+      "NU217"
     ]
   },
   {
     "nome": "RIO BRAVO RENDA RESIDENCIAL FUNDO DE INVESTIMENTO IMOBILIÁRIO",
     "email": "fiirendaresidencial@riobravo.com.br",
+    "telefone": "551135096600",
     "unidades": [
-      "FY1209",
-      "FY1203",
-      "FY1401",
-      "FY901",
       "FY1410",
-      "FY1409",
-      "FY1403",
-      "FY1402",
-      "FY1107",
+      "FY111",
+      "FY104",
+      "FY107",
+      "FY108",
       "FY1411",
-      "FY1103",
-      "FY1109",
-      "FY1101",
       "FY1102",
+      "FY1103",
       "FY1104",
       "FY1105",
       "FY1110",
       "FY1111",
-      "FY1211",
+      "FY1402",
+      "FY1107",
+      "FY1707",
       "FY1207",
       "FY1407",
-      "FY1707",
       "FY1711",
+      "FY1403",
+      "FY1203",
+      "FY1209",
+      "FY1401",
+      "FY1409",
+      "FY901",
+      "FY1101",
+      "FY1211",
+      "FY105",
+      "FY906",
+      "FY410",
+      "FY408",
+      "FY405",
+      "FY404",
+      "FY701",
       "FY401",
       "FY403",
       "FY407",
       "FY406",
       "FY402",
       "FY409",
-      "FY410",
-      "FY105",
-      "FY906",
-      "FY111",
-      "FY104",
-      "FY107",
-      "FY108",
-      "FY405",
-      "FY404",
-      "FY408",
-      "FY903",
-      "FY607",
-      "FY702",
-      "FY705",
-      "FY707",
-      "FY710",
-      "FY910",
-      "FY907",
-      "FY909",
       "FY904",
-      "FY803",
-      "FY604",
-      "FY701",
+      "FY903",
+      "FY909",
+      "FY1109",
+      "FY902",
       "FY605",
+      "FY604",
       "FY609",
       "FY610",
       "FY703",
@@ -301,42 +152,83 @@
       "FY709",
       "FY911",
       "FY706",
-      "FY902"
-    ]
-  },
-  {
-    "nome": "Everson Laurindo de Paula",
-    "email": "everson.depaula@gmail.com",
-    "unidades": [
-      "AM202"
-    ]
-  },
-  {
-    "nome": "Juan Antonio Ramirez Espinoza",
-    "email": "juan.ar.espinoza@hotmail.com",
-    "unidades": [
-      "SN706B"
-    ]
-  },
-  {
-    "nome": "guilherme gallo ortiz",
-    "email": "ortiz.biologia@gmail.com",
-    "unidades": [
-      "CZ604"
-    ]
-  },
-  {
-    "nome": "Jose Ribamar Pinheiro Léda",
-    "email": "leonardoleda@gmail.com",
-    "unidades": [
-      "FY1908"
+      "FY803",
+      "FY607",
+      "FY702",
+      "FY705",
+      "FY707",
+      "FY710",
+      "FY910",
+      "FY907",
+      "VA1101",
+      "VA805",
+      "VA806",
+      "VA807",
+      "VA902",
+      "VA903",
+      "VA904",
+      "VA905",
+      "VA906",
+      "VA907",
+      "VA1001",
+      "VA105",
+      "VA106",
+      "VA804",
+      "VA201",
+      "VA210",
+      "VA301",
+      "VA401",
+      "VA501",
+      "VA601",
+      "VA701",
+      "VA801",
+      "VA810",
+      "VA901",
+      "VA504",
+      "VA1004",
+      "VA1005",
+      "VA1103",
+      "VA1104",
+      "VA1105",
+      "VA1106",
+      "VA1107",
+      "VA1109",
+      "VA302",
+      "VA402",
+      "VA502",
+      "VA503",
+      "VA505",
+      "VA506",
+      "VA507",
+      "VA602",
+      "VA603",
+      "VA604",
+      "VA605",
+      "VA606",
+      "VA706",
+      "VA802",
+      "VA803",
+      "VA1003",
+      "VA101",
+      "VA102",
+      "VA104",
+      "VA107",
+      "VA108",
+      "VA1002"
     ]
   },
   {
     "nome": "MMC ADMINISTRACAO E PARTICIPACOES LTDA",
-    "email": "martins.costa@uol.com.br",
+    "email": "Martins.costa@uol.com.br",
+    "telefone": "",
     "unidades": [
+      "BK302",
       "BK204",
+      "BK504",
+      "BK1003",
+      "BK1004",
+      "BK1007",
+      "BK1008",
       "BK308",
       "BK1206",
       "BK1901",
@@ -349,45 +241,58 @@
       "BK1605",
       "BK702",
       "BK808",
-      "BK203",
-      "BK1008",
-      "BK302",
-      "BK504",
-      "BK1003",
-      "BK1004",
-      "BK1007"
+      "BK203"
+    ]
+  },
+  {
+    "nome": "YAN YUDI CASTEDO FUTATA",
+    "email": "yancastedo@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "SN404B"
     ]
   },
   {
     "nome": "Isabella Araujo Gonçalves",
     "email": "isabella.argola@gmail.com",
+    "telefone": "5521981276787",
     "unidades": [
       "SN409B"
     ]
   },
   {
+    "nome": "Ronan Cardoso Noronha",
+    "email": "ronannoronha@hotmail.com",
+    "telefone": "24981190762",
+    "unidades": [
+      "SN204A"
+    ]
+  },
+  {
     "nome": "Gabriel Petry",
     "email": "gordonpetry@gmail.com",
+    "telefone": "51984615650",
     "unidades": [
       "SN508B"
     ]
   },
   {
     "nome": "HERCULANO DE ALMEIDA ATIVIDADES IMOBILIÁRIAS LTDA",
-    "email": "",
+    "email": "ana.brandao@vabimob.com.br",
+    "telefone": "551132375112",
     "unidades": [
       "IP19",
       "IP21",
       "IP31",
       "IP18",
-      "IP22",
       "IP15",
+      "IP22",
       "IP12",
       "IP17",
       "IP25",
       "IP32",
       "IP33",
-      "IP103",
+      "IP23",
       "IP13",
       "IP104",
       "IP34",
@@ -396,8 +301,8 @@
       "IP74",
       "IP84",
       "IP94",
+      "IP103",
       "IP113",
-      "IP23",
       "IP53",
       "IP63",
       "IP73",
@@ -407,9 +312,9 @@
       "IP47",
       "IP57",
       "IP67",
-      "IP46",
       "IP77",
       "IP87",
+      "IP76",
       "IP97",
       "IP14",
       "IP24",
@@ -418,13 +323,11 @@
       "IP106",
       "IP26",
       "IP36",
+      "IP46",
       "IP56",
       "IP66",
-      "IP76",
       "IP86",
       "IP96",
-      "IP35",
-      "IP48",
       "IP27",
       "IP49",
       "IP41",
@@ -432,54 +335,109 @@
       "IP37",
       "IP38",
       "IP39",
-      "IP43"
+      "IP43",
+      "IP48",
+      "IP35"
     ]
   },
   {
-    "nome": "anderson pascoal constantino",
-    "email": "eyanderson@hotmail.com",
+    "nome": "MICHELI TIEMI OYAMA BUSTAMANTE",
+    "email": "micheli.oyama@gmail.com",
+    "telefone": "",
     "unidades": [
-      "HZ905"
+      "KB506"
     ]
   },
   {
-    "nome": "evanise sposito",
-    "email": "evanise@brazilts.com.br",
+    "nome": "ABILIO TSUNOUSHI",
+    "email": "abilio_tsunoushi@uol.com.br",
+    "telefone": "5511992671016",
     "unidades": [
-      "HP1506"
+      "KB302",
+      "SE808",
+      "SE310"
     ]
   },
   {
-    "nome": "gilson silva dos santos",
-    "email": "gil.ss@uol.com.br",
+    "nome": "MARCELO TERRAFINO LIMA",
+    "email": "anaterrafino@hotmail.com",
+    "telefone": "",
     "unidades": [
-      "CZ308"
+      "PP1416"
     ]
   },
   {
-    "nome": "joice marquini guiza",
-    "email": "cleberguiza@gmail.com",
+    "nome": "LUANA MINOTI TOFFOLI",
+    "email": "minotiluana@gmail.com.br",
+    "telefone": "5511943938093",
     "unidades": [
-      "CZ302"
+      "AM111"
     ]
   },
   {
-    "nome": "roke empreendimentos e participações ltda",
-    "email": "rokemilani@gmail.com",
+    "nome": "Rodrigo Suassuna Quintas Lopes",
+    "email": "rosuassuna@hotmail.com",
+    "telefone": "5511964550603",
     "unidades": [
-      "KB1609",
-      "KB1610",
-      "KB1509",
-      "KB1510",
-      "KB1508"
+      "PC101",
+      "PC110"
+    ]
+  },
+  {
+    "nome": "gabriela kamimoto",
+    "email": "gkamimoto@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "TESTEGABI"
+    ]
+  },
+  {
+    "nome": "alexandre hohl",
+    "email": "alexandrehohl@endocrino.org.br",
+    "telefone": "48984055013",
+    "unidades": [
+      "HZ805"
+    ]
+  },
+  {
+    "nome": "rita de cássia dos reis moura",
+    "email": "ritarmoura@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "HZ204"
+    ]
+  },
+  {
+    "nome": "ricardo william camasmie",
+    "email": "rw.camasmie@uol.com.br",
+    "telefone": "",
+    "unidades": [
+      "HZ907"
+    ]
+  },
+  {
+    "nome": "samuel da costa pimenta",
+    "email": "samuelcostap@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "DJ406"
+    ]
+  },
+  {
+    "nome": "Simone Regina Detoni",
+    "email": "srdetoni@hotmail.com",
+    "telefone": "5511999404376",
+    "unidades": [
+      "MI612NR"
     ]
   },
   {
     "nome": "Sanfran Living Ltda",
-    "email": "",
+    "email": "magna.oliveira@vabimob.com.br",
+    "telefone": "5511986909583",
     "unidades": [
-      "RC33",
       "RC35",
+      "RC33",
       "RC36",
       "RC23",
       "RC22",
@@ -493,8 +451,17 @@
     ]
   },
   {
+    "nome": "beatriz dos reis moura",
+    "email": "beatriz.moura@live.com",
+    "telefone": "",
+    "unidades": [
+      "HZ203"
+    ]
+  },
+  {
     "nome": "fernando zinato correa",
     "email": "fernandozinato@hotmail.com",
+    "telefone": "",
     "unidades": [
       "CZ1008",
       "CZ1108",
@@ -502,15 +469,33 @@
     ]
   },
   {
+    "nome": "marcella silva pasotte cangucu",
+    "email": "mapasotte@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "CZ303"
+    ]
+  },
+  {
     "nome": "antonio nobrega de oliveira",
     "email": "afnoliveira@hotmail.com",
+    "telefone": "",
     "unidades": [
       "CZ506"
     ]
   },
   {
-    "nome": "alfredo marano",
-    "email": "alfredo.maranaco@gmail.com",
+    "nome": "edler gama lins",
+    "email": "eglins@outlook.com.br",
+    "telefone": "",
+    "unidades": [
+      "HZ105"
+    ]
+  },
+  {
+    "nome": "VITA HOME NEGOCIOS IMOBILIARIOS LTDA",
+    "email": "evelyn.marques@marqcorp.com.br",
+    "telefone": "5511979561683",
     "unidades": [
       "CZ503"
     ]
@@ -518,35 +503,201 @@
   {
     "nome": "arthemus de novaes savioli",
     "email": "savioli.teteu@gmail.com",
+    "telefone": "",
     "unidades": [
       "CZ1209"
     ]
   },
   {
-    "nome": "LUANA MINOTI TOFFOLI",
-    "email": "minotiluana@gmail.com.br",
+    "nome": "adriane de paula assis tubatsch ribeiro",
+    "email": "adrianealribeiro@gmail.com",
+    "telefone": "",
     "unidades": [
-      "AM111"
+      "SL509",
+      "SL815",
+      "SL412"
+    ]
+  },
+  {
+    "nome": "igor cristiano casimiro",
+    "email": "igorcasimiro@yahoo.com.br",
+    "telefone": "",
+    "unidades": [
+      "DN207",
+      "DN208"
+    ]
+  },
+  {
+    "nome": "caio cesar augusto santos",
+    "email": "caiocesar.tnt@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "MI402NR"
+    ]
+  },
+  {
+    "nome": "roke empreendimentos e participações ltda",
+    "email": "rokemilani@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "KB1610",
+      "KB1609",
+      "KB1508",
+      "KB1509",
+      "KB1510"
+    ]
+  },
+  {
+    "nome": "filipe adão de carvalho",
+    "email": "filipeac@msn.com",
+    "telefone": "",
+    "unidades": [
+      "PM1411"
+    ]
+  },
+  {
+    "nome": "EVOLUGUI PARTICIPACOES E INVESTIMENTOS LTDA",
+    "email": "lemosluciane@hotmail.com",
+    "telefone": "5516992178067",
+    "unidades": [
+      "HZ605"
+    ]
+  },
+  {
+    "nome": "guilherme gallo ortiz",
+    "email": "ortiz.biologia@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "CZ604"
+    ]
+  },
+  {
+    "nome": "ana cristina de freitas valentim",
+    "email": "denispmanso@gmail.com",
+    "telefone": "11947786090",
+    "unidades": [
+      "SO1010"
+    ]
+  },
+  {
+    "nome": "Jose Ribamar Pinheiro Léda",
+    "email": "leonardoleda@gmail.com",
+    "telefone": "5598988046648",
+    "unidades": [
+      "FY1908"
     ]
   },
   {
     "nome": "francilucia batista vieira zacarias",
     "email": "franciluciabvz@gmail.com",
+    "telefone": "",
     "unidades": [
       "DJ43"
     ]
   },
   {
+    "nome": "edilson valter dos santos",
+    "email": "edilson@edmarcas.com.br",
+    "telefone": "",
+    "unidades": [
+      "DJ42"
+    ]
+  },
+  {
+    "nome": "Paulo roberto de Oliveira Quirino",
+    "email": "proqimj@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "SN908A"
+    ]
+  },
+  {
+    "nome": "anderson pascoal constantino",
+    "email": "eyanderson@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "HZ905"
+    ]
+  },
+  {
+    "nome": "carlos alberto gabriel maluf",
+    "email": "carlosagmaluf@outlook.com",
+    "telefone": "",
+    "unidades": [
+      "HP1104",
+      "HP1105"
+    ]
+  },
+  {
+    "nome": "evanise sposito",
+    "email": "evanise@brazilts.com.br",
+    "telefone": "",
+    "unidades": [
+      "HP1506"
+    ]
+  },
+  {
+    "nome": "gilson silva dos santos",
+    "email": "gil.ss@uol.com.br",
+    "telefone": "",
+    "unidades": [
+      "CZ308"
+    ]
+  },
+  {
+    "nome": "joice marquini guiza",
+    "email": "cleberguiza@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "CZ302"
+    ]
+  },
+  {
+    "nome": "toru miyagi kinjo",
+    "email": "toru@magnamed.com.br",
+    "telefone": "",
+    "unidades": [
+      "HP1301"
+    ]
+  },
+  {
+    "nome": "vitor sakihama",
+    "email": "vitor.sakihama@gmail.com",
+    "telefone": "5511986861312",
+    "unidades": [
+      "KB1801"
+    ]
+  },
+  {
+    "nome": "Giancarlo Luppi",
+    "email": "giancarlo_luppi@yahoo.com.br",
+    "telefone": "11972338565",
+    "unidades": [
+      "MI501NR"
+    ]
+  },
+  {
     "nome": "Joseph Isaac Chehebar",
-    "email": "jochehebar@hotmail.com",
+    "email": "JOCHEHEBAR@HOTMAIL.COM",
+    "telefone": "11992691832",
     "unidades": [
       "PH308",
       "PH208"
     ]
   },
   {
+    "nome": "PITU PATRIMONIAL LTDA",
+    "email": "ciro.iamamura@gmail.com",
+    "telefone": "11983200200",
+    "unidades": [
+      "PH1210",
+      "AS601"
+    ]
+  },
+  {
     "nome": "Paulo Patricio Bezerra Filho",
     "email": "paulo@paulopatricio.adv.br",
+    "telefone": "",
     "unidades": [
       "SN807B",
       "SN804B"
@@ -555,76 +706,34 @@
   {
     "nome": "Lorena Moroni Girão Barroso",
     "email": "lorena.moroni@gmail.com",
+    "telefone": "5521999755715",
     "unidades": [
       "SN601A"
     ]
   },
   {
-    "nome": "Giancarlo Luppi",
-    "email": "giancarlo_luppi@yahoo.com.br",
+    "nome": "RUBENS CARMAGNANI NETO",
+    "email": "carmagnanineto@gmail.com",
+    "telefone": "11991411592",
     "unidades": [
-      "MI501NR"
+      "MI607NR"
     ]
   },
   {
-    "nome": "Fabricio Millnitz",
-    "email": "euko18@yahoo.com.br",
+    "nome": "Marcelo Mendonça Garcia",
+    "email": "marcelomgarcia@terra.com.br",
+    "telefone": "",
     "unidades": [
-      "AP48"
-    ]
-  },
-  {
-    "nome": "RODRIGO DE SOUZA NOVAES GAETA",
-    "email": "rodrigogaeta@terra.com.br",
-    "unidades": [
-      "AP66",
-      "PH206",
-      "CZ904",
-      "LP311"
-    ]
-  },
-  {
-    "nome": "MARCELO FERNANDES DIAS",
-    "email": "cellodias@uol.com.br",
-    "unidades": [
-      "AP83"
-    ]
-  },
-  {
-    "nome": "THALES GARCIA CARMONA",
-    "email": "thales@carmona.eng.br",
-    "unidades": [
-      "VP1912L",
-      "VP1415L"
-    ]
-  },
-  {
-    "nome": "Jeane de Menezes Gomes",
-    "email": "recantodosfrios@terra.com.br",
-    "unidades": [
-      "AP28"
-    ]
-  },
-  {
-    "nome": "Joao Andrade",
-    "email": "jfjunqueira1@hotmail.com",
-    "unidades": [
-      "AM201",
-      "KB602",
-      "KB601",
-      "AP63"
-    ]
-  },
-  {
-    "nome": "Airton Peres Jjunior",
-    "email": "engairton.pj@gmail.com",
-    "unidades": [
-      "MI611NR"
+      "MI305NR",
+      "MI307NR",
+      "MI309NR",
+      "MI308NR"
     ]
   },
   {
     "nome": "THOMAS GARCIA CARMONA",
     "email": "thomas@carmona.eng.br",
+    "telefone": "",
     "unidades": [
       "VP1007L",
       "VP2305L"
@@ -633,29 +742,229 @@
   {
     "nome": "ANTONIO CARMONA FILHO",
     "email": "antonio@carmona.eng.br",
+    "telefone": "",
     "unidades": [
       "VP1716L",
       "VP1619L"
     ]
   },
   {
+    "nome": "Wagner Aparecido dos Santos",
+    "email": "Wagnersantostnt1@gmail.com",
+    "telefone": "13996720805",
+    "unidades": [
+      "ST1401"
+    ]
+  },
+  {
+    "nome": "THALES GARCIA CARMONA",
+    "email": "thales@carmona.eng.br",
+    "telefone": "",
+    "unidades": [
+      "VP1415L",
+      "VP1912L"
+    ]
+  },
+  {
+    "nome": "RODRIGO DE SOUZA NOVAES GAETA",
+    "email": "rodrigogaeta@terra.com.br",
+    "telefone": "5511983039763",
+    "unidades": [
+      "AP66",
+      "PH206",
+      "CZ904",
+      "LP311"
+    ]
+  },
+  {
+    "nome": "paulo andrade junior",
+    "email": "pauloandradejunior@hotmail.com",
+    "telefone": "31988098800",
+    "unidades": [
+      "AP16"
+    ]
+  },
+  {
+    "nome": "MARCELO FERNANDES DIAS",
+    "email": "cellodias@uol.com.br",
+    "telefone": "",
+    "unidades": [
+      "AP83"
+    ]
+  },
+  {
+    "nome": "Marcelo Abdala Dias Carvalho",
+    "email": "marceloabdala804@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "AP77"
+    ]
+  },
+  {
+    "nome": "marie claire kalim schreiner",
+    "email": "marieclaireks@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "AP41"
+    ]
+  },
+  {
+    "nome": "Sheila Brett",
+    "email": "scbrett@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "MI306NR"
+    ]
+  },
+  {
+    "nome": "LETICIA MORENO CAMPOS",
+    "email": "l.moreno@terra.com.br",
+    "telefone": "",
+    "unidades": [
+      "AP54"
+    ]
+  },
+  {
+    "nome": "MARIA HELENA ALVES MARTINS DE OLIVEIRA",
+    "email": "helenamartins2004@gmail.com",
+    "telefone": "11973008273",
+    "unidades": [
+      "FL1413H",
+      "MM1007"
+    ]
+  },
+  {
+    "nome": "Filipe Oliveira Del Rei",
+    "email": "filipedelrei@hotmail.com",
+    "telefone": "73988089676",
+    "unidades": [
+      "PM808"
+    ]
+  },
+  {
+    "nome": "Marcos Joaquim de Castro",
+    "email": "mjcastro.ops@terra.com.br",
+    "telefone": "11991537372",
+    "unidades": [
+      "AM108",
+      "HZ1204"
+    ]
+  },
+  {
+    "nome": "Joao Andrade",
+    "email": "jfjunqueira1@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "AM201",
+      "KB602",
+      "KB601",
+      "AP63",
+      "KB604"
+    ]
+  },
+  {
+    "nome": "Airton Peres Jjunior",
+    "email": "engairton.pj@gmail.com",
+    "telefone": "11987510762",
+    "unidades": [
+      "MI611NR"
+    ]
+  },
+  {
+    "nome": "ROBSON SOARES DE SOUZA",
+    "email": "robsonsoaresdesouza@bol.com.br",
+    "telefone": "",
+    "unidades": [
+      "FC1014",
+      "SP1203"
+    ]
+  },
+  {
+    "nome": "paulo marcio vicente",
+    "email": "paulomvicente@terra.com.br",
+    "telefone": "11941981204",
+    "unidades": [
+      "PH603",
+      "PH605"
+    ]
+  },
+  {
+    "nome": "antonio carlos hummel filho",
+    "email": "chummel@uol.com.br",
+    "telefone": "",
+    "unidades": [
+      "MI518R"
+    ]
+  },
+  {
+    "nome": "SOCRATES MIRANDA DE OLIVEIRA XAVIER SCHWARTZ",
+    "email": "socratesschwartz@gmail.com",
+    "telefone": "21973898828",
+    "unidades": [
+      "AS407"
+    ]
+  },
+  {
     "nome": "TIAGO GARCIA CARMONA",
     "email": "tiago@carmona.eng.br",
+    "telefone": "",
     "unidades": [
       "VP2108L",
       "VP1211L"
     ]
   },
   {
+    "nome": "Renato Asamura Azevedo",
+    "email": "reasamura@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "MI503NR"
+    ]
+  },
+  {
     "nome": "Tiago Pires Carareto",
     "email": "tjcarareto@hotmail.com",
+    "telefone": "",
     "unidades": [
       "MI304NR"
     ]
   },
   {
+    "nome": "Cecília Carvalho Dias",
+    "email": "cicacdias@gmail.com",
+    "telefone": "35991911900",
+    "unidades": [
+      "PM1403"
+    ]
+  },
+  {
+    "nome": "José Ricardo Miotto Gabrielli",
+    "email": "jricardo@imf.ind.br",
+    "telefone": "",
+    "unidades": [
+      "PM1604"
+    ]
+  },
+  {
+    "nome": "Jeane de Menezes Gomes",
+    "email": "recantodosfrios@terra.com.br",
+    "telefone": "11999819626",
+    "unidades": [
+      "AP28"
+    ]
+  },
+  {
+    "nome": "Dionice De Almeida",
+    "email": "dionicea10@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "MI615NR"
+    ]
+  },
+  {
     "nome": "Fábio dos Santos Portugal",
     "email": "fportugal.investe@gmail.com",
+    "telefone": "",
     "unidades": [
       "SN303B"
     ]
@@ -663,22 +972,31 @@
   {
     "nome": "JOSE VITERI",
     "email": "bru_viteri@hotmail.com",
+    "telefone": "5511981345500",
     "unidades": [
       "SE1007"
     ]
   },
   {
-    "nome": "JIN SUP SONG",
-    "email": "thannah.chung@gmail.com",
+    "nome": "lucas cherem de camargo rodrigues",
+    "email": "lucas@manesco.com.br",
+    "telefone": "",
     "unidades": [
-      "VT2105",
-      "FL1511H",
-      "FL613H"
+      "AP76"
+    ]
+  },
+  {
+    "nome": "felipe de melo voitena",
+    "email": "felipemelo2023of@gmail.com",
+    "telefone": "11986761063",
+    "unidades": [
+      "AS403"
     ]
   },
   {
     "nome": "Marilane pinheiro guilande",
     "email": "mary@vestriolingerie.com.br",
+    "telefone": "",
     "unidades": [
       "AP56"
     ]
@@ -686,6 +1004,7 @@
   {
     "nome": "Luiz Alberto Nunes da Silva",
     "email": "betoanunes@gmail.com",
+    "telefone": "",
     "unidades": [
       "AP45"
     ]
@@ -693,42 +1012,125 @@
   {
     "nome": "COMERCIAL DISTRIBUIDORA",
     "email": "vrpaiao@terra.com.br",
+    "telefone": "",
     "unidades": [
       "AP43",
       "HZ502"
     ]
   },
   {
+    "nome": "Aderbal Oliveira Santos",
+    "email": "aderbasoliveira@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "AP47"
+    ]
+  },
+  {
+    "nome": "Luiz Claudio Themudo",
+    "email": "lthemudo@yahoo.com.br",
+    "telefone": "",
+    "unidades": [
+      "AP12",
+      "HZ405",
+      "RM404",
+      "RM403"
+    ]
+  },
+  {
+    "nome": "Fabricio Millnitz",
+    "email": "euko18@yahoo.com.br",
+    "telefone": "",
+    "unidades": [
+      "AP48"
+    ]
+  },
+  {
     "nome": "GLAUCO TEMER FERES",
     "email": "glauco@lpnet.com.br",
+    "telefone": "",
     "unidades": [
       "AS404"
     ]
   },
   {
-    "nome": "ANA CLAUDIA RABELLO COELHO",
-    "email": "ana_r_coelho@hotmail.com",
+    "nome": "RAYMUNDO CESAR GOMES RIBEIRO",
+    "email": "raymundo47.ribeiro@gmail.com",
+    "telefone": "11981034765",
     "unidades": [
-      "VU1101"
+      "PP804"
     ]
   },
   {
-    "nome": "Guilherme Carvalho",
-    "email": "professorguilhermecarvalho@gmail.com.br",
+    "nome": "Francisca maria pereira oliveira",
+    "email": "Oliveirafrancisca668@gmail.com",
+    "telefone": "",
     "unidades": [
-      "IM1206"
+      "MM1212"
+    ]
+  },
+  {
+    "nome": "Cristiane Biazi Gomes Martinelli de Oliveira",
+    "email": "crisbgomes17@outlook.com",
+    "telefone": "11996051278",
+    "unidades": [
+      "PP1018"
+    ]
+  },
+  {
+    "nome": "DIEGO ARRUDA BORGES",
+    "email": "dgo.arbor@gmail.com",
+    "telefone": "11948963159",
+    "unidades": [
+      "PP1309"
+    ]
+  },
+  {
+    "nome": "JIN SUP SONG",
+    "email": "Thannah.chung@gmail.com",
+    "telefone": "551138842467",
+    "unidades": [
+      "FL1511H",
+      "FL613H"
+    ]
+  },
+  {
+    "nome": "Everson Laurindo de Paula",
+    "email": "everson.depaula@gmail.com",
+    "telefone": "11995418739",
+    "unidades": [
+      "AM202"
+    ]
+  },
+  {
+    "nome": "Pedro Machado dos Santos",
+    "email": "pepe.machado@live.com",
+    "telefone": "5511941435445",
+    "unidades": [
+      "SL301",
+      "SL410"
     ]
   },
   {
     "nome": "Rafael Amorim dos Santos",
     "email": "rafael.amoorim@hotmail.com",
+    "telefone": "21994672111",
     "unidades": [
       "SE106"
     ]
   },
   {
+    "nome": "Eduardo Maluf Miguel",
+    "email": "emaluf2000@yahoo.com.br",
+    "telefone": "43999109820",
+    "unidades": [
+      "AP26"
+    ]
+  },
+  {
     "nome": "Vitor Rodrigues Borges",
     "email": "vitorrborges@yahoo.com.br",
+    "telefone": "11992698455",
     "unidades": [
       "KB1602"
     ]
@@ -736,64 +1138,221 @@
   {
     "nome": "José Manoel Rocha Bernardo",
     "email": "josemrbernardo@yahoo.com.br",
+    "telefone": "18998025991",
     "unidades": [
       "PM305NR"
     ]
   },
   {
-    "nome": "Cristiano Viola de Gouvea",
-    "email": "cviola0610@gmail.com",
+    "nome": "Alexandre Theotonio T. Rios",
+    "email": "alexandre.rios@gmail.com",
+    "telefone": "5511986357017",
     "unidades": [
-      "IM612"
+      "SC104"
     ]
   },
   {
-    "nome": "ANTONIO VASCO PEREIRA FILHO",
-    "email": "sacel@sacel.com.br",
+    "nome": "Carlos Magno Calanca Garcia",
+    "email": "carlosstreetcar@hotmail.com",
+    "telefone": "",
     "unidades": [
-      "VC612"
+      "MI603NR"
     ]
   },
   {
-    "nome": "RONALDO MENDES DA SILVA / MARIA APARECIDA SOLERA DA SILVA",
-    "email": "ronaldo@tecwey.com.br",
+    "nome": "RENATO DIAS PINHEIRO",
+    "email": "renatopinheiro@pinheiroeassociados.com.br",
+    "telefone": "",
     "unidades": [
-      "CZ210NR"
+      "PM510",
+      "PM312NR"
+    ]
+  },
+  {
+    "nome": "Caio Cecchetto",
+    "email": "caiocecchetto@outlook.com",
+    "telefone": "",
+    "unidades": [
+      "MI401NR"
+    ]
+  },
+  {
+    "nome": "Tiago Damasio Nunes",
+    "email": "tiagodamasionunes1991@gmail.com",
+    "telefone": "1130419222",
+    "unidades": [
+      "EL106",
+      "EL1901",
+      "EL2004"
+    ]
+  },
+  {
+    "nome": "Hawana Castedo Gasparri",
+    "email": "hawanayan@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "SN302A"
+    ]
+  },
+  {
+    "nome": "DBSIM PARTICIPAÇÕES LTDA. CNPJ",
+    "email": "flavio.schaffer@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "PH906",
+      "PH903",
+      "PH905"
+    ]
+  },
+  {
+    "nome": "Alfredo de Souza Queiroz Filho",
+    "email": "alsiqueiroz@uol.com.br",
+    "telefone": "5511983291100",
+    "unidades": [
+      "FY608"
+    ]
+  },
+  {
+    "nome": "JEYCE ABDALA DIAS CARVALHO",
+    "email": "jeyceabdala10@gmail.com",
+    "telefone": "556231103234",
+    "unidades": [
+      "MI415NR"
+    ]
+  },
+  {
+    "nome": "Rodrigo lorenzo antonio perez nogueira",
+    "email": "rodrigopnogueira@outlook.com",
+    "telefone": "",
+    "unidades": [
+      "KB709"
+    ]
+  },
+  {
+    "nome": "Pedro Marcondes de Oliveira Ferreira",
+    "email": "pferreira2308@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "SN809B"
+    ]
+  },
+  {
+    "nome": "Ivone Caires",
+    "email": "ivone.caires56@gmail.com",
+    "telefone": "11998969181",
+    "unidades": [
+      "SP903"
+    ]
+  },
+  {
+    "nome": "Juan Antonio Ramirez Espinoza",
+    "email": "juan.ar.espinoza@hotmail.com",
+    "telefone": "21997813917",
+    "unidades": [
+      "SN706B"
+    ]
+  },
+  {
+    "nome": "ANA CLAUDIA GOFFI FLAQUER SCARTEZZINI",
+    "email": "claudia@gsaa.com.br",
+    "telefone": "5511982068176",
+    "unidades": [
+      "OI408"
+    ]
+  },
+  {
+    "nome": "Marcelo Cury",
+    "email": "marcelo.cury67@gmail.com",
+    "telefone": "5511999888896",
+    "unidades": [
+      "HZ507"
+    ]
+  },
+  {
+    "nome": "SILVIO CREPALDI JUNIOR",
+    "email": "crepaldi.scj@uol.com.br",
+    "telefone": "5519974053900",
+    "unidades": [
+      "CZ402"
+    ]
+  },
+  {
+    "nome": "Rubiana Ribeiro Ferreira",
+    "email": "rubiana.ferreira@yahoo.com.br",
+    "telefone": "5531987254797",
+    "unidades": [
+      "DN1303"
+    ]
+  },
+  {
+    "nome": "Fernanda Michelle das Neves",
+    "email": "comercial@lmetals.com.br",
+    "telefone": "5547992370095",
+    "unidades": [
+      "CZ306"
+    ]
+  },
+  {
+    "nome": "IRIS SAYURI KAZIMOTO",
+    "email": "lilyris@gmail.com",
+    "telefone": "5511976683238",
+    "unidades": [
+      "HZ1205"
+    ]
+  },
+  {
+    "nome": "Guilherme Sassaki Meale",
+    "email": "gsmeale@gmail.com",
+    "telefone": "5511985555148",
+    "unidades": [
+      "FY2408"
     ]
   },
   {
     "nome": "MOUSES ARDACHES VOSGUERITCHIAN",
     "email": "mossic@gmail.com",
+    "telefone": "5511999338766",
     "unidades": [
-      "NP706",
       "NP707",
       "NP708",
+      "NP706",
       "NP807",
       "MS-DMG-00150",
       "NP808",
-      "NP709",
-      "NP809",
+      "NP705",
       "NP704",
-      "NP705"
+      "NP809",
+      "NP709"
+    ]
+  },
+  {
+    "nome": "Luciano Dugaim Paschoali",
+    "email": "luciano.1@uol.com.br",
+    "telefone": "5511982188580",
+    "unidades": [
+      "SO1409"
+    ]
+  },
+  {
+    "nome": "PAULO SERGIO SAADE FILHO",
+    "email": "erinleite@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "SN702B"
     ]
   },
   {
     "nome": "ALEXANDRE DE SOUZA RAMOS",
     "email": "estrategiaeacao@gmail.com",
+    "telefone": "5521992876103",
     "unidades": [
       "SN802A"
     ]
   },
   {
-    "nome": "Mario Cezar Freitas de Oliveira",
-    "email": "mariocezaroliveira@gmail.com",
-    "unidades": [
-      "OF1610"
-    ]
-  },
-  {
     "nome": "CAMILA NAKASHIMA PEDROSA/MARCELO OLIVEIRA PEDROSA",
     "email": "marcelopedrosa1972@gmail.com",
+    "telefone": "5519981650900",
     "unidades": [
       "CZ1107"
     ]
@@ -801,6 +1360,7 @@
   {
     "nome": "Guilherme Augusto Camargo Porto",
     "email": "drguilhermeacporto@gmail.com",
+    "telefone": "5512997441414",
     "unidades": [
       "OI417"
     ]
@@ -808,28 +1368,40 @@
   {
     "nome": "Ricardo Orsi",
     "email": "ricardoorsi@uol.com.br",
+    "telefone": "5511981475437",
     "unidades": [
       "OI205",
       "OI204"
     ]
   },
   {
-    "nome": "Guilherme Sassaki Meale",
-    "email": "gsmeale@gmail.com",
+    "nome": "Ricardo Vilas boas",
+    "email": "rvilas@hotmail.com",
+    "telefone": "5511999584343",
     "unidades": [
-      "FY2408"
+      "CZ610"
+    ]
+  },
+  {
+    "nome": "Nerisvaldo Souza da Silva",
+    "email": "nsadvocacia2005@yahoo.com.br",
+    "telefone": "5575982585678",
+    "unidades": [
+      "HZ602"
     ]
   },
   {
     "nome": "2MA PATRIMONIAL LTDA",
     "email": "mariana@fixarba.com",
+    "telefone": "5571981320513",
     "unidades": [
       "MI403R"
     ]
   },
   {
     "nome": "ALLEGRO - Partic. Empreend. Ltda",
-    "email": "isgenova@gmail.com",
+    "email": "fgenova@uol.com.br",
+    "telefone": "5511981229065",
     "unidades": [
       "DN902",
       "DN903",
@@ -839,58 +1411,34 @@
     ]
   },
   {
-    "nome": "LCC Empreedimentos Imobiliários LTDA",
-    "email": "lgromeiro@yahoo.com.br",
+    "nome": "Santoro Salomão Patrimonial Ltda",
+    "email": "pauloadv.salomao@gmail.com",
+    "telefone": "5511991381219",
     "unidades": [
-      "SN501A",
-      "SN505B"
-    ]
-  },
-  {
-    "nome": "SERRALHERIA SEPE LTDA",
-    "email": "sepesquadrias@gmail.com",
-    "unidades": [
-      "DN411"
-    ]
-  },
-  {
-    "nome": "Edson dos Santos Avancini",
-    "email": "edson@enix.com.br",
-    "unidades": [
-      "DN507"
-    ]
-  },
-  {
-    "nome": "PAULA HESSEL DE CASTILHO",
-    "email": "paula_hessel@yahoo.com",
-    "unidades": [
-      "DN1504"
-    ]
-  },
-  {
-    "nome": "PAOLA BUZINHANI",
-    "email": "paolabuzinhani@gmail.com",
-    "unidades": [
-      "CZ704"
-    ]
-  },
-  {
-    "nome": "MAURICIO DA ROCHA LIMA",
-    "email": "jacksir23belem@gmail.com",
-    "unidades": [
-      "CZ1109"
+      "OI201",
+      "OI301"
     ]
   },
   {
     "nome": "ROBERTO ALESSANDRO GIUMMARRESI TORRES",
     "email": "robertamaggioni@hotmail.com",
+    "telefone": "5567981526264",
     "unidades": [
       "MI311NR"
     ]
   },
   {
+    "nome": "Lucas Gabriel Vieira de Carvalho",
+    "email": "lucas_vieira00@hotmail.com",
+    "telefone": "559181065101",
+    "unidades": [
+      "NP1103"
+    ]
+  },
+  {
     "nome": "NATALIA GIORGETE ZINI",
     "email": "nataliazini90@gmail.com",
+    "telefone": "5511999923188",
     "unidades": [
       "CZ1304"
     ]
@@ -898,6 +1446,7 @@
   {
     "nome": "DANILO VIEIRA SOBRINHO",
     "email": "danilosobrinho@uol.com.br",
+    "telefone": "5513997370672",
     "unidades": [
       "CZ608"
     ]
@@ -905,48 +1454,384 @@
   {
     "nome": "Regison Marreiro Albuquerque",
     "email": "regison_albuquerque@br.ajinomoto.com",
+    "telefone": "5511993901862",
     "unidades": [
       "FY2111"
     ]
   },
   {
+    "nome": "PAULA HESSEL DE CASTILHO",
+    "email": "paula_hessel@yahoo.com",
+    "telefone": "5511999681956",
+    "unidades": [
+      "DN1504"
+    ]
+  },
+  {
+    "nome": "Marcelo Pagliosa Carvalho",
+    "email": "marcelo.pagliosa@yahoo.com.br",
+    "telefone": "5511985051317",
+    "unidades": [
+      "CZ403"
+    ]
+  },
+  {
+    "nome": "LCC Empreedimentos Imobiliários LTDA",
+    "email": "lgromeiro@yahoo.com.br",
+    "telefone": "5521973030604",
+    "unidades": [
+      "SN501A",
+      "SN502A",
+      "SN505B"
+    ]
+  },
+  {
+    "nome": "João Vitor Nobrega",
+    "email": "joaovitornobrega@hotmail.com",
+    "telefone": "5511992699229",
+    "unidades": [
+      "CZ1102"
+    ]
+  },
+  {
+    "nome": "DIEGO CARLESSI PADIN",
+    "email": "diegocpadin@hotmail.com",
+    "telefone": "5515997280084",
+    "unidades": [
+      "HZ107"
+    ]
+  },
+  {
+    "nome": "SERRALHERIA SEPE LTDA",
+    "email": "sepesquadrias@gmail.com",
+    "telefone": "551199772626",
+    "unidades": [
+      "DN411"
+    ]
+  },
+  {
+    "nome": "Edson dos Santos Avancini",
+    "email": "edson@enix.com.br",
+    "telefone": "5511999973754",
+    "unidades": [
+      "DN507"
+    ]
+  },
+  {
+    "nome": "Luiz Fernando Devecz Penteado De Luca",
+    "email": "luizfernando522321@gmail.com",
+    "telefone": "5511973440766",
+    "unidades": [
+      "DN508"
+    ]
+  },
+  {
     "nome": "LUIZ CESAR ZARATIN BAIRAO",
     "email": "luiz.bairao@hotmail.com",
+    "telefone": "5511991173167",
     "unidades": [
       "CZ710"
     ]
   },
   {
+    "nome": "ALDO TEIXEIRA LUQUE/ALDO TEIXEIRA LUQUE",
+    "email": "aldotl@terra.com.br",
+    "telefone": "5511999868658",
+    "unidades": [
+      "HZ303"
+    ]
+  },
+  {
+    "nome": "C-dap Participações Ltda",
+    "email": "cdap.ltda@gmail.com",
+    "telefone": "553197313173",
+    "unidades": [
+      "DJ312"
+    ]
+  },
+  {
+    "nome": "Teresa Vieira dos Santos de Oliveira",
+    "email": "tevis.oliveira@gmail.com",
+    "telefone": "5521998085001",
+    "unidades": [
+      "SO1601"
+    ]
+  },
+  {
+    "nome": "RONALDO MENDES DA SILVA / MARIA APARECIDA SOLERA DA SILVA",
+    "email": "ronaldo@tecwey.com.br",
+    "telefone": "5511987781514",
+    "unidades": [
+      "CZ210NR"
+    ]
+  },
+  {
+    "nome": "ALE SAMPAIO ABDO SATER",
+    "email": "alesater1989@gmail.com",
+    "telefone": "5511971151491",
+    "unidades": [
+      "MI506NR"
+    ]
+  },
+  {
+    "nome": "Pedro Cesar Jaguaribe Ekman",
+    "email": "pedroekman@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "DJ407"
+    ]
+  },
+  {
+    "nome": "Edson Eraldo Ribeiro",
+    "email": "ribeds@hotmail.com",
+    "telefone": "5511987266176",
+    "unidades": [
+      "CZ607"
+    ]
+  },
+  {
+    "nome": "Francisco José Fires Pereira",
+    "email": "francisco@riostays.com.br",
+    "telefone": "",
+    "unidades": [
+      "BA202A",
+      "BA202B",
+      "IF715",
+      "OS202",
+      "OS01",
+      "PI103",
+      "TA702",
+      "TA906",
+      "CE401A",
+      "CE401B",
+      "CE401C",
+      "CE401D",
+      "CE44"
+    ]
+  },
+  {
     "nome": "LEILA SOARES LOIOLA",
     "email": "le.sloiola@gmail.com",
+    "telefone": "5511991675624",
     "unidades": [
       "CZ505"
     ]
   },
   {
+    "nome": "Uwada Emp Imobiliários Ltda",
+    "email": "akemi@natalturismo.com.br",
+    "telefone": "5511973341141",
+    "unidades": [
+      "SO1408"
+    ]
+  },
+  {
+    "nome": "MAURICIO DA ROCHA LIMA",
+    "email": "jacksir23belem@gmail.com",
+    "telefone": "559184271087",
+    "unidades": [
+      "CZ1109"
+    ]
+  },
+  {
+    "nome": "PAOLA BUZINHANI",
+    "email": "paolabuzinhani@gmail.com",
+    "telefone": "554184031655",
+    "unidades": [
+      "CZ704"
+    ]
+  },
+  {
+    "nome": "Thiago Alle Gonçalves",
+    "email": "djthiagoalleeventos@hotmail.com",
+    "telefone": "5511987399303",
+    "unidades": [
+      "DN608"
+    ]
+  },
+  {
+    "nome": "Simone Fonseca de Souza",
+    "email": "sifonsecasouza@gmail.com",
+    "telefone": "5527981636270",
+    "unidades": [
+      "DN1507"
+    ]
+  },
+  {
+    "nome": "Isabela Marra Ciardella",
+    "email": "isabelamarraciardella@gmail.com",
+    "telefone": "5511986858650",
+    "unidades": [
+      "SO705"
+    ]
+  },
+  {
     "nome": "Gustavo Hansel",
     "email": "gustavo@ghbranding.com.br",
+    "telefone": "55996222589",
     "unidades": [
       "DN410"
     ]
   },
   {
+    "nome": "ELAINE APARECIDA POLEZI ALIBERTI  e VANDERLEI JOSE ALIBERTI",
+    "email": "polezialiberti@hotmail.com",
+    "telefone": "5519981293697",
+    "unidades": [
+      "AP24"
+    ]
+  },
+  {
+    "nome": "Rafael Monteiro Crialezi",
+    "email": "crialezi@hotmail.com",
+    "telefone": "5511983904473",
+    "unidades": [
+      "SO1512"
+    ]
+  },
+  {
+    "nome": "Rafael Kamkhagi",
+    "email": "rafael@sharkk.com.br",
+    "telefone": "5511980995518",
+    "unidades": [
+      "SO1406"
+    ]
+  },
+  {
+    "nome": "David Soly Kamkhagi",
+    "email": "david@trackbikes.com.br",
+    "telefone": "5511981345500",
+    "unidades": [
+      "SO1511"
+    ]
+  },
+  {
+    "nome": "DARP JIVE FUNDO DE INVESTIMENTO IMOBILIARIO",
+    "email": "darp.jive@jiveinvestimentos.com.br",
+    "telefone": "",
+    "unidades": [
+      "SN1307A",
+      "SN1001B",
+      "SN1601A",
+      "SN2001A",
+      "SN710B",
+      "SN803B",
+      "SN806A",
+      "SN810B",
+      "SN901B",
+      "SN907A",
+      "SN910B",
+      "SN708A",
+      "SN1005B",
+      "SN1006A",
+      "SN1007A",
+      "SN1008A",
+      "SN1010B",
+      "SN1101B",
+      "SN1103B",
+      "SN1105A",
+      "SN1106A",
+      "SN1108A",
+      "SN1108B",
+      "SN2007A",
+      "SN1706A",
+      "SN1708A",
+      "SN1801A",
+      "SN1805A",
+      "SN1806A",
+      "SN1807A",
+      "SN1902A",
+      "SN1904A",
+      "SN1906A",
+      "SN1908A",
+      "SN2006A",
+      "SN1705A",
+      "SN2107A",
+      "SN1009B",
+      "SN306A",
+      "SN307A",
+      "SN309B",
+      "SN501B",
+      "SN507A",
+      "SN510B",
+      "SN607A",
+      "SN701B",
+      "SN706A",
+      "SN707A",
+      "SN1401A",
+      "SN1109B",
+      "SN1201A",
+      "SN1201B",
+      "SN1203B",
+      "SN1205B",
+      "SN1207A",
+      "SN1208A",
+      "SN1303B",
+      "SN1306A",
+      "SN1308A",
+      "SN1402A",
+      "SN1406A",
+      "SN1501A",
+      "SN1504A",
+      "SN1506A",
+      "SN1508A",
+      "SN1604A",
+      "SN1607A",
+      "SN1608A",
+      "SN1702A",
+      "SN708B",
+      "SN1304B",
+      "SN1505A",
+      "SN1507A",
+      "SN1707A"
+    ]
+  },
+  {
     "nome": "ALEXANDRE CAFEO",
     "email": "alexandre.cafeo@uol.com.br",
+    "telefone": "5511986842633",
     "unidades": [
-      "PM1504"
+      "PM1504",
+      "KB1502",
+      "KB1501"
     ]
   },
   {
     "nome": "JUDEVILLE ADM E ORG LTDA",
     "email": "martinvidal@terra.com.br",
+    "telefone": "5521987995066",
     "unidades": [
       "OI306"
     ]
   },
   {
+    "nome": "ALEXANDRE FLATSCHART - RAQUEL LEME ZAIA FLATSCHART",
+    "email": "raquelzaia@hotmail.com",
+    "telefone": "5541992676306",
+    "unidades": [
+      "CZ806"
+    ]
+  },
+  {
+    "nome": "José Milton César Miné",
+    "email": "mine@logicomusic.com.br",
+    "telefone": "5511976977272",
+    "unidades": [
+      "CZ1604"
+    ]
+  },
+  {
+    "nome": "Luciane Natsuko Yamamoto Bacelar Horita",
+    "email": "lucianehorita@yahoo.com.br",
+    "telefone": "5511991535420",
+    "unidades": [
+      "CZ601"
+    ]
+  },
+  {
     "nome": "JP & A - Partic e Administração Imob. Ltda",
     "email": "cobranca@superfine.com.br",
+    "telefone": "5519984236208",
     "unidades": [
       "OI208",
       "OI209",
@@ -954,15 +1839,25 @@
     ]
   },
   {
-    "nome": "HOUSI GESTAO PATRIMONIAL S.A.",
-    "email": "letyamaral2025@hotmail.com",
+    "nome": "FJN CONSTRUTORA E INCORPORADORA LTDA",
+    "email": "fabiomenengoti@hotmail.com",
+    "telefone": "41988854535",
     "unidades": [
-      "MI312NR"
+      "CZ804"
+    ]
+  },
+  {
+    "nome": "Eduardo de Souza Brito",
+    "email": "cadu_sb@hotmail.com",
+    "telefone": "5511977620881",
+    "unidades": [
+      "HZ803"
     ]
   },
   {
     "nome": "Eapar Holding e Participações Ltda",
     "email": "eapar.holding@gmail.com",
+    "telefone": "5513997716146",
     "unidades": [
       "HZ102",
       "CZ310"
@@ -971,6 +1866,7 @@
   {
     "nome": "Bernard Siriaco Martins",
     "email": "besmartins@yahoo.com.br",
+    "telefone": "5531988068582",
     "unidades": [
       "DN904"
     ]
@@ -978,27 +1874,48 @@
   {
     "nome": "LEOPOLDO LOPES",
     "email": "leops.ll@uol.com.br",
+    "telefone": "5511981281322",
     "unidades": [
       "OI308"
     ]
   },
   {
-    "nome": "FJN CONSTRUTORA E INCORPORADORA LTDA",
-    "email": "fabiomenengoti@hotmail.com",
+    "nome": "CLINICA PROFESSOR JORGE SAAD SOUEN LTDA.",
+    "email": "vini-souen@uol.com.br",
+    "telefone": "551130785797",
     "unidades": [
-      "CZ804"
+      "SC66",
+      "SC73",
+      "SC111",
+      "SC41",
+      "SC61",
+      "SC63",
+      "SC64",
+      "SC75",
+      "SC68",
+      "SC72"
     ]
   },
   {
-    "nome": "Luciane Natsuko Yamamoto Bacelar Horita",
-    "email": "lucianehorita@yahoo.com.br",
+    "nome": "paula alessandra cabral mariz de vassimon",
+    "email": "paulavassimont@hotmail.com",
+    "telefone": "11972254243",
     "unidades": [
-      "CZ601"
+      "SL912"
+    ]
+  },
+  {
+    "nome": "marcelo barbosa elias",
+    "email": "mbelias69@gmail.com",
+    "telefone": "11988037606",
+    "unidades": [
+      "SL914"
     ]
   },
   {
     "nome": "YALIS GALLIZIA",
     "email": "yalis.gallizia@atlascopco.com",
+    "telefone": "5511964346277",
     "unidades": [
       "SL110"
     ]
@@ -1006,41 +1923,124 @@
   {
     "nome": "MARINA PIRES DE AGUIAR",
     "email": "marina.piress@gmail.com",
+    "telefone": "11992028684",
     "unidades": [
       "SL115"
     ]
   },
   {
-    "nome": "CAROLINE CORDEIRO KEUTENEDJIAN GOMIDE",
-    "email": "carol@epiphanie.com.br",
+    "nome": "HERCULANO DE ALMEIDA ATIVIDADES IMOBILIÁRIAS LTDA",
+    "email": "valdemar.bessa@lojaodobras.com.br",
+    "telefone": "551133117685",
     "unidades": [
-      "SL1314"
+      "IP114",
+      "IP117",
+      "SI1603",
+      "SI1701",
+      "SI1106",
+      "SI1206",
+      "SI906",
+      "SI1306",
+      "SI1505",
+      "SI904",
+      "SI1011",
+      "SI804",
+      "SI914",
+      "SI817",
+      "IP116",
+      "SI704",
+      "SF31",
+      "SF51",
+      "SF33",
+      "SF43",
+      "SF53",
+      "SF63"
     ]
   },
   {
-    "nome": "PAULO CEZAR DIAS GOMES",
-    "email": "pcdgomes@uol.com.br",
+    "nome": "monique haddad lewandowski",
+    "email": "mohlewan@gmail.com",
+    "telefone": "1996460581",
     "unidades": [
-      "SL405"
+      "SL908"
+    ]
+  },
+  {
+    "nome": "ANDREA RASCOVSKI ICKOWICZ",
+    "email": "andrearasc@gmail.com",
+    "telefone": "5511996686587",
+    "unidades": [
+      "SL1119"
+    ]
+  },
+  {
+    "nome": "celso luiz pereira mendes",
+    "email": "celso.mendes59@gmail.com",
+    "telefone": "11986991582",
+    "unidades": [
+      "SL202"
     ]
   },
   {
     "nome": "MARIA EUNICE PAIVA BORGES",
     "email": "mepaiva7@gmail.com",
+    "telefone": "5535991500070",
     "unidades": [
       "SL205"
     ]
   },
   {
+    "nome": "rodrigo seizo takano",
+    "email": "rtakano@machadomeyer.com.br",
+    "telefone": "11998817417",
+    "unidades": [
+      "SL208"
+    ]
+  },
+  {
+    "nome": "PATRICK EDWARD SILVA DE SOUZA",
+    "email": "latynosp@gmail.com",
+    "telefone": "11915772874",
+    "unidades": [
+      "SL209"
+    ]
+  },
+  {
+    "nome": "ROBERTO GUILHERME JOSEPH",
+    "email": "roberto.joseph18@gmail.com",
+    "telefone": "11973371771",
+    "unidades": [
+      "SL211"
+    ]
+  },
+  {
+    "nome": "VINICIUS TORRES CREMASCO",
+    "email": "marangon.mi@gmail.com",
+    "telefone": "1997403605719991335235",
+    "unidades": [
+      "SL305"
+    ]
+  },
+  {
     "nome": "JOAO PAULO DOS SANTSO OLIVEIRA",
     "email": "jpsantos.oliveira@gmail.com",
+    "telefone": "11945235447",
     "unidades": [
       "SL314"
     ]
   },
   {
+    "nome": "PAULO CEZAR DIAS GOMES",
+    "email": "pcdgomes@uol.com.br",
+    "telefone": "5511977633371",
+    "unidades": [
+      "SL405"
+    ]
+  },
+  {
     "nome": "CARLOS EDUARDO SANCHEZ",
     "email": "csanchez@gfdsadvogados.com.br",
+    "telefone": "11993543132",
     "unidades": [
       "SL408"
     ]
@@ -1048,32 +2048,69 @@
   {
     "nome": "VISCO ADMINISTRADO DE IMOVEIS PROPRIOS LTDA",
     "email": "renato.ditomaso@braskem.com",
+    "telefone": "5511997354257",
     "unidades": [
       "SL1012",
       "SL1013",
       "RE208",
       "RE609",
-      "SE1704",
+      "SE1705",
       "SE1702",
       "SE1703",
-      "SE1705",
+      "SE1704",
       "EL201",
       "EL601",
       "EL701",
       "EL704",
-      "BK501"
+      "BK501",
+      "CL13",
+      "CL12"
+    ]
+  },
+  {
+    "nome": "VAGNE VANO",
+    "email": "v.vano@hotmail.com",
+    "telefone": "11972067987",
+    "unidades": [
+      "SL1107"
+    ]
+  },
+  {
+    "nome": "RAQUEL SANTOS DE OLIVEIRA SENA",
+    "email": "isaac.sena@gmail.com",
+    "telefone": "4915126298661",
+    "unidades": [
+      "SL1113"
+    ]
+  },
+  {
+    "nome": "alzira kioto kaimoto",
+    "email": "akioko.br@gmail.com",
+    "telefone": "11999795373",
+    "unidades": [
+      "SL1114"
     ]
   },
   {
     "nome": "NELSON AGOSTINHO ARAUJO",
     "email": "naaraujo@sabesp.com.br",
+    "telefone": "11991103896",
     "unidades": [
       "SL1307"
     ]
   },
   {
+    "nome": "LILIAN BARBOSA VIEIRA",
+    "email": "lilianvieiramed@gmail.com",
+    "telefone": "9291625101",
+    "unidades": [
+      "SL1308"
+    ]
+  },
+  {
     "nome": "LUIZ ANTÔNIO COSTA JÚNIOR",
     "email": "luiz@grupokallas.com.br",
+    "telefone": "551130468499",
     "unidades": [
       "SL1310"
     ]
@@ -1081,28 +2118,99 @@
   {
     "nome": "VARAM KEUTENEDJIAN NETO",
     "email": "varamk.neto@terra.com.br",
+    "telefone": "11991243994",
     "unidades": [
       "SL1311"
     ]
   },
   {
-    "nome": "Carlos Roberto Baptista",
-    "email": "financeiro@mba-aco.com.br",
+    "nome": "CAROLINE CORDEIRO KEUTENEDJIAN GOMIDE",
+    "email": "carol@epiphanie.com.br",
+    "telefone": "11983812000",
     "unidades": [
-      "HG55"
+      "SL1314",
+      "UC1508"
+    ]
+  },
+  {
+    "nome": "THIAGO AUGUSTO DA CUNHA MENEZES",
+    "email": "thiago_sk8_2004@hotmail.com",
+    "telefone": "5511980960082",
+    "unidades": [
+      "SL905"
+    ]
+  },
+  {
+    "nome": "ram participacoes ltda",
+    "email": "sandra.silva@shoulder.com.br",
+    "telefone": "1132842510",
+    "unidades": [
+      "HG103",
+      "HG104",
+      "HG14",
+      "HG37",
+      "HG38",
+      "HG48",
+      "HG98"
     ]
   },
   {
     "nome": "TEX ASSESSORIA COMERCIAL LTDA",
     "email": "a.h@adar.com.br",
+    "telefone": "",
     "unidades": [
+      "HG25",
       "HG66",
       "HG24"
     ]
   },
   {
+    "nome": "LEON HUBNER",
+    "email": "thaisw@uol.com.br",
+    "telefone": "11994757100",
+    "unidades": [
+      "HG26"
+    ]
+  },
+  {
+    "nome": "ANA LUCIA OLIVEIRA BAPTISTA",
+    "email": "oliveiraluciabaptista@gmail.com",
+    "telefone": "5511942808098",
+    "unidades": [
+      "HG47",
+      "HG142",
+      "HG102"
+    ]
+  },
+  {
+    "nome": "Carlos Roberto Baptista",
+    "email": "Financeiro@mba-aco.com.br",
+    "telefone": "",
+    "unidades": [
+      "HG55"
+    ]
+  },
+  {
+    "nome": "LEONARDHO OLIVEIRA BAPTISTA",
+    "email": "leo_baptista92@hotmail.com",
+    "telefone": "5511999127841",
+    "unidades": [
+      "HG57"
+    ]
+  },
+  {
+    "nome": "JVH COMERCIAL LTDA",
+    "email": "denize.cavallotti@adar.com.br",
+    "telefone": "551126213272",
+    "unidades": [
+      "HG65",
+      "HG64"
+    ]
+  },
+  {
     "nome": "Oliver Empreendimentos Imobiliários Ltda.",
     "email": "david@nettrading.com.br",
+    "telefone": "",
     "unidades": [
       "HG107"
     ]
@@ -1110,6 +2218,7 @@
   {
     "nome": "David Ashton",
     "email": "dashton@amcham.com.br",
+    "telefone": "5511994042939",
     "unidades": [
       "HG97"
     ]
@@ -1117,27 +2226,58 @@
   {
     "nome": "RAFAEL ORELLANA VILCHES",
     "email": "rafael.o.vilches@gmail.com",
+    "telefone": "11991905221",
     "unidades": [
       "KB1409"
     ]
   },
   {
+    "nome": "cristiane haddad nakhoul leaes",
+    "email": "cris.haddad@gmail.com",
+    "telefone": "11983839462",
+    "unidades": [
+      "KB303"
+    ]
+  },
+  {
     "nome": "ADRIANA REGINA AMORIM PIANI",
     "email": "adriana.ra@uol.com.br",
+    "telefone": "11947619248",
     "unidades": [
       "KB1001"
     ]
   },
   {
-    "nome": "ANTONIO BARROS CARREIRA",
-    "email": "abcarreira@gmail.com",
+    "nome": "CIBELE CARVALHO DANTAS MARIA",
+    "email": "cibellearthur@hotmail.com",
+    "telefone": "11952114230",
     "unidades": [
-      "MM909"
+      "KB1703"
+    ]
+  },
+  {
+    "nome": "MARCIA HARUMI IANAI",
+    "email": "ianai.mh@gmail.com",
+    "telefone": "5511981210899",
+    "unidades": [
+      "KB508"
+    ]
+  },
+  {
+    "nome": "ARMANDO TEIXEIRA NETO",
+    "email": "armandotxneto@gmail.com",
+    "telefone": "5521999957031",
+    "unidades": [
+      "KB807",
+      "KB808",
+      "KB809",
+      "BK1503"
     ]
   },
   {
     "nome": "NOVA LIBER CENTER ADMINISTRACAO DE BENS LTDA",
-    "email": "",
+    "email": "gabrielle.silva@vabimob.com.br",
+    "telefone": "",
     "unidades": [
       "SI1605",
       "SI1104",
@@ -1148,22 +2288,53 @@
     ]
   },
   {
-    "nome": "CIBELE CARVALHO DANTAS MARIA",
-    "email": "cibellearthur@hotmail.com",
+    "nome": "MARCELO ABDUL MALEK SALVIATI",
+    "email": "salvibr@yahoo.com.br",
+    "telefone": "11994406661",
     "unidades": [
-      "KB1703"
+      "MM718"
     ]
   },
   {
-    "nome": "ARMANDO TEIXEIRA NETO",
-    "email": "armandotxneto@gmail.com",
+    "nome": "ANTONIO BARROS CARREIRA",
+    "email": "abcarreira@gmail.com",
+    "telefone": "11999044533",
     "unidades": [
-      "KB809"
+      "MM909"
+    ]
+  },
+  {
+    "nome": "marandi - participacao e intermediacao de negocios ltda",
+    "email": "pierre.arq@gmail.com",
+    "telefone": "1138268325",
+    "unidades": [
+      "SI1803",
+      "SI1805",
+      "SI1006",
+      "SI1204",
+      "SI1311"
+    ]
+  },
+  {
+    "nome": "PATRICIA TOLEDO ADMINISTRACAO DE BENS LTDA",
+    "email": "acapatriciatoledo@hotmail.com",
+    "telefone": "11941239153",
+    "unidades": [
+      "MM614"
+    ]
+  },
+  {
+    "nome": "alexandre viana colchiesqui",
+    "email": "alexandre@malasdiplomata.com.br",
+    "telefone": "15997002762",
+    "unidades": [
+      "MM1021"
     ]
   },
   {
     "nome": "KATIA ALVES CARVALHAL VIEIRA",
     "email": "katia.ac@gmail.com",
+    "telefone": "5513981546613",
     "unidades": [
       "MM1001"
     ]
@@ -1171,13 +2342,23 @@
   {
     "nome": "LUIZ ALEXANDRE TROTTA",
     "email": "latrotta9@gmail.com",
+    "telefone": "5512991803245",
     "unidades": [
       "MM911"
     ]
   },
   {
+    "nome": "ADALBERTO WIESINGER",
+    "email": "awiesinger@uol.com.br",
+    "telefone": "11996367510",
+    "unidades": [
+      "MM1004"
+    ]
+  },
+  {
     "nome": "SANDRA HELENA AMERICO",
     "email": "shamerico@yahoo.com.br",
+    "telefone": "11973008273",
     "unidades": [
       "MM413"
     ]
@@ -1185,34 +2366,152 @@
   {
     "nome": "GABRIEL AUGUSTO SANTOS NOGUEIRA",
     "email": "gabsnog@gmail.com",
+    "telefone": "11966119943",
     "unidades": [
       "MM514"
     ]
   },
   {
+    "nome": "lucas paim mello",
+    "email": "lucaspaimmello@gmail.com",
+    "telefone": "11986976789",
+    "unidades": [
+      "MM720"
+    ]
+  },
+  {
+    "nome": "VIVIANE GAZETTA CAMACHO",
+    "email": "vivi.gcamacho@gmail.com",
+    "telefone": "6185925057",
+    "unidades": [
+      "MM803"
+    ]
+  },
+  {
     "nome": "MARIA ALEGRIA RODRIGUES DE ALMEIDA BEZERRA",
     "email": "alegriaria51@gmail.com",
+    "telefone": "11971601751",
     "unidades": [
       "MM114"
     ]
   },
   {
+    "nome": "MARCO ANTONIO SODRE OLIVEIRA",
+    "email": "mantoniosodre@gmail.com",
+    "telefone": "11957771443",
+    "unidades": [
+      "MM122"
+    ]
+  },
+  {
+    "nome": "augusto cezar boccia",
+    "email": "augustoboccia@hotmail.com",
+    "telefone": "11981900183",
+    "unidades": [
+      "MM610"
+    ]
+  },
+  {
+    "nome": "maria amelia silva lima",
+    "email": "ameliaadv@terra.com.br",
+    "telefone": "8587172020",
+    "unidades": [
+      "MM721"
+    ]
+  },
+  {
+    "nome": "roberto viana colchiesqui",
+    "email": "roberto@malasdiplomata.com.br",
+    "telefone": "15997002764",
+    "unidades": [
+      "MM821"
+    ]
+  },
+  {
+    "nome": "airton viana colchiesqui",
+    "email": "airton@malasdiplomata.com.br",
+    "telefone": "15997002761",
+    "unidades": [
+      "MM902"
+    ]
+  },
+  {
+    "nome": "jose alexandre da silva canadas",
+    "email": "zecanadas@gmail.com",
+    "telefone": "11982986120",
+    "unidades": [
+      "MM1013"
+    ]
+  },
+  {
+    "nome": "wladiany dacewicz",
+    "email": "wladiany_d@hotmail.com",
+    "telefone": "11981116459",
+    "unidades": [
+      "MM1114"
+    ]
+  },
+  {
     "nome": "LUIZ BURLAMAQUI DE MELLO NETO",
     "email": "louisbur@gmail.com",
+    "telefone": "3171197555",
     "unidades": [
       "MM1117"
     ]
   },
   {
-    "nome": "nancy spiewak wajcenberg",
-    "email": "nancyconsultorio@gmail.com",
+    "nome": "weder santos borges",
+    "email": "borgesweber@gmail.com",
+    "telefone": "21996863615",
     "unidades": [
-      "CV918"
+      "MM1205"
+    ]
+  },
+  {
+    "nome": "HARMONIA PARTICIPACOES E INVESTIMENTOS LTDA",
+    "email": "rosangela@btrconsultoria.com.br",
+    "telefone": "551191346043",
+    "unidades": [
+      "MM407"
+    ]
+  },
+  {
+    "nome": "WILSON TAKAHIRO YANAGISAWA",
+    "email": "wiltakay@hotmail.com",
+    "telefone": "11991217896",
+    "unidades": [
+      "MM515"
+    ]
+  },
+  {
+    "nome": "patricia jose dos santos",
+    "email": "gruporota@hotmail.com",
+    "telefone": "79991910741",
+    "unidades": [
+      "RE2218",
+      "RE818"
+    ]
+  },
+  {
+    "nome": "fernando castilho de rezende",
+    "email": "fernandobh1962@hotmail.com",
+    "telefone": "11984440022",
+    "unidades": [
+      "RE505"
+    ]
+  },
+  {
+    "nome": "ANA CARLA TAVARES COELHO SWERTS",
+    "email": "anatavarescoelho12@gmail.com",
+    "telefone": "3588032596",
+    "unidades": [
+      "RE613"
     ]
   },
   {
     "nome": "PATRÍCIA BIANCHI ATHAYDE",
     "email": "patriciabathayde@gmail.com",
+    "telefone": "11993178669",
     "unidades": [
       "RE1104"
     ]
@@ -1220,6 +2519,7 @@
   {
     "nome": "ALBERTO SAFRA",
     "email": "do.beda@gmail.com",
+    "telefone": "5511981554466",
     "unidades": [
       "RE108",
       "RE302",
@@ -1229,6 +2529,7 @@
   {
     "nome": "RPG ADMINISTRADORA DE IMOVEIS LTDA",
     "email": "rpique@gruporap.com.br",
+    "telefone": "11966007337",
     "unidades": [
       "RE213",
       "RE413"
@@ -1237,42 +2538,221 @@
   {
     "nome": "PEDRO MINORU MATAYOSHI",
     "email": "pedro@gruporap.com.br",
+    "telefone": "5511969292240",
     "unidades": [
       "RE214",
       "RE218"
     ]
   },
   {
+    "nome": "rio santos duque de caxias empreendimentos imobiliários",
+    "email": "gerencia@centro433.com.br",
+    "telefone": "11942497885",
+    "unidades": [
+      "CO55",
+      "CO24",
+      "CO25",
+      "CO26",
+      "CO34",
+      "CO35",
+      "CO36",
+      "CO44",
+      "CO45",
+      "CO46",
+      "CO54",
+      "CO56",
+      "CO64",
+      "CO65",
+      "CO66",
+      "CO74",
+      "CO75",
+      "CO76",
+      "CO84",
+      "CO85",
+      "CO86",
+      "CO94",
+      "CO95",
+      "CO78",
+      "CO93",
+      "CO27",
+      "CO28",
+      "CO37",
+      "CO38",
+      "CO47",
+      "CO48",
+      "CO57",
+      "CO58",
+      "CO67",
+      "CO68",
+      "CO77",
+      "CO92",
+      "CO87",
+      "CO88",
+      "CO97",
+      "CO98",
+      "CO52",
+      "CO96",
+      "CO21",
+      "CO22",
+      "CO23",
+      "CO31",
+      "CO32",
+      "CO33",
+      "CO41",
+      "CO42",
+      "CO43",
+      "CO51",
+      "CO53",
+      "CO61",
+      "CO62",
+      "CO63",
+      "CO71",
+      "CO72",
+      "CO73",
+      "CO81",
+      "CO82",
+      "CO83",
+      "CO91"
+    ]
+  },
+  {
+    "nome": "Eskenazi Empreendimentos e Participações Ltda.",
+    "email": "tatianaeskenazi@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "SE1305",
+      "SE1210",
+      "SE1301",
+      "SE1302",
+      "SE1303",
+      "SE1304",
+      "SE1306",
+      "SE1307",
+      "SE1308",
+      "SE1309",
+      "SE1310",
+      "SE1401",
+      "SE1402",
+      "SE1409",
+      "SE1410"
+    ]
+  },
+  {
     "nome": "FABIO DOS SANTOS SANT ANNA",
     "email": "fabio.s.santanna@hotmail.com",
+    "telefone": "11999877780",
     "unidades": [
       "SE1109"
     ]
   },
   {
+    "nome": "RAFAEL LEONARDO BARBOSA APARICIO",
+    "email": "rafaellbaparicio@gmail.com",
+    "telefone": "11976276736",
+    "unidades": [
+      "SE1407"
+    ]
+  },
+  {
+    "nome": "igor moreno martinelli",
+    "email": "igormorenomartinelli@gmail.com",
+    "telefone": "11993454541",
+    "unidades": [
+      "SE1208"
+    ]
+  },
+  {
+    "nome": "naiara roriz souza",
+    "email": "naiararoriz@me.com",
+    "telefone": "11994516707",
+    "unidades": [
+      "SE1908"
+    ]
+  },
+  {
     "nome": "EDSON KIKUCHI",
     "email": "kikuchiedson@uol.com.br",
+    "telefone": "5511966045419",
     "unidades": [
       "SE2403"
     ]
   },
   {
-    "nome": "Ghewa Srour",
-    "email": "ghewa.s@gmail.com",
+    "nome": "eskenazi empreendimentos e participacoes ltda",
+    "email": "eskenaziamanda@gmail.com",
+    "telefone": "1137406377",
     "unidades": [
-      "SE305"
+      "SE1209"
+    ]
+  },
+  {
+    "nome": "Antonio Donizete do Nascimento Junior",
+    "email": "junior@djuniorimobiliaria.com.br",
+    "telefone": "",
+    "unidades": [
+      "SE306"
+    ]
+  },
+  {
+    "nome": "alexandro garcias sousa",
+    "email": "neomaracarvalho@yahoo.com.br",
+    "telefone": "",
+    "unidades": [
+      "SE103"
+    ]
+  },
+  {
+    "nome": "donata alencar",
+    "email": "donata.alencar88@gmail.com",
+    "telefone": "11987109360",
+    "unidades": [
+      "SE109"
     ]
   },
   {
     "nome": "IZAQUE ANGELO DA SILVA",
     "email": "izaqueangelo@gmail.com",
+    "telefone": "5511967292525",
     "unidades": [
       "SE1910"
     ]
   },
   {
+    "nome": "SUELI DE FATIMA BASTOS",
+    "email": "slf.bastos@gmail.com",
+    "telefone": "5511999905336",
+    "unidades": [
+      "SE503"
+    ]
+  },
+  {
+    "nome": "greice taiar",
+    "email": "greice.taiar@gmail.com",
+    "telefone": "11973634828",
+    "unidades": [
+      "SE603"
+    ]
+  },
+  {
+    "nome": "joao luiz giusti",
+    "email": "jlg.publicidade@hotmail.com",
+    "telefone": "11979535526",
+    "unidades": [
+      "SE710"
+    ]
+  },
+  {
+    "nome": "JOAO CARLOS PEREIRA FERRAO",
+    "email": "joaoferrao54@gmail.com",
+    "telefone": "13997210760",
+    "unidades": [
+      "SE910"
+    ]
+  },
+  {
     "nome": "ANDRE DI THOMMAZO",
     "email": "andredt@gmail.com",
+    "telefone": "5516981226405",
     "unidades": [
       "SE1507",
       "EL1305",
@@ -1280,45 +2760,146 @@
     ]
   },
   {
+    "nome": "SEI TABATINGUERA EMPREENDIMENTO IMOBILIARIO SPE LTDA",
+    "email": "cobranca@setin.com.br",
+    "telefone": "551130419222",
+    "unidades": [
+      "SE1706",
+      "SE108",
+      "SE203",
+      "SE206",
+      "EL2005",
+      "EL414"
+    ]
+  },
+  {
+    "nome": "LUIZ GUSTAVO EUZEBIO DE ARAUJO",
+    "email": "gust145@gmail.com",
+    "telefone": "5511966500000",
+    "unidades": [
+      "SE102"
+    ]
+  },
+  {
+    "nome": "SEI TABATINGUERA EMPREENDIMENTO IMOBILIARIO SPE LTDA",
+    "email": "diogotico@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "SE202"
+    ]
+  },
+  {
+    "nome": "fernando soria denardi",
+    "email": "fernandos.denardi@hotmail.com",
+    "telefone": "11976330525",
+    "unidades": [
+      "SE204"
+    ]
+  },
+  {
     "nome": "Helena Soria Denardi",
     "email": "hsdenardi@gmail.com",
+    "telefone": "",
     "unidades": [
       "SE205"
     ]
   },
   {
+    "nome": "PAULO EMERY LEMBO",
+    "email": "pauloemerylembo@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "SE303"
+    ]
+  },
+  {
     "nome": "SIMONE FELICE FERRER ALVES",
     "email": "jfajfa312@gmail.com",
+    "telefone": "44984390985",
     "unidades": [
       "SE304",
-      "EL305"
+      "EL305",
+      "KB904"
+    ]
+  },
+  {
+    "nome": "Ghewa Srour",
+    "email": "ghewa.s@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "SE305"
+    ]
+  },
+  {
+    "nome": "MARIA APARECIDA DIAS OTAVIANO",
+    "email": "mapadiasot@gmail.com",
+    "telefone": "11972345618",
+    "unidades": [
+      "EL702",
+      "EL602"
+    ]
+  },
+  {
+    "nome": "ROGERIO GONCALVES MARINO",
+    "email": "rgmarino@hotmail.com",
+    "telefone": "11962125626",
+    "unidades": [
+      "EL103"
     ]
   },
   {
     "nome": "Ana Siu Ngor So",
     "email": "anakwok@gmail.com",
+    "telefone": "5511996128452",
     "unidades": [
       "EL708"
     ]
   },
   {
-    "nome": "Maicon Martins Araujo Andrade",
-    "email": "araujomaicon@hotmail.com",
+    "nome": "PEDRO GOMES DE MELLO",
+    "email": "pgmello@uol.com.br",
+    "telefone": "11991897393",
     "unidades": [
-      "EL1512"
+      "EL1814"
+    ]
+  },
+  {
+    "nome": "thiago cabral vieira",
+    "email": "tvieira.tcv@gmail.com",
+    "telefone": "11943891046",
+    "unidades": [
+      "EL614"
+    ]
+  },
+  {
+    "nome": "BRUNO FAGARAZ BARRETO",
+    "email": "bruno.fagaraz@gmail.com",
+    "telefone": "5511993528787",
+    "unidades": [
+      "EL906"
     ]
   },
   {
     "nome": "NLSR GESTÃO E PARTICIPAÇÕES",
     "email": "airesnogueira68@gmail.com",
+    "telefone": "5511996264865",
     "unidades": [
       "EL107",
       "EL501"
     ]
   },
   {
+    "nome": "marlo sandro soares",
+    "email": "marlosandro45@gmail.com",
+    "telefone": "11995251264",
+    "unidades": [
+      "EL1312"
+    ]
+  },
+  {
     "nome": "MARCIA CECILIA LE FOSSE",
     "email": "marcia.fosse@hotmail.com",
+    "telefone": "11979610007",
     "unidades": [
       "EL1502"
     ]
@@ -1326,107 +2907,280 @@
   {
     "nome": "KATIA REGINA LOPES DOS SANTOS MARTINS",
     "email": "matusalem.sc@gmail.com",
+    "telefone": "5511997781219",
     "unidades": [
       "EL1205"
     ]
   },
   {
+    "nome": "Maicon Martins Araujo Andrade",
+    "email": "araujomaicon@hotmail.com",
+    "telefone": "5527998590686",
+    "unidades": [
+      "EL1512"
+    ]
+  },
+  {
     "nome": "MAURA DE OLIVEIRA SANTOS NAGAOKA",
     "email": "nippon.maura@gmail.com",
+    "telefone": "11996591962",
     "unidades": [
       "EL1812"
     ]
   },
   {
-    "nome": "PEDRO GOMES DE MELLO",
-    "email": "pgmello@uol.com.br",
-    "unidades": [
-      "EL1814"
-    ]
-  },
-  {
     "nome": "Henrique Rinaldi Nacif Cheib",
     "email": "henriquecheib@hotmail.com",
+    "telefone": "553193303188",
     "unidades": [
       "EL607"
     ]
   },
   {
+    "nome": "marcela alvarez savioli",
+    "email": "savima@gmail.com",
+    "telefone": "11941139294",
+    "unidades": [
+      "EL1110"
+    ]
+  },
+  {
     "nome": "DANIELA NUNES DOS SANTOS",
     "email": "dandannunes@gmail.com",
+    "telefone": "5511948645542",
     "unidades": [
       "EL301"
     ]
   },
   {
-    "nome": "BRENA SOARES DE CARVALHO",
-    "email": "brena_scarvalho@hotmail.com",
+    "nome": "eduardo manzini",
+    "email": "eduardomanzini28@gmail.com",
+    "telefone": "11992003520",
     "unidades": [
-      "VC1317"
+      "EL1007"
+    ]
+  },
+  {
+    "nome": "FRANCISLENE COSTA DO ROSARIO NUNES",
+    "email": "francislenenunes@hotmail.com",
+    "telefone": "6182147798",
+    "unidades": [
+      "EL401"
+    ]
+  },
+  {
+    "nome": "ARTEMIO PLANA ROBERT",
+    "email": "diegoplanar@yahoo.com.br",
+    "telefone": "1140220728",
+    "unidades": [
+      "VA705"
     ]
   },
   {
     "nome": "LUCIANA DE VILHENA AZI MARSILIO",
     "email": "lu_azi@hotmail.com",
+    "telefone": "11993932787",
     "unidades": [
       "EL1612"
     ]
   },
   {
-    "nome": "PATRICIO HOPFF",
-    "email": "hopffp@me.com",
+    "nome": "JOAO PAULO MENTA",
+    "email": "joaopaulomenta@hotmail.com.br",
+    "telefone": "11984765643",
     "unidades": [
-      "VT1312"
+      "EL405"
     ]
   },
   {
-    "nome": "Thais Hochgreb Emygdio",
-    "email": "thochgreb@gmail.com",
+    "nome": "Fernando Freitas de Carvalho",
+    "email": "fernando.fcar@gmail.com",
+    "telefone": "21969015897",
     "unidades": [
-      "VT204"
+      "SN1003B"
     ]
   },
   {
-    "nome": "ANSELMO PEREIRA SBRAGIA",
-    "email": "apsbragia@hotmail.com",
+    "nome": "ETR PROPERTIES FUNDO DE INVESTIMENTO IMOBILIARIO - FII",
+    "email": "etr.properties@jiveinvestimentos.com.br",
+    "telefone": "",
     "unidades": [
-      "VT1906"
+      "SU405",
+      "SU602",
+      "SU403",
+      "SU214",
+      "SU505",
+      "SU407",
+      "SU401",
+      "SU307",
+      "SU304",
+      "SU207",
+      "SU205",
+      "SU203"
+    ]
+  },
+  {
+    "nome": "caio calixto teixeira pereira",
+    "email": "caiocalixtogeo@outlook.com",
+    "telefone": "",
+    "unidades": [
+      "SL116"
+    ]
+  },
+  {
+    "nome": "JIVE ATIVOS IMOBILIÁRIOS III - FUNDO DE INVESTIMENTO",
+    "email": "marcelo.hajjar@jiveinvestimentos.com.br",
+    "telefone": "",
+    "unidades": [
+      "RS505",
+      "RS701",
+      "RS703",
+      "RS704",
+      "RS308",
+      "RS309",
+      "RS310",
+      "RS307",
+      "RS401",
+      "RS205",
+      "RS209",
+      "RS210",
+      "RS402",
+      "RS301",
+      "RS302",
+      "RS303",
+      "RS304",
+      "RS709",
+      "RS605",
+      "RS606",
+      "RS708",
+      "RS608",
+      "RS609",
+      "RS702",
+      "RS706",
+      "RS409",
+      "RS404",
+      "RS405",
+      "RS406",
+      "RS407",
+      "RS501",
+      "RS502",
+      "RS503",
+      "RS504",
+      "RS506",
+      "RS507",
+      "RS508",
+      "RS201",
+      "RS202",
+      "RS203",
+      "RS103",
+      "RS204"
+    ]
+  },
+  {
+    "nome": "IMPACT EMPREENDIMENTOS LTDA.",
+    "email": "di.santoro@uol.com.br",
+    "telefone": "11999858800",
+    "unidades": [
+      "PE62",
+      "PE12",
+      "PE13",
+      "PE14",
+      "PE15",
+      "PE21",
+      "PE22",
+      "PE23",
+      "PE84",
+      "PE85",
+      "PE92",
+      "PE93",
+      "PE94",
+      "PE95",
+      "PE83",
+      "PE45",
+      "PE24",
+      "PE25",
+      "PE31",
+      "PE32",
+      "PE33",
+      "PE34",
+      "PE35",
+      "PE41",
+      "PE42",
+      "PE43",
+      "PE44",
+      "PE52",
+      "PE53",
+      "PE54",
+      "PE55",
+      "PE63",
+      "PE64",
+      "PE65",
+      "PE72",
+      "PE74",
+      "PE75",
+      "PE82",
+      "PE73",
+      "PE71",
+      "PE81",
+      "PE91",
+      "PE61",
+      "PE11",
+      "PE51"
     ]
   },
   {
     "nome": "L & M GARCIA PARTICIPACOES LTDA",
     "email": "l_m_imoveis@hotmail.com",
+    "telefone": "5567996408805",
     "unidades": [
       "RE1003",
-      "RE507",
+      "SL903",
       "RE1007",
       "RE403",
+      "RE507",
       "SL303",
       "SL503",
       "SL616",
       "SL803",
-      "SL903",
       "SL915"
     ]
   },
   {
-    "nome": "GUSTAVO HARLEY FAZANHA SANCHES",
-    "email": "drgustavoharley23@gmail.com",
+    "nome": "RICARDO CHRISTOPHE DA ROCHA FREIRE",
+    "email": "ricardo.christophe@gmail.com",
+    "telefone": "11975924091",
     "unidades": [
-      "OF2512"
+      "IS701"
     ]
   },
   {
-    "nome": "TRE FRATELLI PARTICIPACOES LTDA",
-    "email": "financeiro@tfagro.com",
+    "nome": "TÁRCIO FARIA GUIMARÃES",
+    "email": "jr_guimaraes19@yahoo.com.br",
+    "telefone": "21981778325",
     "unidades": [
-      "PC102",
-      "PC210"
+      "AS405"
+    ]
+  },
+  {
+    "nome": "luis eduardo pereira pinto samico",
+    "email": "luis.samico@gmail.com",
+    "telefone": "21981282891",
+    "unidades": [
+      "SL904"
+    ]
+  },
+  {
+    "nome": "renato aguiar de lima",
+    "email": "renatoaguiardelima1@gmail.com",
+    "telefone": "21976673995",
+    "unidades": [
+      "SN1004B"
     ]
   },
   {
     "nome": "Alex Zanatta Bignotto",
     "email": "azbignotto@gmail.com",
+    "telefone": "5519981574000",
     "unidades": [
       "PC104"
     ]
@@ -1434,13 +3188,40 @@
   {
     "nome": "Marcos Akio Ono",
     "email": "dr.marcosono@gmail.com",
+    "telefone": "5511981795558",
     "unidades": [
       "PC206"
     ]
   },
   {
+    "nome": "TRE FRATELLI PARTICIPACOES LTDA",
+    "email": "financeiro@tfagro.com",
+    "telefone": "5511960776625",
+    "unidades": [
+      "PC102",
+      "PC210"
+    ]
+  },
+  {
+    "nome": "Aline Furtado da Rosa",
+    "email": "alinenfermagem@yahoo.com.br",
+    "telefone": "5524988001931",
+    "unidades": [
+      "SN1002A"
+    ]
+  },
+  {
+    "nome": "kenia gonzaga de jesus",
+    "email": "kenia.jesus@yahoo.com.br",
+    "telefone": "4899738336",
+    "unidades": [
+      "SN1804A"
+    ]
+  },
+  {
     "nome": "ROBERTO VINICIUS F SILVEIRA DA SILVA",
     "email": "vinic1575@hotmail.com",
+    "telefone": "5592992927175",
     "unidades": [
       "SN1207B"
     ]
@@ -1448,98 +3229,302 @@
   {
     "nome": "roberto silveira alves da silva",
     "email": "robertosilveiraalves61@gmail.com",
+    "telefone": "9292926382",
     "unidades": [
       "SN1304A",
+      "SN1602A",
       "SN904B"
+    ]
+  },
+  {
+    "nome": "sandro azevedo",
+    "email": "sandro_tri05@hotmail.com",
+    "telefone": "11953001407",
+    "unidades": [
+      "AS205"
     ]
   },
   {
     "nome": "REGINA HELENA DUARTE TEIXEIRA DO NASCIMENTO MÜLLER DOS ANJOS",
     "email": "reginagabinetesv@gmail.com",
+    "telefone": "13981335670",
     "unidades": [
       "AS801"
     ]
   },
   {
-    "nome": "Marco Antonio Gomes Del' Aquilla",
-    "email": "delaquilla@yahoo.com",
-    "unidades": [
-      "AS401"
-    ]
-  },
-  {
     "nome": "FELIPE ROBLES LOPES",
     "email": "ferobles@gmail.com",
+    "telefone": "5521997295315",
     "unidades": [
       "SN303A"
     ]
   },
   {
+    "nome": "Danielle Vargas Galletti",
+    "email": "danigestiguer@gmail.com",
+    "telefone": "55",
+    "unidades": [
+      "KB306",
+      "KB307"
+    ]
+  },
+  {
+    "nome": "Gabriela Kamimoto",
+    "email": "gabriela@360suites.com.br",
+    "telefone": "",
+    "unidades": [
+      "TESTERENAN"
+    ]
+  },
+  {
+    "nome": "Marcos Dionisio da Silva Lima",
+    "email": "msdionisio@hotmail.com",
+    "telefone": "21971437436",
+    "unidades": [
+      "PM1510"
+    ]
+  },
+  {
+    "nome": "Marco Antonio Gomes Del' Aquilla",
+    "email": "delaquilla@yahoo.com",
+    "telefone": "11985051317",
+    "unidades": [
+      "AS401"
+    ]
+  },
+  {
+    "nome": "Marcelo da Rocha Silveira",
+    "email": "mrsilveira@eba.ufrj.br",
+    "telefone": "21973736395",
+    "unidades": [
+      "SN1103A"
+    ]
+  },
+  {
+    "nome": "Marcelo Mendonça Garcia",
+    "email": "sandragconsultora@hotmail.com",
+    "telefone": "11985701103",
+    "unidades": [
+      "OP66A",
+      "OP67A"
+    ]
+  },
+  {
+    "nome": "Frederico Furtado Duarte",
+    "email": "frederico.fduarte@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "VA908"
+    ]
+  },
+  {
+    "nome": "Rui Pinheiro Silva",
+    "email": "rui499@gmail.com",
+    "telefone": "21976673995",
+    "unidades": [
+      "SN405A",
+      "SN904A"
+    ]
+  },
+  {
     "nome": "ADEMIR CANGUSSU SOARES DANTAS",
     "email": "ademircangussu@hotmail.com",
+    "telefone": "11981437574",
     "unidades": [
       "AS207"
     ]
   },
   {
+    "nome": "daveston e ana carolina mendes miranda",
+    "email": "deveston@gmail.com",
+    "telefone": "11947667564",
+    "unidades": [
+      "AS204"
+    ]
+  },
+  {
     "nome": "ALESSANDRA SILVA BASSI",
     "email": "luciano_silvestri@steris.com",
+    "telefone": "11984725759",
     "unidades": [
       "SP503"
     ]
   },
   {
-    "nome": "ADENILSON JOSE CESAR DA SILVA",
-    "email": "administracao@rrinfo.com.br",
+    "nome": "luiz gustavo alarcon alegro",
+    "email": "luiz.alegro@gmail.com",
+    "telefone": "11964741928",
     "unidades": [
-      "FL1306H"
+      "SP906",
+      "SP806"
+    ]
+  },
+  {
+    "nome": "George D. Ramos",
+    "email": "george.d.ramos@gmail.com",
+    "telefone": "5521980343889",
+    "unidades": [
+      "SN1803A"
+    ]
+  },
+  {
+    "nome": "patricia martinez",
+    "email": "patriciamartinez@uol.com.br",
+    "telefone": "11991793535",
+    "unidades": [
+      "FL1006H"
+    ]
+  },
+  {
+    "nome": "CARLOS VINICIUS DA SILVA GONCALVES",
+    "email": "carlosvinicius_silva@hotmail.com",
+    "telefone": "11968117684",
+    "unidades": [
+      "FA2603D"
     ]
   },
   {
     "nome": "Rodrigo Toninato",
     "email": "rodrigotoninato@hotmail.com",
+    "telefone": "11984039840",
     "unidades": [
       "PM605"
     ]
   },
   {
-    "nome": "Claudio Junior Lutz Pinheiro",
-    "email": "canela.claudio@yahoo.com.br",
+    "nome": "rodrigo bagattini cruz",
+    "email": "rodrigo_bcruz@hotmail.com",
+    "telefone": "11974335801",
     "unidades": [
-      "AS303"
+      "OP145A"
+    ]
+  },
+  {
+    "nome": "ADENILSON JOSE CESAR DA SILVA",
+    "email": "administracao@rrinfo.com.br",
+    "telefone": "553599250100",
+    "unidades": [
+      "FL1306H",
+      "FL1308H"
+    ]
+  },
+  {
+    "nome": "Tatyana Rosa Rossi",
+    "email": "tatyana.rossi@gmail.com",
+    "telefone": "5521981112173",
+    "unidades": [
+      "SN603B"
     ]
   },
   {
     "nome": "RENATO CINI",
     "email": "cinirenato@gmail.com",
+    "telefone": "11963094660",
     "unidades": [
       "SL107"
     ]
   },
   {
+    "nome": "NATALIA FERNANDES FACINCANI",
+    "email": "nataliaf.facincani@gmail.com",
+    "telefone": "11997320542",
+    "unidades": [
+      "SP2006"
+    ]
+  },
+  {
+    "nome": "DANIANE AMANCIO DEVECHI",
+    "email": "danianedevechi@gmail.com",
+    "telefone": "11991368704",
+    "unidades": [
+      "SP1107"
+    ]
+  },
+  {
     "nome": "Janaina Machado Conceição",
     "email": "machadojanaina7373@gmail.com",
+    "telefone": "5561983326107",
     "unidades": [
       "SP1407"
     ]
   },
   {
-    "nome": "FABIO MILANO SARDAGNA",
-    "email": "fabio@veritasseguros.com.br",
+    "nome": "CELIA GALDEANO MOREIRA",
+    "email": "celia@chanellepetboutique.com.br",
+    "telefone": "11981234499",
     "unidades": [
-      "SP605"
+      "BK605"
     ]
   },
   {
-    "nome": "CYRO NAUFEL FILHO",
-    "email": "cyronaufel@gmail.com",
+    "nome": "JG ISTAMATI PATRIMONIAL LTDA",
+    "email": "gustavo.istamati@bv.com.br",
+    "telefone": "5511996185121",
     "unidades": [
-      "SP803"
+      "LP205"
+    ]
+  },
+  {
+    "nome": "luiz antonio rosatti",
+    "email": "luizrosatti@gmail.com",
+    "telefone": "14981419256",
+    "unidades": [
+      "OP193B"
+    ]
+  },
+  {
+    "nome": "ANDRE LUIZ CAMARA",
+    "email": "andreluizcamara@yahoo.com",
+    "telefone": "21998574881",
+    "unidades": [
+      "FA2604D"
+    ]
+  },
+  {
+    "nome": "SADI TOMAZONI JUNIOR",
+    "email": "saditomazoni@yahoo.com.br",
+    "telefone": "11985316622",
+    "unidades": [
+      "FA2605D"
+    ]
+  },
+  {
+    "nome": "JULIO CESAR MOREIRA MOUTA",
+    "email": "juliomouta@uol.com.br",
+    "telefone": "11974188549",
+    "unidades": [
+      "FA2107D"
+    ]
+  },
+  {
+    "nome": "carlos alberto coelho",
+    "email": "ccoelho_eng@yahoo.com.br",
+    "telefone": "18981424120",
+    "unidades": [
+      "IS1204"
+    ]
+  },
+  {
+    "nome": "HÁLLICE MOREIRA TEIXEIRA",
+    "email": "hallicetx@hotmail.com",
+    "telefone": "9292080063",
+    "unidades": [
+      "IS1304"
+    ]
+  },
+  {
+    "nome": "MARCELINA XAVIER ROLIM",
+    "email": "marcelina.eztec@gmail.com",
+    "telefone": "11971005600",
+    "unidades": [
+      "IS512"
     ]
   },
   {
     "nome": "Decio Yoshihiro Seo",
     "email": "decio.seo@dys.group",
+    "telefone": "5511964213232",
     "unidades": [
       "PC106"
     ]
@@ -1547,6 +3532,7 @@
   {
     "nome": "AGAD Comércio de Baterias Ltda Epp",
     "email": "angelica@anferbaterias.com.br",
+    "telefone": "5519997538726",
     "unidades": [
       "PC108"
     ]
@@ -1554,146 +3540,524 @@
   {
     "nome": "Eduardo Madureira Rodrigues Ciqueira",
     "email": "eduardo@operagestora.com.br",
+    "telefone": "11987768877",
     "unidades": [
       "PC109"
     ]
   },
   {
-    "nome": "JOAQUIM FERREIRA ALVES NETO",
-    "email": "joaquimneto.advogado@gmail.com",
+    "nome": "JOAO PAULO BIANCHI PEREIRA",
+    "email": "jpaulo11@msn.com",
+    "telefone": "11997361303",
     "unidades": [
-      "AS202"
+      "PC202"
     ]
   },
   {
-    "nome": "LUCAS DUARTE TEIXEIRA DO NASCIMENTO DE FARIA",
-    "email": "lucasduarte94@gmail.com",
+    "nome": "Pedro Henrique da Cunha Melo",
+    "email": "pedromelo.dmp@gmail.com",
+    "telefone": "",
     "unidades": [
-      "AS201"
+      "PC208"
+    ]
+  },
+  {
+    "nome": "SILVIA EMP. IMOB. LTDA",
+    "email": "alan@niss.com.br",
+    "telefone": "551156448100",
+    "unidades": [
+      "AS103",
+      "AS104",
+      "AS105",
+      "AS107",
+      "AS206",
+      "AS102"
     ]
   },
   {
     "nome": "Layane Batista dos Santos",
     "email": "layaneb.s@outlook.com",
+    "telefone": "5579996634482",
     "unidades": [
       "AS307"
     ]
   },
   {
+    "nome": "JOAQUIM FERREIRA ALVES NETO",
+    "email": "joaquimneto.advogado@gmail.com",
+    "telefone": "559691414130",
+    "unidades": [
+      "AS202"
+    ]
+  },
+  {
+    "nome": "VALÉRIA PEDRO BARBOZA",
+    "email": "vbarboza@tce.sp.gov.br",
+    "telefone": "11998463513",
+    "unidades": [
+      "AS804"
+    ]
+  },
+  {
+    "nome": "FLAVIA SEGABINASSI GONCALVES",
+    "email": "fsegabinassi@hotmail.com",
+    "telefone": "11992950454",
+    "unidades": [
+      "TU805"
+    ]
+  },
+  {
+    "nome": "GABRIELLA FONSECA KAGUEYAMA",
+    "email": "gabikagueyama@hotmail.com",
+    "telefone": "11984122022",
+    "unidades": [
+      "TU1007"
+    ]
+  },
+  {
+    "nome": "henrique ferreira sanches russo",
+    "email": "russo.h@gmail.com",
+    "telefone": "11984271009",
+    "unidades": [
+      "TU1009"
+    ]
+  },
+  {
+    "nome": "MARIANA CARDILLO ANTONIALLI MONTI",
+    "email": "mariana_antonialli@yahoo.com.br",
+    "telefone": "19987797100",
+    "unidades": [
+      "TU1016"
+    ]
+  },
+  {
+    "nome": "JOSE RAIMUNDO DA SILVA",
+    "email": "joseraimundo.ra@gmail.com",
+    "telefone": "13997843877",
+    "unidades": [
+      "TU1110"
+    ]
+  },
+  {
+    "nome": "VIANEN HOLDING - CONSULTORIA E PARTICIPACOES LTDA",
+    "email": "rossetti.felipe@gmail.com",
+    "telefone": "1140231313",
+    "unidades": [
+      "TU1115",
+      "TU315",
+      "TU809"
+    ]
+  },
+  {
+    "nome": "fellipe melo correa barbosa",
+    "email": "fellipe.mcb@uol.com.br",
+    "telefone": "11942137101",
+    "unidades": [
+      "TU1417"
+    ]
+  },
+  {
+    "nome": "GUILHERME MOURA E SILVA",
+    "email": "guimoura10@hotmail.com",
+    "telefone": "11950862643",
+    "unidades": [
+      "TU610"
+    ]
+  },
+  {
+    "nome": "LUIZ ROBERTO VIVIANI JUNIOR",
+    "email": "luiz.viviani@gmail.com",
+    "telefone": "11992725043",
+    "unidades": [
+      "TU718"
+    ]
+  },
+  {
     "nome": "IVANI VALENTE",
     "email": "ivaniivanivalente@gmail.com",
+    "telefone": "11999518147",
     "unidades": [
       "TU914"
     ]
   },
   {
-    "nome": "HOUSI GESTAO PATRIMONIAL S.A.",
-    "email": "contabilidade@vitacon.com.br",
+    "nome": "Rafael Seria",
+    "email": "rafiseria@gmail.com",
+    "telefone": "5511999992324",
     "unidades": [
-      "TU704",
-      "TU804",
-      "CM1008",
-      "KB1411"
+      "CL133"
+    ]
+  },
+  {
+    "nome": "ALESSANDRO CAUDURO LIMA",
+    "email": "alessandro.cauduro.lima@gmail.com",
+    "telefone": "51992228677",
+    "unidades": [
+      "CL23"
+    ]
+  },
+  {
+    "nome": "LUCAS DUARTE TEIXEIRA DO NASCIMENTO DE FARIA",
+    "email": "lucasduarte94@gmail.com",
+    "telefone": "5513997707730",
+    "unidades": [
+      "AS201"
+    ]
+  },
+  {
+    "nome": "Flavio Bomfim Pestana",
+    "email": "isabelpestana@uol.com.br",
+    "telefone": "",
+    "unidades": [
+      "BW51B",
+      "BW54A",
+      "BW54B"
+    ]
+  },
+  {
+    "nome": "luiz felipe maeda lopes",
+    "email": "luizmaeda10@gmail.com",
+    "telefone": "11973598384",
+    "unidades": [
+      "VM53A"
+    ]
+  },
+  {
+    "nome": "MARCELO SERGIO PEZZIN",
+    "email": "mpezzin@hdlao.com",
+    "telefone": "",
+    "unidades": [
+      "VM53B"
+    ]
+  },
+  {
+    "nome": "RODRIGO CORDEIRO BARION",
+    "email": "rcbarion@gmail.com",
+    "telefone": "11983781888",
+    "unidades": [
+      "VM58B",
+      "VM48B"
+    ]
+  },
+  {
+    "nome": "RICARDO YASUO KOBASHI",
+    "email": "ricardo.kobashi@gmail.com",
+    "telefone": "11974442242",
+    "unidades": [
+      "VM46A",
+      "VM56A"
+    ]
+  },
+  {
+    "nome": "rebeca dos santos duarte rosa",
+    "email": "rbkduarte@gmail.com",
+    "telefone": "3192475247",
+    "unidades": [
+      "BW31A"
+    ]
+  },
+  {
+    "nome": "andre schenk",
+    "email": "andre@vivafruta.com.br",
+    "telefone": "11981784445",
+    "unidades": [
+      "BW52B"
+    ]
+  },
+  {
+    "nome": "fecane administracao de negocios e participacoes ltda",
+    "email": "fcneves50@gmail.com",
+    "telefone": "1126184744",
+    "unidades": [
+      "BW52A",
+      "BW53A",
+      "BW55A",
+      "BW56A"
+    ]
+  },
+  {
+    "nome": "LEONARDO GONÇALVES DE AGUIAR",
+    "email": "leonardo.aguiar@ymail.com",
+    "telefone": "11973236494",
+    "unidades": [
+      "SP1309"
+    ]
+  },
+  {
+    "nome": "yoko asamura azevedo",
+    "email": "yoko.asamura@gmail.com",
+    "telefone": "11951575000",
+    "unidades": [
+      "SP1405"
+    ]
+  },
+  {
+    "nome": "RENATA MARIE MIYASAKI",
+    "email": "renatamarie@hotmail.com",
+    "telefone": "5511984574551",
+    "unidades": [
+      "SP1001",
+      "SP1002"
+    ]
+  },
+  {
+    "nome": "VÍTOR GENARO",
+    "email": "vitorgenaro1971@gmail.com",
+    "telefone": "18189979941",
+    "unidades": [
+      "SP1805"
+    ]
+  },
+  {
+    "nome": "HERICK VAZQUEZ SOARES",
+    "email": "hericksoares@hotmail.com",
+    "telefone": "11961101362",
+    "unidades": [
+      "SP2206"
+    ]
+  },
+  {
+    "nome": "FABIO MILANO SARDAGNA",
+    "email": "fabio@veritasseguros.com.br",
+    "telefone": "5511993003429",
+    "unidades": [
+      "SP605"
+    ]
+  },
+  {
+    "nome": "CYRO NAUFEL FILHO",
+    "email": "cyronaufel@gmail.com",
+    "telefone": "11988953320",
+    "unidades": [
+      "SP803"
+    ]
+  },
+  {
+    "nome": "claudemilso ricardo teixeira",
+    "email": "claudemilso@hotmail.com",
+    "telefone": "11954971490",
+    "unidades": [
+      "BK1102"
     ]
   },
   {
     "nome": "MACLAN PATRIMONIAL LTDA.",
     "email": "chrisrocha.arq@gmail.com",
+    "telefone": "551191557",
     "unidades": [
-      "CC71",
-      "CC73",
-      "CC75",
-      "CC77",
-      "CC67",
       "CC101",
       "CC103",
       "CC105",
       "CC106",
       "CC108",
       "CC38",
-      "CC48"
+      "CC48",
+      "CC67",
+      "CC71",
+      "CC73",
+      "CC75",
+      "CC77"
     ]
   },
   {
-    "nome": "LEONARDO GONÇALVES DE AGUIAR",
-    "email": "leonardo.aguiar@ymail.com",
+    "nome": "renata calegari pereira",
+    "email": "renata.calegari.pereira@gmail.com",
+    "telefone": "11997930226",
     "unidades": [
-      "SP1309"
+      "FC201"
+    ]
+  },
+  {
+    "nome": "TATYANA FRANCHI ANDRADE DA MOTA",
+    "email": "tatyfas@hotmail.com",
+    "telefone": "11981492363",
+    "unidades": [
+      "FC204",
+      "FC403"
+    ]
+  },
+  {
+    "nome": "ab imoveis - administradora de bens",
+    "email": "imoveis.assefborges@gmail.com",
+    "telefone": "11975151314",
+    "unidades": [
+      "PA1108"
+    ]
+  },
+  {
+    "nome": "tulio jose borges pereira",
+    "email": "tulio@micropic.com.br",
+    "telefone": "3599615001",
+    "unidades": [
+      "SL808",
+      "SL809"
     ]
   },
   {
     "nome": "TERCIO MICHELAN FILHO",
     "email": "tercio.michelan@gmail.com",
+    "telefone": "11943806355",
     "unidades": [
       "SL204"
     ]
   },
   {
-    "nome": "Pedro Henrique da Cunha Melo",
-    "email": "pedromelo.dmp@gmail.com",
+    "nome": "joao carlos de oliveira",
+    "email": "jcarlos_radical@hotmail.com",
+    "telefone": "13996854248",
     "unidades": [
-      "PC208"
+      "SL1313"
     ]
   },
   {
-    "nome": "JOAO PAULO BIANCHI PEREIRA",
-    "email": "jpaulo11@msn.com",
+    "nome": "thiago de jesus freire",
+    "email": "thiago010498@gmail.com",
+    "telefone": "11973317555",
     "unidades": [
-      "PC202"
+      "SL103"
     ]
   },
   {
-    "nome": "JUN PYO HONG",
-    "email": "estherzinhaster@gmail.com",
+    "nome": "tecbens empreendimentos imobiliarios ltda",
+    "email": "yunes@advocaciajoseyunes.com.br",
+    "telefone": "11976206688",
     "unidades": [
-      "VT1912"
+      "FI186",
+      "FI34"
     ]
   },
   {
-    "nome": "INVESTSCHI PARTICIPACOES LTDA",
-    "email": "holger.schiele@ciecacademy.com.br",
+    "nome": "FERNANDO SOARES ARMELIN",
+    "email": "fernandoarmelin@uol.com.br",
+    "telefone": "11981747433",
     "unidades": [
-      "CM2408"
+      "AS901"
+    ]
+  },
+  {
+    "nome": "SIDNEY MARTINS",
+    "email": "martinssidney902@gmail.com",
+    "telefone": "11943763709",
+    "unidades": [
+      "OP213B"
+    ]
+  },
+  {
+    "nome": "natalia ros",
+    "email": "natalia.ros@terra.com.br",
+    "telefone": "11995027565",
+    "unidades": [
+      "SP1403"
+    ]
+  },
+  {
+    "nome": "micalet participacoes e empreendimentos ltda.",
+    "email": "antonio.paisano@terra.com.br",
+    "telefone": "55119605774",
+    "unidades": [
+      "SP1303"
     ]
   },
   {
     "nome": "ORLANDO RONDAN ZOTTI/ALINE CRISTINA PELUCCIO MARTINS",
     "email": "orlando.zotti@hotmail.com",
+    "telefone": "5511996896191",
     "unidades": [
       "CM1608R"
     ]
   },
   {
-    "nome": "natália Hristov",
-    "email": "nataliahristov@hotmail.com",
-    "unidades": [
-      "BK1807"
-    ]
-  },
-  {
     "nome": "Luric Françozo",
     "email": "luricf@yahoo.com.br",
+    "telefone": "5519984478784",
     "unidades": [
       "OI406"
     ]
   },
   {
+    "nome": "natália Hristov",
+    "email": "nataliahristov@hotmail.com",
+    "telefone": "5511914889530",
+    "unidades": [
+      "BK1807"
+    ]
+  },
+  {
+    "nome": "INVESTSCHI PARTICIPACOES LTDA",
+    "email": "holger.schiele@ciecacademy.com.br",
+    "telefone": "5549171789133",
+    "unidades": [
+      "CM2408"
+    ]
+  },
+  {
+    "nome": "Vanessa Goldman",
+    "email": "vferraretto@uol.com.br",
+    "telefone": "5511993054626",
+    "unidades": [
+      "CM1105"
+    ]
+  },
+  {
+    "nome": "Humberto Guimarães",
+    "email": "humbertinhopg@hotmail.com",
+    "telefone": "553197678800",
+    "unidades": [
+      "FL2106H"
+    ]
+  },
+  {
+    "nome": "SERGIO QUEIROZ PEREIRA",
+    "email": "sergioqueiroz99@hotmail.com",
+    "telefone": "5543999333030",
+    "unidades": [
+      "CZ204"
+    ]
+  },
+  {
+    "nome": "Bernardo Barbieri Seleme",
+    "email": "bernardoseleme@gmail.com",
+    "telefone": "554498151357",
+    "unidades": [
+      "EB214NR"
+    ]
+  },
+  {
+    "nome": "Aroldo Paulo Seleme",
+    "email": "apseleme@gmail.com",
+    "telefone": "554497669004",
+    "unidades": [
+      "EB205NR"
+    ]
+  },
+  {
     "nome": "Hugo Armando Ceron Molina",
     "email": "hac.consultoria@gmail.com",
+    "telefone": "554599712092",
     "unidades": [
       "EB210NR"
     ]
   },
   {
-    "nome": "KADA ASSESSORIA EMPRESARIAL LTDA - Charles Assine",
-    "email": "charles.assine@gmail.com",
+    "nome": "JOHNNI DE SOUZA LEMKE",
+    "email": "johnni_lemke@hotmail.com",
+    "telefone": "5555119747295",
     "unidades": [
-      "NP607"
+      "CM1307"
+    ]
+  },
+  {
+    "nome": "MARCIO DE JESUS JOAO",
+    "email": "marcio@almeidaredutores.com.br",
+    "telefone": "5511972663703",
+    "unidades": [
+      "FY1909"
     ]
   },
   {
     "nome": "ANGELO KAORU GOMES RIBEIRO",
     "email": "angelo.kaoru@outlook.com",
+    "telefone": "5511996577995",
     "unidades": [
       "CZ1402"
     ]
@@ -1701,6 +4065,7 @@
   {
     "nome": "KATIA REGINA DE OLIVEIRA",
     "email": "kreginaoliveira@gmail.com",
+    "telefone": "5511976573714",
     "unidades": [
       "CZ1508"
     ]
@@ -1708,48 +4073,119 @@
   {
     "nome": "Guilherme de Oliveira Moraes",
     "email": "gui_oliveiramoraes@hotmail.com",
+    "telefone": "5511976573714",
     "unidades": [
       "CZ1309"
     ]
   },
   {
-    "nome": "JOHNNI DE SOUZA LEMKE",
-    "email": "johnni_lemke@hotmail.com",
+    "nome": "Geovani Ap Teixeira da Silva",
+    "email": "geovaniteixeira@hotmail.com",
+    "telefone": "5511998760519",
     "unidades": [
-      "CM1307"
+      "CM310"
     ]
   },
   {
-    "nome": "SERGIO QUEIROZ PEREIRA",
-    "email": "sergioqueiroz99@hotmail.com",
+    "nome": "SANDRO PUSSAIGNOLLI",
+    "email": "sandro_pussaignolli@hotmail.com",
+    "telefone": "5511993820949",
     "unidades": [
-      "CZ204"
+      "LA508"
     ]
   },
   {
-    "nome": "MARCIO DE JESUS JOAO",
-    "email": "marcio@almeidaredutores.com.br",
+    "nome": "PEDRO PEREIRA DE SOUZA",
+    "email": "souzapedropereira9@gmail.com",
+    "telefone": "5588981204528",
     "unidades": [
-      "FY1909"
+      "CM1604"
     ]
   },
   {
-    "nome": "Fabio Robertson",
-    "email": "fabiorobertson@hotmail.com",
+    "nome": "Flavia Enne Botelho Ladeira",
+    "email": "flavia@naoinformouainda.com.br",
+    "telefone": "559294225407",
     "unidades": [
-      "LA113"
+      "PC111"
     ]
   },
   {
-    "nome": "2MA PATRIMONIAL LTDA",
-    "email": "amauri@fixarba.com.br",
+    "nome": "Vitor Bannitz Jacuboski",
+    "email": "vitbann@gmail.com",
+    "telefone": "5511995181023",
     "unidades": [
-      "CZ1510"
+      "CZ1101"
+    ]
+  },
+  {
+    "nome": "Alexandre Sona",
+    "email": "alexandre.sona@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "BH-OLI-0605b"
+    ]
+  },
+  {
+    "nome": "Paola Oliani Vieira da Silva",
+    "email": "paola@inabrindes.com.br",
+    "telefone": "",
+    "unidades": [
+      "BH-CAR-07006"
+    ]
+  },
+  {
+    "nome": "Nataly Cristina Feliciano de Jesus Carvalho",
+    "email": "guifel_carvalho@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "BH-MOD-00510"
+    ]
+  },
+  {
+    "nome": "Francisco Le Voci",
+    "email": "flevoci@terra.com.br",
+    "telefone": "",
+    "unidades": [
+      "BH-GRA-00110"
+    ]
+  },
+  {
+    "nome": "Luiz Adaulto Sanches Ribeiro",
+    "email": "lasribeiro@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "BH-SPA-00608"
+    ]
+  },
+  {
+    "nome": "Fernanda Debien Lana",
+    "email": "fe_debien@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "BH-FYP-01411"
+    ]
+  },
+  {
+    "nome": "Sidney Marques",
+    "email": "sidney_marques@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "BH-GIR-0212B"
+    ]
+  },
+  {
+    "nome": "CM OFTALMOLOGIA",
+    "email": "cesarapmf@yahoo.com.br",
+    "telefone": "5514991054627",
+    "unidades": [
+      "NT28"
     ]
   },
   {
     "nome": "Fang Administração de Bens Proprios Ltda (Mônica)",
     "email": "monicafangji@gmail.com",
+    "telefone": "5511983124838",
     "unidades": [
       "LA212",
       "LA312",
@@ -1758,106 +4194,286 @@
     ]
   },
   {
-    "nome": "Ines Vanesa Cutuli",
-    "email": "cutulivanesa@hotmail.com",
+    "nome": "CAIO DE SOUSA ANTUNES",
+    "email": "rep.caioantunes@gmail.com",
+    "telefone": "5511961687070",
     "unidades": [
-      "LA403"
-    ]
-  },
-  {
-    "nome": "HMBR Holding Patrimonial LTDA (Rafael)",
-    "email": "piai.rafael@gmail.com",
-    "unidades": [
-      "LA314NR"
-    ]
-  },
-  {
-    "nome": "José edvaldo fernandes Freitas",
-    "email": "j.edvaldo.freitas@gmail.com",
-    "unidades": [
-      "CASA VISTA LINDA BERTIOGA"
-    ]
-  },
-  {
-    "nome": "PEDRO PEREIRA DE SOUZA",
-    "email": "souzapedropereira9@gmail.com",
-    "unidades": [
-      "CM1604"
-    ]
-  },
-  {
-    "nome": "Flavia Enne Botelho Ladeira",
-    "email": "flavia@naoinformouainda.com.br",
-    "unidades": [
-      "PC111"
-    ]
-  },
-  {
-    "nome": "SANDRO PUSSAIGNOLLI",
-    "email": "sandro_pussaignolli@hotmail.com",
-    "unidades": [
-      "LA508"
-    ]
-  },
-  {
-    "nome": "Vitor Bannitz Jacuboski",
-    "email": "vitbann@gmail.com",
-    "unidades": [
-      "CZ1101"
-    ]
-  },
-  {
-    "nome": "Allan Zarour de Miranda Neto",
-    "email": "allanzmn@gmail.com",
-    "unidades": [
-      "SN1502A"
-    ]
-  },
-  {
-    "nome": "Samira Barroso Jorge",
-    "email": "samirabarroso@yahoo.com.br",
-    "unidades": [
-      "CM302NR"
+      "BH-TIA-00047"
     ]
   },
   {
     "nome": "Cleyton Carlo Onofri",
     "email": "cleytononofri@live.it",
+    "telefone": "5539340765831",
     "unidades": [
       "FY1010"
     ]
   },
   {
-    "nome": "CM OFTALMOLOGIA",
-    "email": "cesarapmf@yahoo.com.br",
+    "nome": "Samira Barroso Jorge",
+    "email": "samirabarroso@yahoo.com.br",
+    "telefone": "5533984020650",
     "unidades": [
-      "NT28"
+      "CM302NR"
     ]
   },
   {
-    "nome": "Humberto Guimarães",
-    "email": "humbertinhopg@hotmail.com",
+    "nome": "Allan Zarour de Miranda Neto",
+    "email": "allanzmn@gmail.com",
+    "telefone": "5522997950420",
     "unidades": [
-      "FL2106H"
+      "SN1502A"
     ]
   },
   {
-    "nome": "Vanessa Goldman",
-    "email": "vferraretto@uol.com.br",
+    "nome": "Fernando Fernandes Diniz Junqueira",
+    "email": "fernandojunqueira@hotmail.com",
+    "telefone": "5516981117859",
     "unidades": [
-      "CM1105"
+      "SF307"
     ]
   },
   {
-    "nome": "OZPED - NEGOCIOS IMOBILIARIOS, HOSPEDAGENS E HOTELARIA LTDA",
-    "email": "thiago@ozped.com.br",
+    "nome": "Ivan Generoso",
+    "email": "i.generoso@hotmail.com",
+    "telefone": "5511996191841",
     "unidades": [
-      "TR906"
+      "PE1903B"
+    ]
+  },
+  {
+    "nome": "Daniele Aguiar Monticelli",
+    "email": "danieleaguiardeoliveira@gmail.com",
+    "telefone": "5511982084854",
+    "unidades": [
+      "PE1402B"
+    ]
+  },
+  {
+    "nome": "Bruno Francisco Antunes Genovesi",
+    "email": "nilson@genovesi.com.br",
+    "telefone": "5511999825554",
+    "unidades": [
+      "RM302"
+    ]
+  },
+  {
+    "nome": "THAJ ADMINISTRADORA DE BENS - LTDA",
+    "email": "thiago@setim.com.br",
+    "telefone": "5541999746808",
+    "unidades": [
+      "RM1006"
+    ]
+  },
+  {
+    "nome": "Ivan Pena Rocha Junior",
+    "email": "ivanrjr@gmail.com",
+    "telefone": "5549152538069",
+    "unidades": [
+      "RM206"
+    ]
+  },
+  {
+    "nome": "Francielle Mariano Mazzer Tiossi",
+    "email": "rantiossi@gmail.com",
+    "telefone": "5541999606416",
+    "unidades": [
+      "RM1306"
+    ]
+  },
+  {
+    "nome": "PAULO ALEXANDRE AYRES DE CAMARGO",
+    "email": "paulo.camargo@btgpactual.com",
+    "telefone": "5512991571173",
+    "unidades": [
+      "PE1308B"
+    ]
+  },
+  {
+    "nome": "José Tadeu Dantas Leite",
+    "email": "fazenda_tadeu@hotmail.com",
+    "telefone": "5511985487036",
+    "unidades": [
+      "ZB1134"
+    ]
+  },
+  {
+    "nome": "Mohamed M’Bodji Hanne",
+    "email": "mohamedhanne09@gmail.com",
+    "telefone": "5519296896009",
+    "unidades": [
+      "PT1711"
+    ]
+  },
+  {
+    "nome": "JSD EMPREENDIMENTOS E ASSESSORIA TECNICA LTDA",
+    "email": "j.duran@maccaferri.com",
+    "telefone": "5511983227184",
+    "unidades": [
+      "PT309"
+    ]
+  },
+  {
+    "nome": "Juliana Akie Takahashi",
+    "email": "julytakahashi0809@gmail.com",
+    "telefone": "5511998482289",
+    "unidades": [
+      "PG202"
+    ]
+  },
+  {
+    "nome": "Emmanuel Teste",
+    "email": "testesmanu@360suites.com.br",
+    "telefone": "",
+    "unidades": [
+      "TL902A",
+      "TL705A"
+    ]
+  },
+  {
+    "nome": "RSP Com Hortifruti Ltda",
+    "email": "rofrutas@hotmail.com",
+    "telefone": "5511991005419",
+    "unidades": [
+      "BS2301"
+    ]
+  },
+  {
+    "nome": "Claudio Araujo Rocha",
+    "email": "claudio.rocha33@gmail.com",
+    "telefone": "5555317131137",
+    "unidades": [
+      "BH-IMA-01309"
+    ]
+  },
+  {
+    "nome": "Lucas Perez Vicente",
+    "email": "medlucas92@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "BH-HOM-00118"
+    ]
+  },
+  {
+    "nome": "Priscila Gracie dos Santos barros",
+    "email": "graciepriscila@gmail.com",
+    "telefone": "5521981828525",
+    "unidades": [
+      "BO614"
+    ]
+  },
+  {
+    "nome": "SRS Holding de Investimentos Ltda.",
+    "email": "alexandresrs@gmail.com",
+    "telefone": "5511984038401",
+    "unidades": [
+      "PG316"
+    ]
+  },
+  {
+    "nome": "Herbert Oliveira Peixoto",
+    "email": "hpeixoto@hotmail.com",
+    "telefone": "5511950253986",
+    "unidades": [
+      "BO317"
+    ]
+  },
+  {
+    "nome": "Denys Miyashiro",
+    "email": "denysmiyashiro@yahoo.com.br",
+    "telefone": "5511987870747",
+    "unidades": [
+      "BO1216"
+    ]
+  },
+  {
+    "nome": "Aparecido Donizete Pereira",
+    "email": "sppereira1957@gmail.com",
+    "telefone": "5511999051729",
+    "unidades": [
+      "BO514"
+    ]
+  },
+  {
+    "nome": "2MA PATRIMONIAL LTDA",
+    "email": "amauri@fixarba.com.br",
+    "telefone": "",
+    "unidades": [
+      "CZ1510"
+    ]
+  },
+  {
+    "nome": "Almir Ferreira Alexandre",
+    "email": "almiralexandre@terra.com.br",
+    "telefone": "5511956059027",
+    "unidades": [
+      "MC207"
+    ]
+  },
+  {
+    "nome": "JOSÉ CARLOS DEL NEGRI",
+    "email": "jdelnegri@gmail.com",
+    "telefone": "5511998117716",
+    "unidades": [
+      "MC430"
+    ]
+  },
+  {
+    "nome": "REGIANE MORIYA",
+    "email": "moriya@uol.com.br",
+    "telefone": "5511987185495",
+    "unidades": [
+      "MC532"
+    ]
+  },
+  {
+    "nome": "Mauro César de Morais Filho",
+    "email": "mfmorais@terra.com.br",
+    "telefone": "5511998843729",
+    "unidades": [
+      "MC303",
+      "MC304"
+    ]
+  },
+  {
+    "nome": "NELSON MARESCA FILHO",
+    "email": "nsmaresca@uol.com.br",
+    "telefone": "5511999870137",
+    "unidades": [
+      "MC205"
+    ]
+  },
+  {
+    "nome": "Luiz Donato Monticelli",
+    "email": "monticelli2004@hotmail.com",
+    "telefone": "5511945323131",
+    "unidades": [
+      "PE1302B",
+      "PE1502B"
+    ]
+  },
+  {
+    "nome": "Huang Yeh Jong",
+    "email": "inanceiro@astonca.com",
+    "telefone": "5511965868194",
+    "unidades": [
+      "FY2007",
+      "FY1208"
+    ]
+  },
+  {
+    "nome": "HERCULANO DE ALMEIDA ATIVIDADES IMOBILIÁRIAS LTDA",
+    "email": "garatuja.marina@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "SI811",
+      "SI824"
     ]
   },
   {
     "nome": "Nurimar Conceição Mochon",
     "email": "nurimochon71@gmail.com",
+    "telefone": "5511983896612",
     "unidades": [
       "NT34"
     ]
@@ -1865,36 +4481,56 @@
   {
     "nome": "MARCELO RUIZ MOCHON",
     "email": "mmochon71@gmail.com",
+    "telefone": "5511981937917",
     "unidades": [
       "NT35"
     ]
   },
   {
-    "nome": "Huang Yeh Jong",
-    "email": "inanceiro@astonca.com",
+    "nome": "Ines Vanesa Cutuli",
+    "email": "cutulivanesa@hotmail.com",
+    "telefone": "5511956615829",
     "unidades": [
-      "FY1208",
-      "FY2007"
+      "LA403"
     ]
   },
   {
-    "nome": "HERCULANO DE ALMEIDA ATIVIDADES IMOBILIÁRIAS LTDA",
-    "email": "garatuja.marina@gmail.com",
+    "nome": "HMBR Holding Patrimonial LTDA (Rafael)",
+    "email": "piai.rafael@gmail.com",
+    "telefone": "",
     "unidades": [
-      "SI811",
-      "SI824"
+      "LA314NR"
     ]
   },
   {
-    "nome": "BFG Administração de Bens Ltda",
-    "email": "roberto.greco@grecoadvogados.com",
+    "nome": "José edvaldo fernandes Freitas",
+    "email": "j.edvaldo.freitas@gmail.com",
+    "telefone": "5511965654871",
     "unidades": [
-      "PM804"
+      "CASA VISTA LINDA BERTIOGA"
+    ]
+  },
+  {
+    "nome": "Fabio Robertson",
+    "email": "fabiorobertson@hotmail.com",
+    "telefone": "5511974858594",
+    "unidades": [
+      "LA113"
+    ]
+  },
+  {
+    "nome": "Belmonte Part e Empreendimentos Ltda",
+    "email": "leticia@recuperacao.com.br",
+    "telefone": "5531984584448",
+    "unidades": [
+      "CM1002",
+      "CM1001"
     ]
   },
   {
     "nome": "JV Souza Participações Ltda",
     "email": "evandro@recuperacao.com.br",
+    "telefone": "5531996337890",
     "unidades": [
       "CM1010"
     ]
@@ -1902,13 +4538,23 @@
   {
     "nome": "MARCO ANTONIO GIACOMELI DE MIRANDA",
     "email": "marco@mirandex.com.br",
+    "telefone": "556999754446",
     "unidades": [
       "CZ408"
     ]
   },
   {
+    "nome": "IAFE GARGANTINI INVESTIMENTOS E PARTICIPACOES LTDA",
+    "email": "italogargantini@gmail.com",
+    "telefone": "554491025529",
+    "unidades": [
+      "EB116"
+    ]
+  },
+  {
     "nome": "leão Marketing Distr e Com Ltda",
     "email": "sergioqueiroz@icloud.com",
+    "telefone": "554399630754",
     "unidades": [
       "CZ605"
     ]
@@ -1916,13 +4562,16 @@
   {
     "nome": "elisângela lobo marcondes",
     "email": "elisangela.l.marcondes@gmail.com",
+    "telefone": "",
     "unidades": [
+      "DJ301",
       "DJ301NR"
     ]
   },
   {
     "nome": "Arpad Administração e Participacoes Ltda",
     "email": "joaocarlosdapra@gmail.com",
+    "telefone": "5511970979893",
     "unidades": [
       "FY1002"
     ]
@@ -1930,20 +4579,125 @@
   {
     "nome": "RODRIGO ZANNON BRAGA",
     "email": "rodrigo.paineiras@hotmail.com",
+    "telefone": "553588573710",
     "unidades": [
       "FY2206"
     ]
   },
   {
-    "nome": "ALEXANDRINO MARQUES NETO/THASSIA CAVALCANTE DE OLIVEIRA MORAES MARQUES",
-    "email": "alexandrinomarquesneto@gmail.com",
+    "nome": "BFG Administração de Bens Ltda",
+    "email": "roberto.greco@grecoadvogados.com",
+    "telefone": "5511999513653",
     "unidades": [
-      "HZ305"
+      "PM804"
+    ]
+  },
+  {
+    "nome": "PAMARIS EMPREENDIMENTO IMOBILIARIO LTDA",
+    "email": "moises@niss.com.br",
+    "telefone": "",
+    "unidades": [
+      "MY63",
+      "MY51",
+      "MY52",
+      "MY53",
+      "MY54",
+      "MY55",
+      "MY56",
+      "MY61",
+      "MY62",
+      "MY64",
+      "MY46",
+      "MY65",
+      "MY66",
+      "MY72",
+      "MY73",
+      "MY74",
+      "MY75",
+      "MY76",
+      "MY33",
+      "MY21",
+      "MY23",
+      "MY24",
+      "MY25",
+      "MY26",
+      "MY31",
+      "MY32",
+      "MY34",
+      "MY35",
+      "MY36",
+      "MY41",
+      "MY42",
+      "MY43",
+      "MY44",
+      "MY45",
+      "MY71",
+      "MY81",
+      "MY126",
+      "MY113",
+      "MY114",
+      "MY115",
+      "MY116",
+      "MY121",
+      "MY122",
+      "MY123",
+      "MY124",
+      "MY125",
+      "MY112",
+      "MY131",
+      "MY132",
+      "MY133",
+      "MY135",
+      "MY136",
+      "MY141",
+      "MY142",
+      "MY95",
+      "MY82",
+      "MY83",
+      "MY84",
+      "MY85",
+      "MY86",
+      "MY91",
+      "MY92",
+      "MY93",
+      "MY94",
+      "MY134",
+      "MY96",
+      "MY101",
+      "MY102",
+      "MY103",
+      "MY104",
+      "MY105",
+      "MY106",
+      "MY111",
+      "MY163",
+      "MY176",
+      "MY175",
+      "MY174",
+      "MY173",
+      "MY172",
+      "MY171",
+      "MY166",
+      "MY165",
+      "MY164",
+      "MY143",
+      "MY162",
+      "MY161",
+      "MY144",
+      "MY156",
+      "MY151",
+      "MY152",
+      "MY153",
+      "MY154",
+      "MY146",
+      "MY145",
+      "MY155"
     ]
   },
   {
     "nome": "Eduardo Galhardo",
     "email": "eduardos.galhardo@hotmail.com",
+    "telefone": "",
     "unidades": [
       "HP504"
     ]
@@ -1951,6 +4705,7 @@
   {
     "nome": "Luiz Alberto de Moraes Tamayose",
     "email": "tamayoseluiz@gmail.com",
+    "telefone": "5513997661028",
     "unidades": [
       "FY1510"
     ]
@@ -1958,52 +4713,442 @@
   {
     "nome": "Helena Lucia Alves Pereira",
     "email": "helenareumato@gmail.com",
+    "telefone": "559288024539",
     "unidades": [
       "FY411"
     ]
   },
   {
-    "nome": "Marcelo Cury",
-    "email": "marcelo.cury67@gmail.com",
+    "nome": "ALEXANDRINO MARQUES NETO/THASSIA CAVALCANTE DE OLIVEIRA MORAES MARQUES",
+    "email": "alexandrinomarquesneto@gmail.com",
+    "telefone": "556796538708",
     "unidades": [
-      "HZ507"
+      "HZ305"
     ]
   },
   {
-    "nome": "SILVIO CREPALDI JUNIOR",
-    "email": "crepaldi.scj@uol.com.br",
+    "nome": "Ricardo Tardin e Raquel Ude Braz",
+    "email": "raquelude@gmail.com",
+    "telefone": "5531988111571",
     "unidades": [
-      "CZ402"
+      "FY1605"
     ]
   },
   {
-    "nome": "Rubiana Ribeiro Ferreira",
-    "email": "rubiana.ferreira@yahoo.com.br",
+    "nome": "Rafael Silveira Gomes",
+    "email": "rsgomes07@gmail.com",
+    "telefone": "5531991268886",
     "unidades": [
-      "DN1303"
+      "FY1704"
     ]
   },
   {
-    "nome": "Fernanda Michelle das Neves",
-    "email": "comercial@lmetals.com.br",
+    "nome": "CARLOS EDUARDO PASQUALINI",
+    "email": "pasquali@uol.com.br",
+    "telefone": "5511975490757",
     "unidades": [
-      "CZ306"
+      "CZ205"
     ]
   },
   {
-    "nome": "IRIS SAYURI KAZIMOTO",
-    "email": "lilyris@gmail.com",
+    "nome": "Ricardo Alexandre Mansur Pimentel",
+    "email": "ricardo.mansur@sma-eng.com.br",
+    "telefone": "5531998389275",
     "unidades": [
-      "HZ1205"
+      "FY1505"
     ]
   },
-   {
-    "nome": "Renato Ferreira Monticelli",
-    "email": "monticelli2004@hotmail.com",
+  {
+    "nome": "Rodrigo Tardin",
+    "email": "rodrigo.tardin@sma-eng.com.br",
+    "telefone": "5531996125918",
     "unidades": [
-      "PE1302B",
-      "PE1402B",
-      "PE1502B"
-]
-}
+      "FY1604"
+    ]
+  },
+  {
+    "nome": "FERNANDO ELIAS DA COSTA",
+    "email": "fecosta@deloitte.com",
+    "telefone": "5511999709761",
+    "unidades": [
+      "CZ701"
+    ]
+  },
+  {
+    "nome": "Emmanuel Jose Pinareli Rodrigues de Souza",
+    "email": "emmanuelpinareli@gmail.com",
+    "telefone": "5519996451703",
+    "unidades": [
+      "EB122"
+    ]
+  },
+  {
+    "nome": "KADA ASSESSORIA EMPRESARIAL LTDA - Charles Assine",
+    "email": "charles.assine@gmail.com",
+    "telefone": "5511981472209",
+    "unidades": [
+      "NP607"
+    ]
+  },
+  {
+    "nome": "Emmanuel Lopes dos Anjos",
+    "email": "emmanuel.lopes@gmail.com",
+    "telefone": "5511952721002",
+    "unidades": [
+      "BK609"
+    ]
+  },
+  {
+    "nome": "ANTONIO GOLCALVES COSTA",
+    "email": "costaantonio1828@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "SE208"
+    ]
+  },
+  {
+    "nome": "Sidney de Almeida junior",
+    "email": "sidneydealmeidajr@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "MM102"
+    ]
+  },
+  {
+    "nome": "FABIO MARTINEZ BARRETO AFONSO",
+    "email": "fabio.m.b_afonso@hotmail.com",
+    "telefone": "",
+    "unidades": [
+      "VA708"
+    ]
+  },
+  {
+    "nome": "IR GESTAO E ADMINISTRACAO DE PROPRIEDADE IMOBILIARIA LTDA",
+    "email": "igorrascovsky@yahoo.com.br",
+    "telefone": "",
+    "unidades": [
+      "EL105"
+    ]
+  },
+  {
+    "nome": "Mariana Craveiro",
+    "email": "mariana.craveiro@riobravo.com.br",
+    "telefone": "",
+    "unidades": [
+      "FY1106"
+    ]
+  },
+  {
+    "nome": "YOSHINAKA ADMINISTRADORA DE BENS LTDA",
+    "email": "fabiomata@gmail.com",
+    "telefone": "11979997438",
+    "unidades": [
+      "SL102"
+    ]
+  },
+  {
+    "nome": "ZAKI KATTAN BEDA",
+    "email": "zakibeda@gmail.com",
+    "telefone": "5511963453222",
+    "unidades": [
+      "SE2410",
+      "FC410",
+      "SE701",
+      "SE702",
+      "SE703",
+      "SE704",
+      "SE705",
+      "SE706",
+      "SE707",
+      "SE1501",
+      "SE1502",
+      "SE1503",
+      "SE1504",
+      "SE1505",
+      "FC511",
+      "SL814",
+      "FC309",
+      "CL102",
+      "SE2401",
+      "SE2402",
+      "CL42",
+      "SE2404",
+      "SE2405",
+      "SE2406",
+      "SE2407",
+      "SE2408",
+      "CL44",
+      "CL31",
+      "CL24",
+      "CL103",
+      "CL33",
+      "CL101",
+      "CL91",
+      "SE2409",
+      "SE1602",
+      "SE1603",
+      "SE1604",
+      "SE1605",
+      "SE1606",
+      "SE1607",
+      "SE1608",
+      "SL615",
+      "SL515",
+      "SE1601",
+      "TOLIVP-0902A",
+      "CL113",
+      "AS507",
+      "AS506",
+      "AS505",
+      "CL114",
+      "AS504",
+      "CL134",
+      "EL1606",
+      "EL1714",
+      "EL1712",
+      "EL1707",
+      "EL1706",
+      "EL1705",
+      "EL1614",
+      "EL1607",
+      "EL1605",
+      "EL1514",
+      "HZ1002",
+      "EL1506",
+      "EL1505",
+      "EL1414",
+      "EL1413",
+      "EL1907",
+      "EL2002",
+      "EL2003",
+      "CZ905",
+      "OI411",
+      "FC607",
+      "EL1005",
+      "EL1006",
+      "EL1405",
+      "EL1406",
+      "EL1407",
+      "EL1412",
+      "BK1502",
+      "SL817",
+      "SL818",
+      "SL819",
+      "SL517",
+      "SL519",
+      "AM205",
+      "AM203",
+      "BK1302",
+      "RE908",
+      "RE707",
+      "BK602",
+      "RE702",
+      "BK804",
+      "RE608",
+      "RE509",
+      "RE410",
+      "SL617",
+      "FC706",
+      "PH205",
+      "PH304",
+      "PH306",
+      "PH204",
+      "SL717",
+      "SL618",
+      "SL716",
+      "EL2007",
+      "SL718",
+      "SL719",
+      "SL816",
+      "RE308",
+      "EL2012",
+      "EL2013",
+      "EL2014",
+      "OP206A",
+      "OP133A",
+      "LP315",
+      "LP314",
+      "LP313",
+      "LP312",
+      "RE109",
+      "RE1916",
+      "RE309",
+      "RE202",
+      "RE204",
+      "VB2010",
+      "VB2011",
+      "VB1912",
+      "VB1911",
+      "EB305NR",
+      "VB1910",
+      "MP305",
+      "NP1106",
+      "NP805",
+      "NP1009",
+      "NP1204",
+      "NP1405",
+      "MP605",
+      "NT21",
+      "NT31",
+      "MP502",
+      "EB303NR",
+      "CM1407",
+      "CM201",
+      "EB306NR",
+      "NP905",
+      "TOLIVP-0705A"
+    ]
+  },
+  {
+    "nome": "ARCADE EMPREENDIMENTOS E PARTICIPACOES LTDA",
+    "email": "jacabeda@hotmail.com",
+    "telefone": "5511981813770",
+    "unidades": [
+      "FC412",
+      "FC509",
+      "FC311",
+      "FC605",
+      "FC708"
+    ]
+  },
+  {
+    "nome": "ZAKI KATTAN BEDA",
+    "email": "zaki@softfilm.com.br",
+    "telefone": "",
+    "unidades": [
+      "AP64",
+      "KB1102",
+      "KB304",
+      "MI601NR",
+      "KB502"
+    ]
+  },
+  {
+    "nome": "mariana dos santos victorino",
+    "email": "maryvik@gmail.com",
+    "telefone": "11994630172",
+    "unidades": [
+      "SE1408",
+      "EL1212"
+    ]
+  },
+  {
+    "nome": "SAE ENGENHARIA LTDA",
+    "email": "fabio@saeengenharia.com.br",
+    "telefone": "551137966090",
+    "unidades": [
+      "SE1104",
+      "SE1103",
+      "SE1006",
+      "SE1005",
+      "SE1004",
+      "SE1003",
+      "SE1002",
+      "SE1001",
+      "EL902",
+      "EL901",
+      "EL805",
+      "EL803",
+      "EL802",
+      "EL801",
+      "EL905",
+      "EL907"
+    ]
+  },
+  {
+    "nome": "HABITASEC SECURITIZADORA SA",
+    "email": "fs@fl2partners.com.br",
+    "telefone": "5511989325189",
+    "unidades": [
+      "SE2505",
+      "SE804",
+      "SE2503",
+      "SE905",
+      "SE904",
+      "SE903",
+      "SE902",
+      "SE806",
+      "SE805",
+      "SE2507",
+      "SE2508",
+      "SE2509",
+      "SE2510",
+      "SE2605",
+      "SE2602",
+      "SE2603",
+      "SE2604",
+      "SE2310",
+      "SE404",
+      "SE2308",
+      "SE2307",
+      "SE2306",
+      "SE2303",
+      "SE2210",
+      "SE2110",
+      "SE1906",
+      "SE1905",
+      "SE803",
+      "SE405",
+      "SE502",
+      "SE504",
+      "SE506",
+      "SE604",
+      "SE605",
+      "SE606",
+      "SE802",
+      "SE1903",
+      "SE1101",
+      "SE1201",
+      "SE1701",
+      "SE1801",
+      "SE2301",
+      "SE2501",
+      "SE2601",
+      "SE1904",
+      "SE1808",
+      "SE1902",
+      "SE1204",
+      "SE2607",
+      "SE2608",
+      "SE2609",
+      "SE2610",
+      "SE1010",
+      "SE1105",
+      "SE1106",
+      "SE1203",
+      "SE2606",
+      "SE1205",
+      "SE1207",
+      "SE1510",
+      "SE1802",
+      "SE1803",
+      "SE1804",
+      "SE1805",
+      "SE1806"
+    ]
+  },
+  {
+    "nome": "Marcos Leite",
+    "email": "marcosmleite1975@gmail.com",
+    "telefone": "",
+    "unidades": [
+      "VM11B"
+    ]
+  },
+  {
+    "nome": "marcia dieguez leuzinger",
+    "email": "marcia.leuzinger@uol.com.br",
+    "telefone": "6199850235",
+    "unidades": [
+      "VM15A"
+    ]
+  },
+  {
+    "nome": "daniel cardoso zopolatto dos santos",
+    "email": "cardoso.daniel@terra.com.br",
+    "telefone": "11999493536",
+    "unidades": [
+      "VM16A"
+    ]
+  }
 ]
