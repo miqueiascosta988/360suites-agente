@@ -215,8 +215,15 @@ for (const msg of msgs) {
 if (remoteJid.endsWith("@lid")) {
   try {
     const fetch = require("node-fetch");
-    // Tenta resolver via contatos
-    const r = await fetch(`${process.env.EVOLUTION_API_URL}/contact/find/${process.env.EVOLUTION_INSTANCE}?where={"remoteJid":"${remoteJid}"}`, {
+    const r = await fetch(`${process.env.EVOLUTION_API_URL}/chat/findContacts/${process.env.EVOLUTION_INSTANCE}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": process.env.EVOLUTION_API_KEY },
+      body: JSON.stringify({ where: { remoteJid } }),
+    });
+    const data = await r.json();
+    console.log(`🔍 Contato:`, JSON.stringify(data).substring(0, 300));
+    const phone = data?.contacts?.[0]?.phone || data?.[0]?.phone;
+    if (phone) jid = `${phone}@s.whatsapp.net`;
       method: "GET",
       headers: { "apikey": process.env.EVOLUTION_API_KEY },
     });
