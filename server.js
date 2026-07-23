@@ -212,16 +212,18 @@ for (const msg of msgs) {
     console.log(`📱 Webhook: ${remoteJid} — "${texto.substring(0, 50)}"`);
     setImmediate(async () => {
       let jid = remoteJid;
-      if (remoteJid.endsWith("@lid")) {
-        try {
-          const fetch = require("node-fetch");
-          const r = await fetch(`${process.env.EVOLUTION_API_URL}/chat/whatsappNumbers/${process.env.EVOLUTION_INSTANCE}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "apikey": process.env.EVOLUTION_API_KEY },
-            body: JSON.stringify({ numbers: [remoteJid.replace("@lid", "")] }),
-          });
-          const data = await r.json();
-          if (data?.[0]?.jid) jid = data[0].jid;
+if (remoteJid.endsWith("@lid")) {
+  try {
+    const fetch = require("node-fetch");
+    // Tenta resolver via contatos
+    const r = await fetch(`${process.env.EVOLUTION_API_URL}/contact/find/${process.env.EVOLUTION_INSTANCE}?where={"remoteJid":"${remoteJid}"}`, {
+      method: "GET",
+      headers: { "apikey": process.env.EVOLUTION_API_KEY },
+    });
+    const data = await r.json();
+    console.log(`🔍 Contato:`, JSON.stringify(data).substring(0, 200));
+    const phone = data?.[0]?.phone || data?.contacts?.[0]?.phone;
+    if (phone) jid = `${phone}@s.whatsapp.net`;
           console.log(`🔍 JID resolvido: ${remoteJid} → ${jid}`);
         } catch (e) {
           console.error("Erro ao resolver JID:", e.message);
