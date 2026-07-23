@@ -1,4 +1,4 @@
-// agente_whatsapp.js — Triagem inteligente via WhatsApp (Evolution API)
+// agente_whatsapp.js — Triagem automática via WhatsApp + painel de aprovação
 const fs = require("fs");
 const path = require("path");
 const { chamarIA } = require("./ai");
@@ -7,298 +7,252 @@ const EVOLUTION_URL = process.env.EVOLUTION_API_URL;
 const EVOLUTION_KEY = process.env.EVOLUTION_API_KEY;
 const EVOLUTION_INSTANCE = process.env.EVOLUTION_INSTANCE || "360suites";
 
-const TRIAGEM_PATH = path.resolve(__dirname, "whatsapp_triagem.json");
-const PENDENTES_PATH = path.resolve(__dirname, "whatsapp_pendentes.json");
-const RESPONDIDOS_PATH = path.resolve(__dirname, "whatsapp_respondidos.json");
-
-const headers = () => ({
-  "Content-Type": "application/json",
-  "apikey": EVOLUTION_KEY,
-});
+const CONVERSAS_PATH = path.resolve(__dirname, "wpp_conversas.json");
+const PENDENTES_PATH = path.resolve(__dirname, "wpp_pendentes.json");
 
 // ── Persistência ──────────────────────────────────────────────────────────────
-const carregarTriagem = () => {
-  try { return fs.existsSync(TRIAGEM_PATH) ? JSON.parse(fs.readFileSync(TRIAGEM_PATH, "utf8")) : {}; } catch { return {}; }
+const carregarConversas = () => {
+  try { return fs.existsSync(CONVERSAS_PATH) ? JSON.parse(fs.readFileSync(CONVERSAS_PATH, "utf8")) : {}; }
+  catch { return {}; }
 };
-const salvarTriagem = (d) => fs.writeFileSync(TRIAGEM_PATH, JSON.stringify(d, null, 2), "utf8");
+
+const salvarConversas = (d) => fs.writeFileSync(CONVERSAS_PATH, JSON.stringify(d, null, 2), "utf8");
 
 const carregarPendentes = () => {
-  try { return fs.existsSync(PENDENTES_PATH) ? JSON.parse(fs.readFileSync(PENDENTES_PATH, "utf8")) : []; } catch { return []; }
+  try { return fs.existsSync(PENDENTES_PATH) ? JSON.parse(fs.readFileSync(PENDENTES_PATH, "utf8")) : []; }
+  catch { return []; }
 };
+
 const salvarPendentes = (d) => fs.writeFileSync(PENDENTES_PATH, JSON.stringify(d, null, 2), "utf8");
 
-const carregarRespondidos = () => {
-  try { return fs.existsSync(RESPONDIDOS_PATH) ? JSON.parse(fs.readFileSync(RESPONDIDOS_PATH, "utf8")) : {}; } catch { return {}; }
-};
-const salvarRespondido = (msgId, dados) => {
-  const r = carregarRespondidos();
-  r[msgId] = { ...dados, dataResposta: new Date().toISOString() };
-  fs.writeFileSync(RESPONDIDOS_PATH, JSON.stringify(r, null, 2), "utf8");
-};
-
-const carregarProprietarios = () => {
-  try { return JSON.parse(fs.readFileSync(path.resolve(__dirname, "proprietarios.json"), "utf8")); } catch { return []; }
-};
-
-// ── Busca proprietário ────────────────────────────────────────────────────────
-const normalizarTelefone = (jid) => (jid || "").replace("@s.whatsapp.net", "").replace("@c.us", "").replace(/\D/g, "");
-
-const encontrarProprietario = (telefone, email, proprietarios) => {
-  const tel = normalizarTelefone(telefone);
-
-  // Busca por telefone
-  if (tel) {
-    const porTel = proprietarios.find(p => {
-      const telProp = (p.telefone || "").replace(/\D/g, "");
-      return telProp && (tel.endsWith(telProp) || telProp.endsWith(tel) || tel.slice(-8) === telProp.slice(-8));
-    });
-    if (porTel) return porTel;
-  }
-
-  // Busca por e-mail
-  if (email) {
-    return proprietarios.find(p => p.email?.toLowerCase().trim() === email.toLowerCase().trim());
-  }
-
-  return null;
+const removerPendente = (id) => {
+  const pendentes = carregarPendentes().filter(p => p.id !== id);
+  salvarPendentes(pendentes);
 };
 
 // ── Envio de mensagem ─────────────────────────────────────────────────────────
 const enviarMensagem = async (remoteJid, texto) => {
-  const fetch = require("node-fetch");
-  const res = await fetch(`${EVOLUTION_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
-    method: "POST",
-    headers: headers(),
-    body: JSON.stringify({ number: remoteJid, text: texto }),
-  });
-  return res.json();
+  try {
+    const fetch = require("node-fetch");
+    const res = await fetch(`${EVOLUTION_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": EVOLUTION_KEY },
+      body: JSON.stringify({ number: remoteJid, text: texto }),
+    });
+    return res.json();
+  } catch (err) {
+    console.error("❌ Erro ao enviar WhatsApp:", err.message);
+  }
 };
 
-// ── Lógica de triagem por etapas ──────────────────────────────────────────────
+// ── Fluxo de triagem ──────────────────────────────────────────────────────────
 /*
-  Estados da conversa:
-  - "inicio"       → primeira mensagem, pede e-mail
-  - "aguardando_email" → aguarda e-mail para identificar
-  - "aguardando_opcao" → identificado, aguarda 1 (Júlia) ou 2 (Miquéias)
-  - "aguardando_descricao" → aguarda descrição do assunto
-  - "concluido"    → triagem finalizada, aguarda no painel
+  Estados:
+  aguardando_nome     → pede nome e e-mail
+  aguardando_direcao  → pede 1 (Júlia) ou 2 (Miquéias)
+  aguardando_assunto  → pede descrição do assunto
+  concluido           → triagem finalizada, aguarda no painel
 */
 
-const processarMensagem = async (remoteJid, texto, msgId) => {
-  const proprietarios = carregarProprietarios();
-  const triagens = carregarTriagem();
-  const conversa = triagens[remoteJid] || { estado: "inicio" };
-  const textoLimpo = texto.trim();
+const processarWebhook = async (remoteJid, textoRecebido) => {
+  if (!remoteJid || !textoRecebido) return;
 
-  console.log(`📱 ${remoteJid} | Estado: ${conversa.estado} | Msg: ${textoLimpo.substring(0, 60)}`);
+  // Ignora grupos
+  if (remoteJid.includes("@g.us")) return;
 
-  // ── Etapa 1: Primeira mensagem ────────────────────────────────────────────
-  if (conversa.estado === "inicio") {
-    // Tenta identificar pelo telefone primeiro
-    const proprietario = encontrarProprietario(remoteJid, null, proprietarios);
+  const conversas = carregarConversas();
+  const conversa = conversas[remoteJid] || { estado: "aguardando_nome", historico: [] };
+  const texto = textoRecebido.trim();
 
-    if (proprietario) {
-      // Já identificou pelo telefone
-      triagens[remoteJid] = {
-        estado: "aguardando_opcao",
-        nome: proprietario.nome,
-        email: proprietario.email,
-        telefone: remoteJid,
-        unidades: proprietario.unidades,
-      };
-      salvarTriagem(triagens);
+  // Adiciona ao histórico
+  conversa.historico = conversa.historico || [];
+  conversa.historico.push({ de: "proprietario", texto, hora: new Date().toISOString() });
 
-      await enviarMensagem(remoteJid,
-        `Olá, *${proprietario.nome}*! 👋\n\nSou a assistente virtual da *360 Suítes*.\n\nCom quem você gostaria de falar?\n\n*1️⃣* - Júlia _(Distratos)_\n*2️⃣* - Miquéias _(Outros assuntos)_\n\nDigite 1 ou 2:`
-      );
-    } else {
-      // Pede e-mail
-      triagens[remoteJid] = { estado: "aguardando_email" };
-      salvarTriagem(triagens);
+  console.log(`📱 ${remoteJid} | Estado: ${conversa.estado} | "${texto.substring(0, 50)}"`);
 
-      await enviarMensagem(remoteJid,
-        `Olá! 👋 Sou a assistente virtual da *360 Suítes*.\n\nPara te identificar, por favor informe seu *e-mail cadastrado*:`
-      );
-    }
+  // ── Estado: aguardando nome/email ────────────────────────────────────────
+  if (conversa.estado === "aguardando_nome") {
+    conversas[remoteJid] = conversa;
+    salvarConversas(conversas);
+
+    const resposta = `Olá! 👋 Sou a assistente virtual da *360 Suítes*.\n\nPara te atender melhor, por favor me informe:\n\n📝 *Seu nome completo e e-mail cadastrado*`;
+    await enviarMensagem(remoteJid, resposta);
+
+    conversa.estado = "aguardando_direcao_apos_identificacao";
+    conversa.historico.push({ de: "bot", texto: resposta, hora: new Date().toISOString() });
+    conversas[remoteJid] = conversa;
+    salvarConversas(conversas);
     return;
   }
 
-  // ── Etapa 2: Aguardando e-mail ────────────────────────────────────────────
-  if (conversa.estado === "aguardando_email") {
-    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
-    const emailEncontrado = textoLimpo.match(emailRegex)?.[0];
+  // ── Estado: aguardando identificação ────────────────────────────────────
+  if (conversa.estado === "aguardando_direcao_apos_identificacao") {
+    // Salva identificação informada pelo proprietário
+    conversa.identificacao = texto;
+    conversa.estado = "aguardando_direcao";
+    conversas[remoteJid] = conversa;
+    salvarConversas(conversas);
 
-    if (!emailEncontrado) {
-      await enviarMensagem(remoteJid,
-        `Não consegui identificar um e-mail válido. Por favor, informe seu *e-mail cadastrado* na 360 Suítes:`
-      );
-      return;
-    }
+    const resposta = `Obrigado! 😊\n\nCom quem você gostaria de falar?\n\n*1️⃣* Júlia — _Distratos_\n*2️⃣* Miquéias — _Outros assuntos_\n\nDigite *1* ou *2*:`;
+    await enviarMensagem(remoteJid, resposta);
 
-    const proprietario = encontrarProprietario(remoteJid, emailEncontrado, proprietarios);
-
-    if (!proprietario) {
-      await enviarMensagem(remoteJid,
-        `Não encontrei nenhum cadastro com o e-mail *${emailEncontrado}*.\n\nVerifique o e-mail e tente novamente, ou entre em contato diretamente pelo nosso WhatsApp: *+55 11 97632-0341*`
-      );
-      return;
-    }
-
-    triagens[remoteJid] = {
-      estado: "aguardando_opcao",
-      nome: proprietario.nome,
-      email: proprietario.email,
-      telefone: remoteJid,
-      unidades: proprietario.unidades,
-    };
-    salvarTriagem(triagens);
-
-    await enviarMensagem(remoteJid,
-      `Olá, *${proprietario.nome}*! ✅\n\nCom quem você gostaria de falar?\n\n*1️⃣* - Júlia _(Distratos)_\n*2️⃣* - Miquéias _(Outros assuntos)_\n\nDigite 1 ou 2:`
-    );
+    conversa.historico.push({ de: "bot", texto: resposta, hora: new Date().toISOString() });
+    conversas[remoteJid] = conversa;
+    salvarConversas(conversas);
     return;
   }
 
-  // ── Etapa 3: Aguardando opção ─────────────────────────────────────────────
-  if (conversa.estado === "aguardando_opcao") {
-    const opcao = textoLimpo.replace(/[^12]/g, "");
+  // ── Estado: aguardando direção ───────────────────────────────────────────
+  if (conversa.estado === "aguardando_direcao") {
+    const opcao = texto.replace(/[^12]/g, "");
 
     if (opcao !== "1" && opcao !== "2") {
-      await enviarMensagem(remoteJid,
-        `Por favor, digite apenas *1* para Júlia ou *2* para Miquéias:`
-      );
+      await enviarMensagem(remoteJid, `Por favor, digite apenas *1* para Júlia ou *2* para Miquéias:`);
       return;
     }
 
-    const responsavel = opcao === "1" ? "Júlia" : "Miquéias";
-    const assunto = opcao === "1" ? "Distratos" : "Outros assuntos";
+    conversa.responsavel = opcao === "1" ? "Júlia" : "Miquéias";
+    conversa.assuntoTipo = opcao === "1" ? "Distratos" : "Outros assuntos";
+    conversa.estado = "aguardando_assunto";
+    conversas[remoteJid] = conversa;
+    salvarConversas(conversas);
 
-    triagens[remoteJid] = {
-      ...conversa,
-      estado: "aguardando_descricao",
-      responsavel,
-      assunto,
-    };
-    salvarTriagem(triagens);
+    const resposta = `Certo! Você será atendido(a) por *${conversa.responsavel}* _(${conversa.assuntoTipo})_.\n\n📋 Por favor, descreva o que você precisa com o máximo de detalhes:`;
+    await enviarMensagem(remoteJid, resposta);
 
-    await enviarMensagem(remoteJid,
-      `Ótimo! Você será atendido(a) por *${responsavel}* _(${assunto})_.\n\nPor favor, descreva brevemente o que você precisa:`
-    );
+    conversa.historico.push({ de: "bot", texto: resposta, hora: new Date().toISOString() });
+    conversas[remoteJid] = conversa;
+    salvarConversas(conversas);
     return;
   }
 
-  // ── Etapa 4: Aguardando descrição ─────────────────────────────────────────
-  if (conversa.estado === "aguardando_descricao") {
-    // Resume o assunto com IA
-    let resumo = textoLimpo;
-    try {
-      resumo = await chamarIA(
-        `Resuma em no máximo 2 frases objetivas o seguinte assunto de um proprietário de apartamento:\n"${textoLimpo}"`
-      );
-    } catch (e) {
-      console.warn("⚠️ Erro ao resumir com IA:", e.message);
-    }
+  // ── Estado: aguardando assunto ───────────────────────────────────────────
+  if (conversa.estado === "aguardando_assunto") {
+    conversa.descricaoOriginal = texto;
+    conversa.estado = "processando";
+    conversas[remoteJid] = conversa;
+    salvarConversas(conversas);
 
-    // Adiciona ao painel
-    const pendentes = carregarPendentes();
-    const novaPendente = {
-      msgId,
-      remoteJid,
-      nome: conversa.nome,
-      email: conversa.email,
-      telefone: normalizarTelefone(remoteJid),
-      unidades: conversa.unidades,
-      responsavel: conversa.responsavel,
-      assunto: conversa.assunto,
-      descricaoOriginal: textoLimpo,
-      resumo,
-      whatsappLink: `https://wa.me/${normalizarTelefone(remoteJid)}`,
-      dataTriagem: new Date().toISOString(),
-    };
-    pendentes.push(novaPendente);
-    salvarPendentes(pendentes);
+    // Confirma recebimento imediatamente
+    const confirmacao = `✅ Mensagem recebida!\n\nEm breve *${conversa.responsavel}* entrará em contato com você.\n\nObrigado por falar com a *360 Suítes*! 🏢`;
+    await enviarMensagem(remoteJid, confirmacao);
+    conversa.historico.push({ de: "bot", texto: confirmacao, hora: new Date().toISOString() });
 
-    // Marca conversa como concluída
-    triagens[remoteJid] = { ...conversa, estado: "concluido" };
-    salvarTriagem(triagens);
+    // Processa em background com IA
+    setImmediate(async () => {
+      try {
+        const historicoTexto = conversa.historico
+          .map(h => `${h.de === "proprietario" ? "Proprietário" : "Bot"}: ${h.texto}`)
+          .join("\n");
 
-    await enviarMensagem(remoteJid,
-      `✅ Mensagem recebida!\n\nEm breve *${conversa.responsavel}* entrará em contato com você.\n\nObrigado por entrar em contato com a *360 Suítes*! 🏢`
-    );
+        const prompt = `Você é assistente da 360 Suítes. Com base na conversa abaixo, gere:
 
-    console.log(`✅ Triagem concluída: ${conversa.nome} → ${conversa.responsavel} | ${resumo}`);
+1. Um RESUMO objetivo do que o proprietário solicitou (máximo 3 frases)
+2. Uma SUGESTÃO DE RESPOSTA para ${conversa.responsavel} enviar ao proprietário (tom profissional e cordial, máximo 150 palavras)
+
+Identificação do proprietário: ${conversa.identificacao || "Não informada"}
+Direcionado para: ${conversa.responsavel} (${conversa.assuntoTipo})
+
+CONVERSA:
+${historicoTexto}
+
+Responda EXATAMENTE neste formato:
+RESUMO:
+[resumo aqui]
+
+SUGESTAO:
+[sugestão de resposta aqui]`;
+
+        const resultado = await chamarIA(prompt);
+
+        const resumoMatch = resultado.match(/RESUMO:\s*([\s\S]*?)(?=SUGESTAO:|$)/i);
+        const sugestaoMatch = resultado.match(/SUGESTAO:\s*([\s\S]*?)$/i);
+
+        const resumo = resumoMatch?.[1]?.trim() || texto;
+        const sugestao = sugestaoMatch?.[1]?.trim() || `Olá! Recebemos sua solicitação e entraremos em contato em breve.\n\nAtenciosamente,\n${conversa.responsavel}\n360 Suítes`;
+
+        // Adiciona ao painel
+        const pendentes = carregarPendentes();
+        pendentes.push({
+          id: `${remoteJid}_${Date.now()}`,
+          remoteJid,
+          telefone: remoteJid.replace("@s.whatsapp.net", ""),
+          identificacao: conversa.identificacao || "Não informada",
+          responsavel: conversa.responsavel,
+          assuntoTipo: conversa.assuntoTipo,
+          descricaoOriginal: conversa.descricaoOriginal,
+          resumo,
+          sugestao,
+          historico: conversa.historico,
+          whatsappLink: `https://wa.me/${remoteJid.replace("@s.whatsapp.net", "").replace(/\D/g, "")}`,
+          dataTriagem: new Date().toISOString(),
+        });
+        salvarPendentes(pendentes);
+
+        // Marca como concluído
+        conversa.estado = "concluido";
+        conversas[remoteJid] = conversa;
+        salvarConversas(conversas);
+
+        console.log(`✅ Triagem concluída: ${conversa.identificacao} → ${conversa.responsavel}`);
+      } catch (err) {
+        console.error("❌ Erro ao processar triagem com IA:", err.message);
+        conversa.estado = "concluido";
+        conversas[remoteJid] = conversa;
+        salvarConversas(conversas);
+      }
+    });
     return;
   }
 
-  // ── Estado concluído: reinicia se mandar nova mensagem ───────────────────
-  if (conversa.estado === "concluido") {
-    triagens[remoteJid] = { estado: "inicio" };
-    salvarTriagem(triagens);
-    await processarMensagem(remoteJid, textoLimpo, msgId);
-  }
-};
+  // ── Estado: concluído — reinicia se mandar nova mensagem ────────────────
+  if (conversa.estado === "concluido" || conversa.estado === "processando") {
+    // Aguarda 2h antes de reiniciar (evita loop)
+    const ultimaMensagem = conversa.historico?.[conversa.historico.length - 1];
+    const diff = ultimaMensagem ? (Date.now() - new Date(ultimaMensagem.hora).getTime()) / 1000 / 60 : 999;
 
-// ── Busca mensagens novas e processa ─────────────────────────────────────────
-const verificarMensagensWhatsApp = async () => {
-  const fetch = require("node-fetch");
-  console.log(`\n📱 [${new Date().toLocaleString("pt-BR")}] Verificando mensagens WhatsApp...`);
-
-  const res = await fetch(`${EVOLUTION_URL}/chat/findMessages/${EVOLUTION_INSTANCE}`, {
-    method: "POST",
-    headers: headers(),
-    body: JSON.stringify({
-      where: {
-        key: { fromMe: false },
-        messageTimestamp: { gte: Math.floor(Date.now() / 1000) - 3600 }, // última hora
-      },
-      limit: 50,
-    }),
-  });
-
-  const data = await res.json();
-  const mensagens = data?.messages?.records || [];
-  console.log(`📬 ${mensagens.length} mensagem(ns) encontrada(s)`);
-
-  const respondidos = carregarRespondidos();
-  let processadas = 0;
-
-  for (const msg of mensagens) {
-    const msgId = msg.key?.id;
-    if (!msgId || respondidos[msgId]) continue;
-
-    const remoteJid = msg.key?.remoteJid;
-    const texto = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
-
-    if (!texto || texto.length < 2 || remoteJid?.includes("@g.us")) continue; // ignora grupos
-
-    try {
-      await processarMensagem(remoteJid, texto, msgId);
-      salvarRespondido(msgId, { remoteJid, texto });
-      processadas++;
-    } catch (err) {
-      console.error(`❌ Erro ao processar ${remoteJid}: ${err.message}`);
+    if (diff > 120) {
+      // Reinicia conversa
+      delete conversas[remoteJid];
+      salvarConversas(conversas);
+      await processarWebhook(remoteJid, textoRecebido);
+    } else {
+      await enviarMensagem(remoteJid, `Sua solicitação já foi registrada! Em breve *${conversa.responsavel}* entrará em contato. 😊`);
     }
   }
-
-  const pendentes = carregarPendentes();
-  console.log(`✅ ${processadas} mensagem(ns) processada(s) | ${pendentes.length} pendente(s) no painel`);
-  return { total: mensagens.length, processadas, pendentes: pendentes.length };
 };
 
-const enviarRespostaWhatsApp = async (remoteJid, texto) => {
-  return enviarMensagem(remoteJid, texto);
+// ── Configura webhook na Evolution API ───────────────────────────────────────
+const configurarWebhook = async (serverUrl) => {
+  try {
+    const fetch = require("node-fetch");
+    const webhookUrl = `${serverUrl}/webhook/whatsapp`;
+
+    const res = await fetch(`${EVOLUTION_URL}/webhook/set/${EVOLUTION_INSTANCE}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": EVOLUTION_KEY },
+      body: JSON.stringify({
+        url: webhookUrl,
+        webhook_by_events: false,
+        webhook_base64: false,
+        events: ["MESSAGES_UPSERT"],
+      }),
+    });
+
+    const data = await res.json();
+    console.log(`🔗 Webhook configurado: ${webhookUrl}`, data);
+    return data;
+  } catch (err) {
+    console.error("❌ Erro ao configurar webhook:", err.message);
+  }
 };
 
-const removerPendente = (msgId) => {
-  const pendentes = carregarPendentes().filter(p => p.msgId !== msgId);
-  salvarPendentes(pendentes);
-};
+const enviarRespostaWhatsApp = async (remoteJid, texto) => enviarMensagem(remoteJid, texto);
 
 module.exports = {
-  processarMensagem,
-  verificarMensagensWhatsApp,
+  processarWebhook,
+  configurarWebhook,
   enviarRespostaWhatsApp,
   carregarPendentes,
   removerPendente,
-  salvarRespondido,
 };
