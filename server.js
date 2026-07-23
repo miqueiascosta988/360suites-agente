@@ -197,6 +197,7 @@ app.post("/webhook/whatsapp", async (req, res) => {
   res.status(200).json({ ok: true });
   try {
     const body = req.body;
+    console.log(`📱 Webhook recebido: ${JSON.stringify(body?.event)} | keys: ${Object.keys(body||{}).join(',')}`);
     if (body?.event !== "messages.upsert") return;
     const msgs = body?.data?.messages || [];
     for (const msg of msgs) {
