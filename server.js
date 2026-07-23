@@ -8,6 +8,14 @@ const fs = require("fs");
 const { buscarEmails, enviarResposta } = require("./agente");
 const { executarTriagem } = require("./agente_triagem");
 const { verificarBloqueios, marcarNotificado, carregarPendentes, removerPendente } = require("./agente_bloqueios");
+const {
+  verificarMensagensWhatsApp,
+  enviarRespostaWhatsApp,
+  carregarPendentes: carregarPendentesWA,
+  removerPendente: removerPendenteWA,
+  salvarRespondido,
+  processarMensagem,
+} = require("./agente_whatsapp");
 
 const app = express();
 app.use(cors());
@@ -301,6 +309,72 @@ app.post("/enviar-personalizado", async (req, res) => {
     res.json({ sucesso: true });
   } catch (err) {
     console.error(`❌ Falhou personalizado: ${err.message}`);
+    res.status(500).json({ erro: err.message });
+  }
+});
+
+// ── WHATSAPP ──────────────────────────────────────────────────────────────────
+
+// Webhook — Evolution API envia mensagens em tempo real
+app.post("/webhook/whatsapp", async (req, res) => {
+  res.sendStatus(200); // responde rápido para não dar timeout
+  try {
+    const body = req.body;
+    const evento = body?.event;
+
+    // Só processa mensagens recebidas (não enviadas por nós)
+    if (evento !== "messages.upsert") return;
+
+    const dados = body?.data;
+    const fromMe = dados?.key?.fromMe;
+    if (fromMe) return; // ignora mensagens enviadas por nós
+
+    const remoteJid = dados?.key?.remoteJid;
+    const msgId = dados?.key?.id;
+    const texto = dados?.message?.conversation || dados?.message?.extendedTextMessage?.text || "";
+
+    if (!remoteJid || !texto || texto.length < 2) return;
+    if (remoteJid.includes("@g.us")) return; // ignora grupos
+
+    console.log(`📱 Webhook recebido: ${remoteJid} | ${texto.substring(0, 60)}`);
+
+    const { salvarRespondido: _salvar, ...wa } = require("./agente_whatsapp");
+    await processarMensagem(remoteJid, texto, msgId);
+    salvarRespondido(msgId, { remoteJid, texto });
+  } catch (err) {
+    console.error("❌ Erro no webhook WhatsApp:", err.message);
+  }
+});
+
+// Verificação manual (botão no painel)
+app.get("/whatsapp/verificar", async (req, res) => {
+  try {
+    const resultado = await verificarMensagensWhatsApp();
+    res.json({ sucesso: true, ...resultado });
+  } catch (err) {
+    console.error("ERRO whatsapp/verificar:", err.message);
+    res.status(500).json({ erro: err.message });
+  }
+});
+
+// Lista pendentes do painel
+app.get("/whatsapp/pendentes", (req, res) => {
+  try {
+    const pendentes = carregarPendentesWA();
+    res.json({ total: pendentes.length, pendentes });
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
+  }
+});
+
+// Remove pendente após encaminhar
+app.post("/whatsapp/encaminhar", (req, res) => {
+  try {
+    const { msgId } = req.body;
+    removerPendenteWA(msgId);
+    console.log(`✅ WhatsApp encaminhado: ${msgId}`);
+    res.json({ sucesso: true });
+  } catch (err) {
     res.status(500).json({ erro: err.message });
   }
 });
