@@ -128,6 +128,7 @@
   <div class="tabs">
     <button class="tab active" onclick="trocarTab('envio')">📤 Envio de Relatórios</button>
     <button class="tab" onclick="trocarTab('agente')">🤖 Agente de Respostas</button>
+    <button class="tab" onclick="trocarTab('bloqueios')">🔒 Bloqueios</button>
     <button class="tab" onclick="trocarTab('whatsapp')">📱 WhatsApp</button>
     <button class="tab" onclick="trocarTab('personalizado')">📨 Disparo Personalizado</button>
   </div>
@@ -288,17 +289,504 @@ Qualquer dúvida, estamos à disposição.
   </div>
 
   <!-- ABA BLOQUEIOS -->
-  <div class="tab-content" id="tab-whatsapp">
-    <div style="width:100%;max-width:760px">
-      <div class="card">
-        <div class="card-title">Triagem WhatsApp</div>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:20px">A IA faz a triagem automática das mensagens dos proprietários e envia o resumo aqui para você encaminhar para Júlia ou Miquéias.</p>
-        <button class="btn" id="btnWhatsapp" onclick="verificarWhatsapp()">📱 Verificar Mensagens Agora</button>
+  <div class="tab-content" id="tab-bloqueios">
+    <div style="width:100%;max-width:680px">
+      <div class="card" style="text-align:center">
+        <div class="card-title">Monitoramento de Bloqueios</div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:20px">Verifica bloqueios de Maintenance e 360 Full com mais de 3 noites e gera notificações para os proprietários.</p>
+        <button class="btn" id="btnBloqueios" onclick="verificarBloqueios()">🔒 Verificar Bloqueios Agora</button>
       </div>
-      <div id="whatsappResultado"></div>
+      <div id="bloqueiosResultado"></div>
     </div>
   </div>
 
+  <script>
+    // TABS
+    function trocarTab(tab) {
+      document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['envio','agente','bloqueios','whatsapp','personalizado'][i] === tab));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      if (tab === 'bloqueios') carregarBloqueiosPendentes();
+      if (tab === 'whatsapp') carregarPendentesWA();
+    }
+
+    // BLOQUEIOS
+    async function verificarBloqueios() {
+      const btn = document.getElementById('btnBloqueios');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner spinner-gold"></div> Verificando...';
+      try {
+        const res = await fetch('https://360suites-agente-production.up.railway.app/bloqueios/verificar');
+        const data = await res.json();
+        btn.disabled = false;
+        btn.innerHTML = '🔒 Verificar Bloqueios Agora';
+        if (data.erro) { alert('Erro: ' + data.erro); return; }
+        await carregarBloqueiosPendentes();
+        if (data.novos === 0) {
+          document.getElementById('bloqueiosResultado').innerHTML = `<div class="agente-empty"><div class="icon">✅</div><p>Nenhum bloqueio novo para notificar.</p></div>`;
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '🔒 Verificar Bloqueios Agora';
+        alert('Erro ao conectar com o servidor.');
+      }
+    }
+
+    async function carregarBloqueiosPendentes() {
+      try {
+        const res = await fetch('https://360suites-agente-production.up.railway.app/bloqueios/pendentes');
+        const data = await res.json();
+        renderBloqueios(data.pendentes || []);
+      } catch {}
+    }
+
+    function renderBloqueios(bloqueios) {
+      const container = document.getElementById('bloqueiosResultado');
+      if (bloqueios.length === 0) { container.innerHTML = ''; return; }
+
+      container.innerHTML = `<p style="font-size:13px;color:var(--muted);margin-bottom:16px">${bloqueios.length} bloqueio(s) aguardando aprovação:</p>`;
+
+      bloqueios.forEach((b, i) => {
+        const card = document.createElement('div');
+        card.className = 'email-card';
+        card.id = `bloqueio-${i}`;
+        card.innerHTML = `
+          <div class="email-header">
+            <div class="email-avatar">${b.nickname[0]}</div>
+            <div class="email-meta">
+              <div class="email-nome">${b.nome}</div>
+              <div class="email-de">${b.email}</div>
+            </div>
+            <span class="email-unidade">${b.nickname} · ${b.noites}n</span>
+          </div>
+          <div class="email-body">
+            <div class="email-section">
+              <div class="email-section-label">Bloqueio</div>
+              <div class="email-text">${b.motivo}${b.notas ? ' — ' + b.notas : ''} | ${b.inicio} → ${b.fim}</div>
+            </div>
+            <div class="email-section">
+              <div class="email-section-label">✉️ Mensagem E-mail — edite se quiser</div>
+              <textarea class="email-resposta" id="msg-email-${i}">${b.msgEmail}</textarea>
+            </div>
+            <div class="email-section">
+              <div class="email-section-label">📱 Mensagem WhatsApp</div>
+              <div class="email-text" style="font-size:12px">${b.msgWhatsapp}</div>
+            </div>
+          </div>
+          <div class="email-actions" style="flex-wrap:wrap;gap:8px">
+            <button class="btn-aprovar" style="flex:1;min-width:140px" onclick="aprovarBloqueioEmail(${i}, '${b.hash}', '${b.email.replace(/'/g,"\\'")}')">✉️ Enviar E-mail</button>
+            <a href="${b.whatsappLink}" target="_blank" style="flex:1;min-width:140px;display:flex;align-items:center;justify-content:center;background:#25d366;color:#fff;border:none;border-radius:8px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer" onclick="marcarBloqueioEnviado(${i}, '${b.hash}', 'whatsapp')">📱 Abrir WhatsApp</a>
+            <button class="btn-ignorar" onclick="ignorarBloqueio(${i}, '${b.hash}')">Ignorar</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function aprovarBloqueioEmail(i, hash, email) {
+      const mensagem = document.getElementById(`msg-email-${i}`).value;
+      try {
+        const res = await fetch('https://360suites-agente-production.up.railway.app/bloqueios/aprovar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ hash, tipo: 'email', email, assunto: '360 Suítes | Atualização sobre sua unidade', mensagem })
+        });
+        const data = await res.json();
+        if (data.sucesso) marcarBloqueioEnviado(i, hash, 'email');
+      } catch { alert('Erro ao enviar e-mail.'); }
+    }
+
+    function marcarBloqueioEnviado(i, hash, tipo) {
+      fetch('https://360suites-agente-production.up.railway.app/bloqueios/aprovar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hash, tipo })
+      });
+      const card = document.getElementById(`bloqueio-${i}`);
+      if (card) { card.style.opacity = '0.4'; card.style.pointerEvents = 'none'; card.querySelector('.email-actions').innerHTML = `<p style="color:var(--success);font-size:13px;padding:0 20px 20px">✅ Notificação enviada via ${tipo}!</p>`; }
+    }
+
+    async function ignorarBloqueio(i, hash) {
+      await fetch('https://360suites-agente-production.up.railway.app/bloqueios/ignorar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ hash }) });
+      const card = document.getElementById(`bloqueio-${i}`);
+      if (card) card.style.display = 'none';
+    }
+
+    const TEMPLATE_PADRAO = `Olá, {nome}.
+
+Segue o detalhamento de performance do apartamento referente a {mes}/{ano}.
+
+Qualquer dúvida, estamos à disposição.
+
+360 Suítes`;
+
+    function resetarTemplate() {
+      document.getElementById('emailTemplate').value = TEMPLATE_PADRAO;
+      document.getElementById('emailAssunto').value = '360 Suítes | Performance - {mes}/{ano}';
+      document.getElementById('templatePreview').style.display = 'none';
+    }
+
+    function previewTemplate() {
+      const mes = document.getElementById('mes').value;
+      const ano = document.getElementById('ano').value;
+      const template = document.getElementById('emailTemplate').value;
+      const preview = template
+        .replace(/{nome}/g, 'João Silva')
+        .replace(/{mes}/g, mes)
+        .replace(/{ano}/g, ano);
+      const el = document.getElementById('templatePreview');
+      el.textContent = preview;
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // ENVIO
+    let selectedFiles = [];
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    fileInput.addEventListener('change', () => addFiles(fileInput.files));
+    document.getElementById('folderInput').addEventListener('change', function() {
+      addFiles(Array.from(this.files).filter(f => f.name.toLowerCase().endsWith('.pdf')));
+    });
+    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('dragover'); addFiles(e.dataTransfer.files); });
+
+    function addFiles(newFiles) {
+      for (const f of newFiles) {
+        if ((f.type === 'application/pdf' || f.name.endsWith('.pdf')) && !selectedFiles.find(x => x.name === f.name)) selectedFiles.push(f);
+      }
+      renderFiles();
+    }
+
+    function removeFile(name) { selectedFiles = selectedFiles.filter(f => f.name !== name); renderFiles(); }
+
+    function renderFiles() {
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = '';
+      selectedFiles.forEach(f => {
+        const size = f.size > 1024*1024 ? (f.size/(1024*1024)).toFixed(1)+' MB' : (f.size/1024).toFixed(0)+' KB';
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        item.innerHTML = `<span>📄</span><span class="file-name">${f.name}</span><span class="file-size">${size}</span><button class="file-remove" onclick="removeFile('${f.name.replace(/'/g,"\\'")}')">×</button>`;
+        fileList.appendChild(item);
+      });
+      if (selectedFiles.length > 0) { sendBtn.disabled = false; sendBtn.textContent = `Enviar para Proprietários (${selectedFiles.length} PDF${selectedFiles.length>1?'s':''})`; }
+      else { sendBtn.disabled = true; sendBtn.textContent = 'Selecione os PDFs para continuar'; }
+    }
+
+    async function enviarLote() {
+      const mes = document.getElementById('mes').value;
+      const ano = document.getElementById('ano').value;
+      const assunto = document.getElementById('emailAssunto').value;
+      const template = document.getElementById('emailTemplate').value;
+      const formData = new FormData();
+      formData.append('mes', mes);
+      formData.append('ano', ano);
+      formData.append('assunto', assunto);
+      formData.append('template', template);
+      selectedFiles.forEach(f => formData.append('pdfs', f));
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<div class="spinner"></div> Enviando...';
+      const progressWrap = document.getElementById('progressWrap');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      const progressPct = document.getElementById('progressPct');
+      progressWrap.classList.add('visible');
+      let pct = 0;
+      const interval = setInterval(() => {
+        if (pct < 85) { pct += Math.random()*8; progressBar.style.width = Math.min(pct,85)+'%'; progressPct.textContent = Math.floor(Math.min(pct,85))+'%'; progressText.textContent = pct<30?'Fazendo upload dos PDFs...':pct<60?'Processando proprietários...':'Enviando e-mails...'; }
+      }, 600);
+      try {
+        const res = await fetch('https://360suites-agente-production.up.railway.app/enviar-lote', { method: 'POST', body: formData });
+        clearInterval(interval); progressBar.style.width = '100%'; progressPct.textContent = '100%'; progressText.textContent = 'Concluído!';
+        const data = await res.json();
+        setTimeout(() => mostrarResultados(data), 600);
+      } catch (err) {
+        clearInterval(interval); sendBtn.disabled = false; sendBtn.textContent = `Enviar para Proprietários (${selectedFiles.length} PDFs)`;
+        progressWrap.classList.remove('visible');
+        alert('Erro ao conectar com o servidor.');
+      }
+    }
+
+    function mostrarResultados(data) {
+      document.getElementById('formCard').style.display = 'none';
+      document.getElementById('results').classList.add('visible');
+      document.getElementById('countSent').textContent = data.enviados||0;
+      document.getElementById('countMissing').textContent = data.sem_anexos||0;
+      document.getElementById('countFailed').textContent = data.falhas||0;
+      const container = document.getElementById('resultItems');
+      container.innerHTML = '';
+      const order = {'falhou':0,'sem-anexos':1,'enviado':2};
+      [...data.relatorio].sort((a,b) => order[a.status]-order[b.status]).forEach(item => {
+        const dot = item.status==='enviado'?'dot-sent':item.status==='sem-anexos'?'dot-missing':'dot-failed';
+        const badge = item.status==='enviado'?'badge-sent':item.status==='sem-anexos'?'badge-missing':'badge-failed';
+        const label = item.status==='enviado'?'Enviado':item.status==='sem-anexos'?'Sem anexo':'Falhou';
+        const detail = item.status==='enviado'?`${item.anexos?.length||0} anexo(s)`:item.status==='falhou'?item.erro||'':'';
+        const el = document.createElement('div');
+        el.className = 'result-item';
+        el.innerHTML = `<div class="result-dot ${dot}"></div><div class="result-info"><div class="result-name">${item.nome}</div><div class="result-email">${item.email}</div>${detail?`<div class="result-detail">${detail}</div>`:''}</div><span class="result-badge ${badge}">${label}</span>`;
+        container.appendChild(el);
+      });
+    }
+
+    function resetar() {
+      selectedFiles = []; renderFiles();
+      document.getElementById('formCard').style.display = 'block';
+      document.getElementById('results').classList.remove('visible');
+      document.getElementById('progressWrap').classList.remove('visible');
+      document.getElementById('progressBar').style.width = '0%';
+      document.getElementById('fileList').innerHTML = '';
+      document.getElementById('sendBtn').innerHTML = 'Selecione os PDFs para continuar';
+    }
+
+    // MODO DE BUSCA
+    let modoBusca = 'performance';
+
+    function setModo(modo) {
+      modoBusca = modo;
+      const btnPerf = document.getElementById('btnModoPerformance');
+      const btnLivre = document.getElementById('btnModoLivre');
+      const desc = document.getElementById('modoDescricao');
+
+      if (modo === 'performance') {
+        btnPerf.style.background = 'var(--gold)';
+        btnPerf.style.color = '#0d0d0d';
+        btnPerf.style.border = 'none';
+        btnLivre.style.background = 'transparent';
+        btnLivre.style.color = 'var(--muted)';
+        btnLivre.style.border = '1px solid var(--border)';
+        desc.textContent = 'Busca e-mails não lidos com "Performance" no assunto';
+      } else {
+        btnLivre.style.background = 'var(--gold)';
+        btnLivre.style.color = '#0d0d0d';
+        btnLivre.style.border = 'none';
+        btnPerf.style.background = 'transparent';
+        btnPerf.style.color = 'var(--muted)';
+        btnPerf.style.border = '1px solid var(--border)';
+        desc.textContent = 'Busca qualquer e-mail não lido do proprietário (requer filtro de nome ou unidade)';
+      }
+    }
+
+    // SELETOR DE UNIDADES / PROPRIETÁRIOS
+    let unidadesSelecionadas = [];
+    let nomesSelecionados = [];
+
+    function handleBuscaKey(e) {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        adicionarFiltro(e.target.value);
+      } else if (e.key === 'Backspace' && e.target.value === '' && (unidadesSelecionadas.length > 0 || nomesSelecionados.length > 0)) {
+        const allTags = [...unidadesSelecionadas, ...nomesSelecionados];
+        removerFiltro(allTags[allTags.length - 1]);
+      }
+    }
+
+    function handleBuscaInput(e) {
+      const val = e.target.value;
+      if (val.endsWith(',')) adicionarFiltro(val.slice(0, -1));
+    }
+
+    // Mantém compatibilidade com código antigo
+    function handleUnidadeKey(e) { handleBuscaKey(e); }
+    function handleUnidadeInput(e) { handleBuscaInput(e); }
+
+    function adicionarFiltro(val) {
+      const termo = val.trim();
+      if (!termo) { document.getElementById('buscaFiltro').value = ''; return; }
+
+      // Detecta se é código de unidade (letras + números, sem espaço) ou nome
+      const isUnidade = /^[A-Za-z]{1,4}\d+$/i.test(termo);
+      const codigo = isUnidade ? termo.toUpperCase() : termo;
+
+      if (isUnidade) {
+        if (!unidadesSelecionadas.includes(codigo)) unidadesSelecionadas.push(codigo);
+      } else {
+        if (!nomesSelecionados.includes(codigo)) nomesSelecionados.push(codigo);
+      }
+
+      renderTags();
+      document.getElementById('buscaFiltro').value = '';
+    }
+
+    function removerFiltro(termo) {
+      unidadesSelecionadas = unidadesSelecionadas.filter(u => u !== termo);
+      nomesSelecionados = nomesSelecionados.filter(n => n !== termo);
+      renderTags();
+    }
+
+    function renderTags() {
+      const container = document.getElementById('unidadesTags');
+      container.innerHTML = '';
+      const todos = [
+        ...unidadesSelecionadas.map(u => ({ valor: u, tipo: 'unidade', cor: 'rgba(201,168,76,0.15)', textCor: 'var(--gold)' })),
+        ...nomesSelecionados.map(n => ({ valor: n, tipo: 'nome', cor: 'rgba(76,175,125,0.15)', textCor: 'var(--success)' })),
+      ];
+      todos.forEach(t => {
+        const tag = document.createElement('span');
+        tag.style.cssText = `display:inline-flex;align-items:center;gap:4px;background:${t.cor};color:${t.textCor};border-radius:6px;padding:3px 10px;font-size:12px;font-weight:600;margin-top:4px`;
+        tag.innerHTML = `${t.tipo === 'nome' ? '👤 ' : '🏠 '}${t.valor} <span onclick="removerFiltro('${t.valor.replace(/'/g, "\\'")}')" style="cursor:pointer;font-size:14px;line-height:1">×</span>`;
+        container.appendChild(tag);
+      });
+    }
+
+    function limparFiltros() {
+      unidadesSelecionadas = [];
+      nomesSelecionados = [];
+      renderTags();
+      document.getElementById('buscaFiltro').value = '';
+      document.getElementById('agenteMes').value = '';
+      document.getElementById('agenteAno').value = '2026';
+    }
+
+    // AGENTE
+    async function executarTriagem() {
+      const btn = document.getElementById('btnTriagem');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner spinner-gold"></div> Enviando respostas...';
+      try {
+        const res = await fetch('https://360suites-agente-production.up.railway.app/agente/triagem');
+        const data = await res.json();
+        btn.disabled = false;
+        btn.innerHTML = '📱 Resposta Automática WhatsApp';
+        if (data.erro) {
+          alert('Erro: ' + data.erro);
+          return;
+        }
+        alert(`✅ Triagem concluída!\n📧 ${data.respondidos} respondido(s)\n⏭️ ${data.ignorados} ignorado(s)`);
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '📱 Resposta Automática WhatsApp';
+        alert('Erro ao conectar com o servidor.');
+      }
+    }
+
+    async function verificarEmails() {
+      const btn = document.getElementById('btnVerificar');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner spinner-gold"></div> Verificando...';
+      document.getElementById('agenteResultado').innerHTML = '';
+
+      const mes = document.getElementById('agenteMes').value;
+      const ano = document.getElementById('agenteAno').value;
+      const unidades = unidadesSelecionadas;
+      const nomes = nomesSelecionados;
+
+      // Monta query string com filtros
+      const params = new URLSearchParams();
+      if (mes) params.append('mes', mes);
+      if (ano) params.append('ano', ano);
+      if (unidades.length > 0) params.append('unidades', unidades.join(','));
+      if (nomes.length > 0) params.append('nomes', nomes.join(','));
+      params.append('modo', modoBusca);
+
+      // Avisa se modo livre sem filtro
+      if (modoBusca === 'livre' && unidades.length === 0 && nomes.length === 0) {
+        if (!confirm('⚠️ Modo livre sem filtro de proprietário pode retornar muitos e-mails. Continuar?')) {
+          btn.disabled = false;
+          btn.innerHTML = '🤖 Verificar E-mails Agora';
+          return;
+        }
+      }
+
+      const url = `https://360suites-agente-production.up.railway.app/agente/verificar${params.toString() ? '?' + params.toString() : ''}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        btn.disabled = false;
+        btn.innerHTML = '🤖 Verificar E-mails Agora';
+        if (data.erro) { document.getElementById('agenteResultado').innerHTML = `<div class="card" style="color:var(--error)">${data.erro}</div>`; return; }
+        if (data.emails.length === 0) {
+          document.getElementById('agenteResultado').innerHTML = `<div class="agente-empty"><div class="icon">📭</div><p>Nenhum e-mail encontrado${unidades.length > 0 ? ' para as unidades selecionadas' : ''}.</p></div>`;
+          return;
+        }
+        renderEmails(data.emails);
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '🤖 Verificar E-mails Agora';
+        document.getElementById('agenteResultado').innerHTML = `<div class="card" style="color:var(--error)">Erro ao conectar com o servidor.</div>`;
+      }
+    }
+
+    function renderEmails(emails) {
+      const container = document.getElementById('agenteResultado');
+      container.innerHTML = `<p style="font-size:13px;color:var(--muted);margin-bottom:16px">${emails.length} e-mail(s) encontrado(s). Revise e aprove as respostas:</p>`;
+      emails.forEach((email, i) => {
+        const card = document.createElement('div');
+        card.className = 'email-card';
+        card.id = `email-card-${i}`;
+        card.innerHTML = `
+          <div class="email-header">
+            <div class="email-avatar">${email.nome[0].toUpperCase()}</div>
+            <div class="email-meta">
+              <div class="email-nome">${email.nome}</div>
+              <div class="email-de">${email.de}</div>
+            </div>
+            <span class="email-unidade">${Array.isArray(email.unidades) ? email.unidades.join(', ') : (email.unidade || '')}</span>
+          </div>
+          <div class="email-body">
+            <div class="email-section">
+              <div class="email-section-label">Assunto</div>
+              <div class="email-text">${email.assunto}</div>
+            </div>
+            <div class="email-section">
+              <div class="email-section-label">E-mail Recebido</div>
+              <div class="email-text">${email.emailRecebido}</div>
+            </div>
+            <div class="email-section">
+              <div class="email-section-label">✨ Resposta Sugerida — edite se quiser</div>
+              <textarea class="email-resposta" id="resposta-${i}">${email.respostaSugerida}</textarea>
+            </div>
+          </div>
+          <div class="email-actions">
+            <button class="btn-aprovar" onclick="aprovarResposta(${i}, '${email.threadId}', '${email.de}', '${email.assunto.replace(/'/g,"\\'")}')">✅ Aprovar e Enviar</button>
+            <button class="btn-ignorar" onclick="ignorarEmail(${i})">Ignorar</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function aprovarResposta(i, threadId, para, assunto) {
+      const corpo = document.getElementById(`resposta-${i}`).value;
+      const card = document.getElementById(`email-card-${i}`);
+      try {
+        const res = await fetch('https://360suites-agente-production.up.railway.app/agente/enviar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ threadId, para, assunto, corpo })
+        });
+        const data = await res.json();
+        if (data.sucesso) {
+          card.style.opacity = '0.4';
+          card.style.pointerEvents = 'none';
+          card.querySelector('.email-actions').innerHTML = '<p style="color:var(--success);font-size:13px;padding:0 20px 20px">✅ Resposta enviada!</p>';
+        }
+      } catch (err) {
+        alert('Erro ao enviar resposta.');
+      }
+    }
+
+    function ignorarEmail(i) {
+      const card = document.getElementById(`email-card-${i}`);
+      card.style.display = 'none';
+    }
+  </script>
+  <!-- ABA WHATSAPP -->
+  <div class="tab-content" id="tab-whatsapp">
+    <div style="width:100%;max-width:680px">
+      <div class="card" style="text-align:center">
+        <div class="card-title">📱 Triagem WhatsApp</div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:20px">A IA faz a triagem automática das mensagens dos proprietários e envia o resumo aqui para você encaminhar para Júlia ou Miquéias.</p>
+        <button class="btn" id="btnVerificarWA" onclick="verificarWA()">📱 Verificar Mensagens Agora</button>
+      </div>
+      <div id="waResultado"></div>
+    </div>
+  </div>
+
+  <!-- ABA DISPARO PERSONALIZADO -->
   <div class="tab-content" id="tab-personalizado">
     <div style="width:100%;max-width:680px">
       <div class="card">
@@ -371,18 +859,97 @@ Gostaríamos de informar que...</textarea>
   </div>
 
   <script>
-    // ─── NAVEGAÇÃO ──────────────────────────────────────────────────────────────
-    const tabs = document.querySelectorAll('.tab');
+    // ── WHATSAPP ──────────────────────────────────────────────────────────────
+    const WA_URL = 'https://360suites-agente-production.up.railway.app';
 
-    function trocarTab(tab) {
-      tabs.forEach((n, i) => n.classList.toggle('active', ['envio','agente','whatsapp','personalizado'][i] === tab));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      const el = document.getElementById('tab-' + tab);
-      if (el) el.classList.add('active');
-      if (tab === 'whatsapp') carregarPendentesWhatsapp();
+    async function verificarWA() {
+      const btn = document.getElementById('btnVerificarWA');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner spinner-gold"></div> Verificando...';
+      try {
+        const res = await fetch(`${WA_URL}/whatsapp/verificar`);
+        const data = await res.json();
+        btn.disabled = false;
+        btn.innerHTML = '📱 Verificar Mensagens Agora';
+        await carregarPendentesWA();
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '📱 Verificar Mensagens Agora';
+        document.getElementById('waResultado').innerHTML = `<div class="card" style="color:var(--error)">❌ Erro ao conectar.</div>`;
+      }
     }
-    // ────────────────────────────────────────────────────────────────────────────
 
+    async function carregarPendentesWA() {
+      try {
+        const res = await fetch(`${WA_URL}/whatsapp/pendentes`);
+        const data = await res.json();
+        renderPendentesWA(data.pendentes || []);
+      } catch {}
+    }
+
+    function renderPendentesWA(pendentes) {
+      const container = document.getElementById('waResultado');
+      if (pendentes.length === 0) {
+        container.innerHTML = `<div class="agente-empty"><div class="icon">📭</div><p>Nenhuma mensagem pendente.</p></div>`;
+        return;
+      }
+
+      container.innerHTML = `<p style="font-size:13px;color:var(--muted);margin-bottom:16px">${pendentes.length} mensagem(ns) aguardando encaminhamento:</p>`;
+
+      pendentes.forEach((p, i) => {
+        const dataTriagem = new Date(p.dataTriagem).toLocaleString('pt-BR');
+        const card = document.createElement('div');
+        card.className = 'email-card';
+        card.id = `wa-card-${i}`;
+        card.innerHTML = `
+          <div class="email-header">
+            <div class="email-avatar">${p.nome?.[0]?.toUpperCase() || '?'}</div>
+            <div class="email-meta">
+              <div class="email-nome">${p.nome}</div>
+              <div class="email-de">${p.email} · ${p.telefone}</div>
+            </div>
+            <span class="email-unidade" style="background:${p.responsavel === 'Júlia' ? 'rgba(100,150,255,0.15)' : 'rgba(201,168,76,0.15)'};color:${p.responsavel === 'Júlia' ? '#6496ff' : 'var(--gold)'}">
+              → ${p.responsavel}
+            </span>
+          </div>
+          <div class="email-body">
+            <div class="email-section">
+              <div class="email-section-label">🏠 Unidades</div>
+              <div class="email-text">${(p.unidades || []).join(', ') || 'N/A'}</div>
+            </div>
+            <div class="email-section">
+              <div class="email-section-label">💬 Assunto: ${p.assunto}</div>
+              <div class="email-text">${p.descricaoOriginal}</div>
+            </div>
+            <div class="email-section">
+              <div class="email-section-label">🤖 Resumo IA</div>
+              <div class="email-text" style="color:var(--text)">${p.resumo}</div>
+            </div>
+            <div class="email-section" style="font-size:11px;color:var(--muted)">${dataTriagem}</div>
+          </div>
+          <div class="email-actions">
+            <a href="${p.whatsappLink}" target="_blank" onclick="encaminharWA('${p.msgId}', ${i})"
+              style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#25d366;color:#fff;border:none;border-radius:8px;padding:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;text-decoration:none;cursor:pointer">
+              📱 Abrir WhatsApp
+            </a>
+            <button class="btn-ignorar" onclick="encaminharWA('${p.msgId}', ${i})">Encaminhado ✓</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function encaminharWA(msgId, i) {
+      try {
+        await fetch(`${WA_URL}/whatsapp/encaminhar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ msgId })
+        });
+        const card = document.getElementById(`wa-card-${i}`);
+        if (card) { card.style.opacity = '0.4'; card.style.pointerEvents = 'none'; card.querySelector('.email-actions').innerHTML = '<p style="color:var(--success);font-size:13px;padding:0 20px 20px">✅ Encaminhado!</p>'; }
+      } catch {}
+    }
 
     // ─── DISPARO PERSONALIZADO ───────────────────────────────────────────────
 
@@ -598,82 +1165,6 @@ Gostaríamos de informar que...</textarea>
           `).join('')}
         </div>`;
     }
-
-    // WHATSAPP TRIAGEM
-    async function verificarWhatsapp() {
-      const btn = document.getElementById('btnWhatsapp');
-      btn.disabled = true;
-      btn.innerHTML = '<div class="spinner"></div> Verificando...';
-      document.getElementById('whatsappResultado').innerHTML = '';
-      try {
-        const res = await fetch('/whatsapp/verificar');
-        const data = await res.json();
-        btn.disabled = false;
-        btn.innerHTML = '📱 Verificar Mensagens Agora';
-        if (data.erro) {
-          document.getElementById('whatsappResultado').innerHTML = `<div class="agente-empty"><div class="icon">❌</div><p>${data.erro}</p></div>`;
-          return;
-        }
-        await carregarPendentesWhatsapp();
-        if (!data.pendentes) {
-          document.getElementById('whatsappResultado').innerHTML = `<div class="agente-empty"><div class="icon">📭</div><p>Nenhuma mensagem nova no momento.</p></div>`;
-        }
-      } catch (err) {
-        btn.disabled = false;
-        btn.innerHTML = '📱 Verificar Mensagens Agora';
-        document.getElementById('whatsappResultado').innerHTML = `<div class="agente-empty"><div class="icon">❌</div><p>Erro ao conectar.</p></div>`;
-      }
-    }
-
-    async function carregarPendentesWhatsapp() {
-      try {
-        const res = await fetch('/whatsapp/pendentes');
-        const data = await res.json();
-        renderTriagem(data.pendentes || []);
-      } catch {}
-    }
-
-    function renderTriagem(triagens) {
-      const container = document.getElementById('whatsappResultado');
-      if (!triagens.length) { container.innerHTML = ''; return; }
-      container.innerHTML = `<p style="font-size:13px;color:var(--muted);margin-bottom:16px">${triagens.length} triagem(ns) concluída(s):</p>`;
-      triagens.forEach((t, i) => {
-        const corResp = t.responsavel === 'Júlia' ? '#c9965c' : '#5cb87a';
-        const card = document.createElement('div');
-        card.className = 'email-card';
-        card.id = `tc-${i}`;
-        card.innerHTML = `
-          <div class="email-header">
-            <div class="email-avatar">${(t.nome||'?')[0].toUpperCase()}</div>
-            <div class="email-info">
-              <div class="email-nome">${t.nome}</div>
-              <div class="email-de">${t.email || ''} · ${(t.unidades||[]).join(', ')}</div>
-            </div>
-            <span style="font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;background:${corResp}22;color:${corResp};border:1px solid ${corResp}44;white-space:nowrap">→ ${t.responsavel}</span>
-          </div>
-          <div class="email-body">
-            <div class="section-label">Assunto: ${t.assunto}</div>
-            <div class="email-preview" style="margin-bottom:8px"><strong>Resumo IA:</strong> ${t.resumo}</div>
-            <div class="email-preview" style="color:var(--muted);font-size:11px"><strong>Original:</strong> ${t.descricaoOriginal}</div>
-          </div>
-          <div class="email-actions">
-            <a href="${t.whatsappLink}" target="_blank" class="btn btn-success" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">💬 Abrir WhatsApp</a>
-            <button class="btn btn-outline" onclick="arquivarTriagem(${i},'${t.msgId}')">✓ Arquivar</button>
-          </div>`;
-        container.appendChild(card);
-      });
-    }
-
-    async function arquivarTriagem(i, msgId) {
-      await fetch('/whatsapp/ignorar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ msgId, nome: '', remoteJid: '' })
-      });
-      const c = document.getElementById(`tc-${i}`);
-      if (c) c.style.display = 'none';
-    }
-
   </script>
 </body>
 </html>
