@@ -33,6 +33,7 @@ const removerPendente = (id) => {
 const enviarMensagem = async (remoteJid, texto) => {
   try {
     const fetch = require("node-fetch");
+    console.log(`📤 Enviando para ${remoteJid}: "${texto.substring(0, 50)}"`);
     const res = await fetch(`${EVOLUTION_URL}/message/sendText/${EVOLUTION_INSTANCE}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "apikey": EVOLUTION_KEY },
