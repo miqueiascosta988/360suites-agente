@@ -197,13 +197,13 @@ app.post("/webhook/whatsapp", async (req, res) => {
   res.status(200).json({ ok: true });
   try {
     const body = req.body;
-    console.log(`📱 Webhook recebido: ${JSON.stringify(body?.event)} | keys: ${Object.keys(body||{}).join(',')}`);
-    if (body?.event !== "messages.upsert") return;
-    const msgs = body?.data?.messages || [];
-    for (const msg of msgs) {
-      if (msg?.key?.fromMe) continue;
-      const remoteJid = msg?.key?.remoteJid;
-      const texto = msg?.message?.conversation || msg?.message?.extendedTextMessage?.text || "";
+if (body?.event !== "messages.upsert") return;
+// Suporta tanto array quanto objeto único
+const msgs = body?.data?.messages || (body?.data?.key ? [body.data] : []);
+for (const msg of msgs) {
+  if (msg?.key?.fromMe) continue;
+  const remoteJid = msg?.key?.remoteJid;
+  const texto = msg?.message?.conversation || msg?.message?.extendedTextMessage?.text || "";
       if (texto && remoteJid) {
         console.log(`📱 Webhook: ${remoteJid} — "${texto.substring(0, 50)}"`);
         setImmediate(() => getWpp().processarWebhook(remoteJid, texto));
