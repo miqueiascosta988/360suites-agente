@@ -58,7 +58,9 @@ const enviarEmailGmailAPI = async (gmail, para, assunto, html, anexos) => {
   for (const anexo of anexos) {
     const conteudo = fs.readFileSync(anexo.path);
     const nomeEncoded = "=?UTF-8?B?" + Buffer.from(anexo.filename).toString("base64") + "?=";
-    body += "--" + boundary + "\r\nContent-Type: application/pdf\r\nContent-Transfer-Encoding: base64\r\nContent-Disposition: attachment; filename=\"" + nomeEncoded + "\"\r\n\r\n" + conteudo.toString("base64") + "\r\n";
+    const ext = path.extname(anexo.filename).toLowerCase();
+    const mime = ext === ".xlsx" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : ext === ".xls" ? "application/vnd.ms-excel" : "application/pdf";
+    body += "--" + boundary + "\r\nContent-Type: " + mime + "\r\nContent-Transfer-Encoding: base64\r\nContent-Disposition: attachment; filename=\"" + nomeEncoded + "\"\r\n\r\n" + conteudo.toString("base64") + "\r\n";
   }
   body += "--" + boundary + "--";
   const raw = Buffer.from(headers + "\r\n\r\n" + body).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -105,7 +107,9 @@ const iniciarEnvioBackground = async (params) => {
     for (const prop of proprietarios) {
       const anexos = arquivos.filter(function(f) {
         return prop.unidades.some(function(u) {
-          return f.filename.toLowerCase().startsWith(u.toLowerCase() + " -") || f.filename.toLowerCase().startsWith(u.toLowerCase() + "-");
+          const fn = f.filename.toLowerCase();
+          const un = u.toLowerCase();
+          return fn.startsWith(un + " -") || fn.startsWith(un + "-") || fn.startsWith(un + "_");
         });
       });
       if (!anexos.length) {
