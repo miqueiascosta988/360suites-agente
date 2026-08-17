@@ -676,6 +676,377 @@ Gostaríamos de informar que...</textarea>
         </div>`;
     }
 
+    // ─── ENVIO DE RELATÓRIOS (upload + enviarLote) ─────────────────────────────
+
+    const API_BASE = window.location.origin;
+    let allFiles = [];
+
+    const fileInput = document.getElementById('fileInput');
+    const folderInput = document.getElementById('folderInput');
+    const dropzone = document.getElementById('dropzone');
+    const fileListEl = document.getElementById('fileList');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function addFiles(newFiles) {
+      const validExts = ['.pdf', '.xlsx', '.xls'];
+      for (const f of newFiles) {
+        const ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+        if (!validExts.includes(ext)) continue;
+        if (allFiles.some(e => e.name === f.name && e.size === f.size)) continue;
+        allFiles.push(f);
+      }
+      renderFileList();
+    }
+
+    function removeFile(index) {
+      allFiles.splice(index, 1);
+      renderFileList();
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(1) + ' MB';
+    }
+
+    function renderFileList() {
+      fileListEl.innerHTML = '';
+      if (allFiles.length === 0) {
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Selecione os PDFs para continuar';
+        return;
+      }
+      sendBtn.disabled = false;
+      sendBtn.textContent = `Enviar ${allFiles.length} arquivo(s)`;
+
+      // Show max 8 items + counter
+      const show = allFiles.slice(0, 8);
+      show.forEach((f, i) => {
+        const div = document.createElement('div');
+        div.className = 'file-item';
+        div.innerHTML = `
+          <span style="font-size:16px">${f.name.endsWith('.pdf') ? '📄' : '📊'}</span>
+          <span class="file-name">${f.name}</span>
+          <span class="file-size">${formatSize(f.size)}</span>
+          <button class="file-remove" onclick="removeFile(${i})">✕</button>
+        `;
+        fileListEl.appendChild(div);
+      });
+      if (allFiles.length > 8) {
+        const more = document.createElement('div');
+        more.style.cssText = 'text-align:center;font-size:12px;color:var(--muted);padding:8px';
+        more.textContent = `... e mais ${allFiles.length - 8} arquivo(s)`;
+        fileListEl.appendChild(more);
+      }
+    }
+
+    fileInput.addEventListener('change', (e) => {
+      addFiles(Array.from(e.target.files));
+      e.target.value = '';
+    });
+
+    folderInput.addEventListener('change', (e) => {
+      addFiles(Array.from(e.target.files));
+      e.target.value = '';
+    });
+
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      addFiles(Array.from(e.dataTransfer.files));
+    });
+
+    async function enviarLote() {
+      if (allFiles.length === 0) return;
+
+      const mes = document.getElementById('mes').value;
+      const ano = document.getElementById('ano').value;
+      const assunto = document.getElementById('emailAssunto').value;
+      const template = document.getElementById('emailTemplate').value;
+
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<div class="spinner"></div> Enviando...';
+
+      const progressWrap = document.getElementById('progressWrap');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      const progressPct = document.getElementById('progressPct');
+      progressWrap.classList.add('visible');
+      progressBar.style.width = '0%';
+      progressText.textContent = 'Fazendo upload dos arquivos...';
+      progressPct.textContent = '0%';
+
+      // Build FormData
+      const formData = new FormData();
+      formData.append('mes', mes);
+      formData.append('ano', ano);
+      formData.append('assunto', assunto);
+      formData.append('template', template);
+      for (const f of allFiles) {
+        formData.append('pdfs', f, f.name);
+      }
+
+      try {
+        const res = await fetch(API_BASE + '/enviar-lote', { method: 'POST', body: formData });
+        const data = await res.json();
+
+        if (data.erro) {
+          alert('Erro: ' + data.erro);
+          sendBtn.disabled = false;
+          sendBtn.textContent = `Enviar ${allFiles.length} arquivo(s)`;
+          progressWrap.classList.remove('visible');
+          return;
+        }
+
+        // Envio iniciou no background — pollar status
+        progressText.textContent = 'Envio iniciado no servidor...';
+        progressPct.textContent = '';
+        pollStatus();
+
+      } catch (err) {
+        alert('Erro de conexão: ' + err.message);
+        sendBtn.disabled = false;
+        sendBtn.textContent = `Enviar ${allFiles.length} arquivo(s)`;
+        progressWrap.classList.remove('visible');
+      }
+    }
+
+    async function pollStatus() {
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      const progressPct = document.getElementById('progressPct');
+
+      try {
+        const res = await fetch(API_BASE + '/enviar-lote/status');
+        const data = await res.json();
+
+        if (data.status === 'idle') {
+          setTimeout(pollStatus, 1000);
+          return;
+        }
+
+        const pct = data.total > 0 ? Math.round((data.processados / data.total) * 100) : 0;
+        progressBar.style.width = pct + '%';
+        progressPct.textContent = pct + '%';
+        progressText.textContent = `Processando ${data.processados || 0} de ${data.total || 0}...`;
+
+        if (data.status === 'concluido' || data.concluido) {
+          showResults(data);
+          return;
+        }
+
+        setTimeout(pollStatus, 1500);
+      } catch {
+        setTimeout(pollStatus, 3000);
+      }
+    }
+
+    function showResults(data) {
+      document.getElementById('formCard').style.display = 'none';
+      document.getElementById('progressWrap').classList.remove('visible');
+
+      const results = document.getElementById('results');
+      results.classList.add('visible');
+
+      document.getElementById('countSent').textContent = data.enviados || 0;
+      document.getElementById('countMissing').textContent = data.sem_anexos || 0;
+      document.getElementById('countFailed').textContent = data.falhas || 0;
+
+      const items = document.getElementById('resultItems');
+      items.innerHTML = '';
+      (data.relatorio || []).forEach(r => {
+        const dotClass = r.status === 'enviado' ? 'dot-sent' : r.status === 'sem-anexos' ? 'dot-missing' : 'dot-failed';
+        const badgeClass = r.status === 'enviado' ? 'badge-sent' : r.status === 'sem-anexos' ? 'badge-missing' : 'badge-failed';
+        const badgeText = r.status === 'enviado' ? 'ENVIADO' : r.status === 'sem-anexos' ? 'SEM ANEXO' : 'FALHOU';
+        items.innerHTML += `
+          <div class="result-item">
+            <div class="result-dot ${dotClass}"></div>
+            <div class="result-info">
+              <div class="result-name">${r.nome || '-'}</div>
+              <div class="result-email">${r.email || '-'}</div>
+              ${r.erro ? '<div class="result-detail">' + r.erro + '</div>' : ''}
+            </div>
+            <span class="result-badge ${badgeClass}">${badgeText}</span>
+          </div>`;
+      });
+    }
+
+    function resetar() {
+      fetch(API_BASE + '/enviar-lote/reset', { method: 'POST' }).catch(() => {});
+      allFiles = [];
+      renderFileList();
+      document.getElementById('formCard').style.display = 'block';
+      document.getElementById('results').classList.remove('visible');
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Selecione os PDFs para continuar';
+    }
+
+    function resetarTemplate() {
+      document.getElementById('emailTemplate').value = 'Olá, {nome}.\n\nSegue o detalhamento de performance do apartamento referente a {mes}/{ano}.\n\nQualquer dúvida, estamos à disposição.\n\n360 Suítes';
+    }
+
+    function previewTemplate() {
+      const corpo = document.getElementById('emailTemplate').value;
+      const mes = document.getElementById('mes').value;
+      const ano = document.getElementById('ano').value;
+      const preview = corpo.replace(/{nome}/g, 'João Silva').replace(/{mes}/g, mes).replace(/{ano}/g, ano);
+      const box = document.getElementById('templatePreview');
+      box.textContent = preview;
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // ─── AGENTE ─────────────────────────────────────────────────────────────────
+
+    let modoBusca = 'performance';
+    let unidadesFiltro = [];
+
+    function setModo(modo) {
+      modoBusca = modo;
+      const btnP = document.getElementById('btnModoPerformance');
+      const btnL = document.getElementById('btnModoLivre');
+      const desc = document.getElementById('modoDescricao');
+      if (modo === 'performance') {
+        btnP.style.background = 'var(--gold)'; btnP.style.color = '#0d0d0d'; btnP.style.border = 'none';
+        btnL.style.background = 'transparent'; btnL.style.color = 'var(--muted)'; btnL.style.border = '1px solid var(--border)';
+        desc.textContent = 'Busca e-mails não lidos com "Performance" no assunto';
+      } else {
+        btnL.style.background = 'var(--gold)'; btnL.style.color = '#0d0d0d'; btnL.style.border = 'none';
+        btnP.style.background = 'transparent'; btnP.style.color = 'var(--muted)'; btnP.style.border = '1px solid var(--border)';
+        desc.textContent = 'Busca qualquer e-mail não lido de endereços de proprietários';
+      }
+    }
+
+    function handleBuscaKey(e) {
+      if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); adicionarFiltro(e.target.value); }
+      else if (e.key === 'Backspace' && e.target.value === '' && unidadesFiltro.length > 0) {
+        unidadesFiltro.pop(); renderFiltroTags();
+      }
+    }
+    function handleBuscaInput(e) { if (e.target.value.endsWith(',')) adicionarFiltro(e.target.value.slice(0,-1)); }
+    function adicionarFiltro(val) {
+      const termo = val.trim().toUpperCase();
+      if (!termo || unidadesFiltro.includes(termo)) { document.getElementById('buscaFiltro').value = ''; return; }
+      unidadesFiltro.push(termo);
+      renderFiltroTags();
+      document.getElementById('buscaFiltro').value = '';
+    }
+    function removerFiltro(val) {
+      unidadesFiltro = unidadesFiltro.filter(u => u !== val);
+      renderFiltroTags();
+    }
+    function renderFiltroTags() {
+      const c = document.getElementById('unidadesTags');
+      c.innerHTML = '';
+      unidadesFiltro.forEach(u => {
+        const t = document.createElement('span');
+        t.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:rgba(201,168,76,0.15);color:var(--gold);border-radius:6px;padding:3px 10px;font-size:12px;font-weight:500';
+        t.innerHTML = `🏠 ${u} <span onclick="removerFiltro('${u}')" style="cursor:pointer;font-size:14px;margin-left:2px">×</span>`;
+        c.appendChild(t);
+      });
+    }
+    function limparFiltros() {
+      unidadesFiltro = [];
+      renderFiltroTags();
+      document.getElementById('buscaFiltro').value = '';
+      document.getElementById('agenteMes').value = '';
+      document.getElementById('agenteAno').value = '2026';
+    }
+
+    async function verificarEmails() {
+      const btn = document.getElementById('btnVerificar');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div> Verificando...';
+      try {
+        const params = new URLSearchParams();
+        if (modoBusca) params.set('modo', modoBusca);
+        const mes = document.getElementById('agenteMes').value;
+        const ano = document.getElementById('agenteAno').value;
+        if (mes) params.set('mes', mes);
+        if (ano) params.set('ano', ano);
+        if (unidadesFiltro.length) params.set('unidades', unidadesFiltro.join(','));
+
+        const res = await fetch(API_BASE + '/agente/verificar?' + params.toString());
+        const data = await res.json();
+        renderAgente(data.emails || []);
+      } catch (err) {
+        alert('Erro: ' + err.message);
+      }
+      btn.disabled = false;
+      btn.innerHTML = '🤖 Verificar E-mails Agora';
+    }
+
+    function renderAgente(emails) {
+      const container = document.getElementById('agenteResultado');
+      if (!emails.length) {
+        container.innerHTML = '<div class="agente-empty" style="margin-top:16px"><div class="icon">📭</div><p>Nenhum e-mail pendente no momento.</p></div>';
+        return;
+      }
+      container.innerHTML = `<p style="font-size:13px;color:var(--muted);margin:16px 0 12px">${emails.length} e-mail(s) encontrado(s):</p>`;
+      emails.forEach((email, i) => {
+        const card = document.createElement('div');
+        card.className = 'email-card';
+        card.id = 'ec-' + i;
+        const initials = (email.nome || email.de || '?').substring(0, 2).toUpperCase();
+        card.innerHTML = `
+          <div class="email-header">
+            <div class="email-avatar">${initials}</div>
+            <div class="email-meta">
+              <div class="email-nome">${email.nome || email.de || '-'}</div>
+              <div class="email-de">${email.de || '-'} · ${email.assunto || '-'}</div>
+            </div>
+            ${email.unidade ? '<span class="email-unidade">' + email.unidade + '</span>' : ''}
+          </div>
+          <div class="email-body">
+            <div class="email-section">
+              <div class="email-section-label">Mensagem do Proprietário</div>
+              <div class="email-text">${email.corpo || email.resumo || '-'}</div>
+            </div>
+            <div class="email-section">
+              <div class="email-section-label">✨ Sugestão de Resposta</div>
+              <textarea class="email-resposta" id="resp-${i}">${email.resposta || email.sugestao || ''}</textarea>
+            </div>
+          </div>
+          <div class="email-actions">
+            <button class="btn-aprovar" onclick="enviarResposta(${i}, '${(email.threadId||'').replace(/'/g,"\\'")}', '${(email.de||'').replace(/'/g,"\\'")}', '${(email.assunto||'').replace(/'/g,"\\'")}')">✅ Aprovar e Enviar</button>
+            <button class="btn-ignorar" onclick="document.getElementById('ec-${i}').style.display='none'">✗ Ignorar</button>
+          </div>`;
+        container.appendChild(card);
+      });
+    }
+
+    async function enviarResposta(i, threadId, para, assunto) {
+      const corpo = document.getElementById('resp-' + i).value;
+      try {
+        const res = await fetch(API_BASE + '/agente/enviar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ threadId, para, assunto, corpo })
+        });
+        const data = await res.json();
+        if (data.sucesso) {
+          const c = document.getElementById('ec-' + i);
+          c.style.opacity = '0.4';
+          c.style.pointerEvents = 'none';
+          c.querySelector('.email-actions').innerHTML = '<p style="color:var(--success);font-size:12px;padding:8px 0">✅ Resposta enviada!</p>';
+        }
+      } catch { alert('Erro ao enviar resposta.'); }
+    }
+
+    async function executarTriagem() {
+      const btn = document.getElementById('btnTriagem');
+      btn.disabled = true;
+      btn.textContent = '⏳ Processando...';
+      try {
+        const res = await fetch(API_BASE + '/agente/triagem');
+        const data = await res.json();
+        alert(`Triagem concluída: ${data.processados || 0} e-mail(s) processado(s).`);
+      } catch (err) { alert('Erro: ' + err.message); }
+      btn.disabled = false;
+      btn.textContent = '📱 Resposta Automática WhatsApp';
+    }
+
     </script>
 </body>
 </html>
