@@ -39,6 +39,27 @@ Nossa equipe está pronta para esclarecer todas as suas dúvidas!
 Atenciosamente,
 Equipe 360 Suítes`;
 
+const getMensagemGenerica = () => `Olá!
+
+Obrigado por entrar em contato com a 360 Suítes.
+
+Recebemos sua mensagem e gostaríamos de informar que o retorno por e-mail pode levar um tempo maior do que gostaríamos.
+
+Para uma resposta mais rápida e personalizada, pedimos que entre em contato pelo nosso WhatsApp:
+
+📱 ${WHATSAPP_LINK}
+
+Nossa equipe está pronta para esclarecer todas as suas dúvidas!
+
+Atenciosamente,
+Equipe 360 Suítes`;
+
+// Remetentes automáticos que nunca devem receber resposta (bounce, mailer-daemon, etc.)
+const ehRemetenteAutomatico = (email) => {
+  const padroesIgnorados = ["postmaster@", "mailer-daemon@", "no-reply@", "noreply@", "@360suites.com.br"];
+  return padroesIgnorados.some(p => email.toLowerCase().includes(p));
+};
+
 const executarTriagem = async () => {
   const proprietarios = carregarProprietarios();
   const ano = process.env.ANO_REFERENCIA || "2026";
@@ -55,25 +76,6 @@ const executarTriagem = async () => {
 
     if (enviados[id]) { duplicatas++; continue; }
 
-    const proprietario = proprietarios.find(p => p.email.toLowerCase() === emailRemetente.toLowerCase());
-    if (!proprietario) { ignorados++; continue; }
+    if (ehRemetenteAutomatico(emailRemetente)) { ignorados++; continue; }
 
-    try {
-      await enviarGmail(threadId, emailRemetente, assunto, getMensagem(proprietario.nome));
-      await marcarComoLido(id);
-
-      enviados[id] = { email: emailRemetente, nome: proprietario.nome, dataEnvio: new Date().toISOString() };
-      salvarEnviados(enviados);
-
-      console.log(`✅ Triagem: ${proprietario.nome}`);
-      respondidos++;
-    } catch (err) {
-      console.error(`❌ Erro: ${err.message}`);
-    }
-  }
-
-  console.log(`📊 ${respondidos} respondido(s) | ${ignorados} ignorado(s) | ${duplicatas} duplicata(s)`);
-  return { respondidos, ignorados, duplicatas };
-};
-
-module.exports = { executarTriagem };
+    const proprietario =
